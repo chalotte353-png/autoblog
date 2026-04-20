@@ -1,5 +1,5 @@
 """
-cPanel UAPI Uploader — fixed path version
+cPanel UAPI Uploader — fixed file parameter version
 """
 
 import os
@@ -14,60 +14,54 @@ CPANEL_USER = os.environ["CPANEL_USER"]
 CPANEL_PASS = os.environ["CPANEL_PASS"]
 CPANEL_DIR  = os.environ.get("CPANEL_DIR", "marketsnewstoday.info")
 
-LOCAL_DIR   = Path("output")
-TEXT_EXTS   = {".html", ".css", ".txt", ".xml", ".json", ".yml", ".py", ".md"}
-HOME        = f"/home/{CPANEL_USER}/{CPANEL_DIR}"
-
-
-def api(endpoint, data):
-    try:
-        r = requests.post(
-            f"{CPANEL_URL}/execute/Fileman/{endpoint}",
-            auth=(CPANEL_USER, CPANEL_PASS),
-            data=data,
-            verify=False,
-            timeout=30,
-        )
-        return r.json()
-    except Exception as e:
-        print(f"  API error: {e}")
-        return {}
+LOCAL_DIR = Path("output")
+HOME      = f"/home/{CPANEL_USER}/{CPANEL_DIR}"
 
 
 def mkdir(path):
-    api("mkdir", {"path": path})
+    try:
+        requests.post(
+            f"{CPANEL_URL}/execute/Fileman/mkdir",
+            auth=(CPANEL_USER, CPANEL_PASS),
+            data={"path": path},
+            verify=False, timeout=15,
+        )
+    except Exception:
+        pass
 
 
 def upload(local_path: Path, remote_rel: str) -> bool:
-    # remote_rel is like "index.html" or "posts/foo.html"
-    parts   = remote_rel.replace("\\", "/").split("/")
-    fname   = parts[-1]
-    subdir  = "/".join(parts[:-1])
-    dir_path = f"{HOME}/{subdir}".rstrip("/")
+    try:
+        parts    = remote_rel.replace("\\", "/").split("/")
+        fname    = parts[-1]
+        subdir   = "/".join(parts[:-1])
+        dir_path = f"{HOME}/{subdir}".rstrip("/")
 
-    content_bytes = local_path.read_bytes()
-    if local_path.suffix in TEXT_EXTS:
-        content = content_bytes.decode("utf-8", errors="replace")
-    else:
-        content = base64.b64encode(content_bytes).decode()
-
-    result = api("save_file_content", {
-        "dir":      dir_path,
-        "filename": fname,
-        "content":  content,
-    })
-
-    if result.get("status") == 1:
-        return True
-    print(f"  ✗ {remote_rel}: {result.get('errors', result)}")
-    return False
+        with open(local_path, "rb") as f:
+            files   = {"file": (fname, f)}
+            params  = {"dir": dir_path}
+            r = requests.post(
+                f"{CPANEL_URL}/execute/Fileman/upload_files",
+                auth=(CPANEL_USER, CPANEL_PASS),
+                params=params,
+                files=files,
+                verify=False,
+                timeout=60,
+            )
+        result = r.json()
+        if result.get("status") == 1:
+            return True
+        print(f"  ✗ {remote_rel}: {result.get('errors', result)}")
+        return False
+    except Exception as e:
+        print(f"  ✗ {remote_rel}: {e}")
+        return False
 
 
 def main():
     print(f"🔌 cPanel: {CPANEL_URL}")
     print(f"📁 Target: {HOME}")
 
-    # Create subdirs
     mkdir(HOME)
     mkdir(f"{HOME}/posts")
     mkdir(f"{HOME}/networth")
