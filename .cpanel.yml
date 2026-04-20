@@ -2,4 +2,9 @@
 deployment:
   tasks:
     - export DEPLOYPATH=/home/beitragp/marketsnewstoday.info
-    - /bin/cp -rf output/. $DEPLOYPATH/
+    - /bin/cp output/index.html $DEPLOYPATH/index.html
+    - /bin/cp output/style.css $DEPLOYPATH/style.css
+    - /bin/cp output/robots.txt $DEPLOYPATH/robots.txt
+    - /bin/cp output/sitemap.xml $DEPLOYPATH/sitemap.xml
+    - /bin/mkdir -p $DEPLOYPATH/posts
+    - /bin/cp -r output/posts/. $DEPLOYPATH/posts/
