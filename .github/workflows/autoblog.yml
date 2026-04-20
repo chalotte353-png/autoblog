@@ -1,0 +1,100 @@
+name: AutoBlog Generator
+
+on:
+  # 8 times/day = ~400 articles/day
+  schedule:
+    - cron: "0 0 * * *"
+    - cron: "0 3 * * *"
+    - cron: "0 6 * * *"
+    - cron: "0 9 * * *"
+    - cron: "0 12 * * *"
+    - cron: "0 15 * * *"
+    - cron: "0 18 * * *"
+    - cron: "0 21 * * *"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "What to run: articles / networth / both"
+        required: false
+        default: "both"
+      articles_count:
+        description: "Articles per run (default 50)"
+        required: false
+        default: "50"
+      profiles_count:
+        description: "Net worth profiles per run (default 30)"
+        required: false
+        default: "30"
+
+jobs:
+  generate-and-upload:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Restore output cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            output/published.json
+            output/posts_index.json
+            output/networth_done.json
+            output/networth_index.json
+          key: autoblog-state-${{ github.run_id }}
+          restore-keys: |
+            autoblog-state-
+
+      - name: Generate blog articles
+        if: ${{ github.event.inputs.mode != 'networth' }}
+        env:
+          GROQ_API_KEY:     ${{ secrets.GROQ_API_KEY }}
+          NEWS_API_KEY:     ${{ secrets.NEWS_API_KEY }}
+          SITE_URL:         ${{ secrets.SITE_URL }}
+          SITE_NAME:        ${{ secrets.SITE_NAME }}
+          SITE_TAGLINE:     ${{ secrets.SITE_TAGLINE }}
+          ARTICLES_PER_RUN: ${{ github.event.inputs.articles_count || '50' }}
+        run: python generate_articles.py
+
+      - name: Generate net worth profiles
+        if: ${{ github.event.inputs.mode != 'articles' }}
+        env:
+          GROQ_API_KEY:     ${{ secrets.GROQ_API_KEY }}
+          SITE_URL:         ${{ secrets.SITE_URL }}
+          SITE_NAME:        ${{ secrets.SITE_NAME }}
+          PROFILES_PER_RUN: ${{ github.event.inputs.profiles_count || '30' }}
+        run: python generate_networth.py
+
+      - name: Copy static assets
+        run: |
+          cp style.css output/style.css
+          cp robots.txt output/robots.txt
+
+      - name: Upload to hosting via FTP
+        env:
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+          FTP_USER: ${{ secrets.FTP_USER }}
+          FTP_PASS: ${{ secrets.FTP_PASS }}
+          FTP_DIR:  ${{ secrets.FTP_DIR }}
+        run: python ftp_upload.py
+
+      - name: Save output state
+        uses: actions/cache@v4
+        with:
+          path: |
+            output/published.json
+            output/posts_index.json
+            output/networth_done.json
+            output/networth_index.json
+          key: autoblog-state-${{ github.run_id }}
