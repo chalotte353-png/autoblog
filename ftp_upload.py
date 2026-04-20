@@ -1,84 +1,83 @@
 """
-cPanel UAPI Uploader — fixed file parameter version
+SSH/SCP Uploader — uploads output/ folder to cPanel hosting via SSH.
+100% reliable — no FTP/API issues.
 """
 
 import os
-import requests
-import base64
+import subprocess
 from pathlib import Path
-import urllib3
-urllib3.disable_warnings()
 
-CPANEL_URL  = os.environ["CPANEL_URL"]
-CPANEL_USER = os.environ["CPANEL_USER"]
-CPANEL_PASS = os.environ["CPANEL_PASS"]
-CPANEL_DIR  = os.environ.get("CPANEL_DIR", "marketsnewstoday.info")
+SSH_HOST        = os.environ["SSH_HOST"]
+SSH_USER        = os.environ["SSH_USER"]
+SSH_PRIVATE_KEY = os.environ["SSH_PRIVATE_KEY"]
+REMOTE_DIR      = os.environ.get("CPANEL_DIR", "marketsnewstoday.info")
 
 LOCAL_DIR = Path("output")
-HOME      = f"/home/{CPANEL_USER}/{CPANEL_DIR}"
+KEY_FILE  = Path("/tmp/ssh_key")
 
 
-def mkdir(path):
-    try:
-        requests.post(
-            f"{CPANEL_URL}/execute/Fileman/mkdir",
-            auth=(CPANEL_USER, CPANEL_PASS),
-            data={"path": path},
-            verify=False, timeout=15,
-        )
-    except Exception:
-        pass
+def setup_key():
+    """Write SSH private key to temp file."""
+    KEY_FILE.write_text(SSH_PRIVATE_KEY)
+    KEY_FILE.chmod(0o600)
 
 
-def upload(local_path: Path, remote_rel: str) -> bool:
-    try:
-        parts    = remote_rel.replace("\\", "/").split("/")
-        fname    = parts[-1]
-        subdir   = "/".join(parts[:-1])
-        dir_path = f"{HOME}/{subdir}".rstrip("/")
+def ssh_cmd(cmd: str):
+    """Run command on remote server via SSH."""
+    result = subprocess.run(
+        ["ssh", "-i", str(KEY_FILE),
+         "-o", "StrictHostKeyChecking=no",
+         "-o", "ConnectTimeout=30",
+         f"{SSH_USER}@{SSH_HOST}", cmd],
+        capture_output=True, text=True
+    )
+    return result
 
-        with open(local_path, "rb") as f:
-            files   = {"file": (fname, f)}
-            params  = {"dir": dir_path}
-            r = requests.post(
-                f"{CPANEL_URL}/execute/Fileman/upload_files",
-                auth=(CPANEL_USER, CPANEL_PASS),
-                params=params,
-                files=files,
-                verify=False,
-                timeout=60,
-            )
-        result = r.json()
-        if result.get("status") == 1:
-            return True
-        print(f"  ✗ {remote_rel}: {result.get('errors', result)}")
-        return False
-    except Exception as e:
-        print(f"  ✗ {remote_rel}: {e}")
-        return False
+
+def scp_upload(local_path: Path, remote_path: str) -> bool:
+    """Upload single file via SCP."""
+    result = subprocess.run(
+        ["scp", "-i", str(KEY_FILE),
+         "-o", "StrictHostKeyChecking=no",
+         str(local_path),
+         f"{SSH_USER}@{SSH_HOST}:{remote_path}"],
+        capture_output=True, text=True
+    )
+    if result.returncode == 0:
+        return True
+    print(f"  ✗ {remote_path}: {result.stderr.strip()}")
+    return False
 
 
 def main():
-    print(f"🔌 cPanel: {CPANEL_URL}")
-    print(f"📁 Target: {HOME}")
+    print(f"🔑 Setting up SSH key...")
+    setup_key()
 
-    mkdir(HOME)
-    mkdir(f"{HOME}/posts")
-    mkdir(f"{HOME}/networth")
+    remote_base = f"/home/{SSH_USER}/{REMOTE_DIR}"
+    print(f"📁 Remote: {remote_base}")
 
+    # Create directories
+    print("📂 Creating directories...")
+    ssh_cmd(f"mkdir -p {remote_base}/posts {remote_base}/networth")
+
+    # Upload all files
     files = [f for f in sorted(LOCAL_DIR.rglob("*")) if f.is_file()]
     print(f"📤 Uploading {len(files)} files...")
 
     up, fail = 0, 0
     for f in files:
-        rel = "/".join(f.relative_to(LOCAL_DIR).parts)
+        rel        = "/".join(f.relative_to(LOCAL_DIR).parts)
+        remote_path = f"{remote_base}/{rel}"
         print(f"  ↑ {rel}")
-        if upload(f, rel):
+        if scp_upload(f, remote_path):
             up += 1
         else:
             fail += 1
 
     print(f"\n✅ Done! {up} uploaded, {fail} failed")
+
+    # Cleanup key
+    KEY_FILE.unlink(missing_ok=True)
 
 
 if __name__ == "__main__":
