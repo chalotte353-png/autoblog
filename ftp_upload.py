@@ -1,93 +1,88 @@
 """
-FTP Uploader — uploads output/ folder to cPanel hosting.
-Only uploads NEW or CHANGED files (compares file size).
+cPanel UAPI Uploader — uploads output/ folder to cPanel hosting.
+Uses cPanel HTTP API instead of FTP — works even when FTP is blocked.
 """
 
 import os
-import ftplib
+import requests
+import base64
 from pathlib import Path
 
-FTP_HOST = os.environ["FTP_HOST"]       # e.g. ftp.yoursite.com
-FTP_USER = os.environ["FTP_USER"]       # cPanel username
-FTP_PASS = os.environ["FTP_PASS"]       # cPanel password
-FTP_DIR  = os.environ.get("FTP_DIR", "public_html")   # remote root dir
+CPANEL_URL  = os.environ["CPANEL_URL"]
+CPANEL_USER = os.environ["CPANEL_USER"]
+CPANEL_PASS = os.environ["CPANEL_PASS"]
+CPANEL_DIR  = os.environ.get("CPANEL_DIR", "public_html")
 
 LOCAL_DIR = Path("output")
 
+TEXT_EXTS = {".html", ".css", ".txt", ".xml", ".json", ".yml", ".py", ".md"}
 
-def get_remote_sizes(ftp: ftplib.FTP, remote_path: str) -> dict[str, int]:
-    """Return {filename: size} for files in remote_path."""
-    sizes = {}
+
+def cpanel_mkdir(subdir: str):
     try:
-        lines = []
-        ftp.retrlines(f"LIST {remote_path}", lines.append)
-        for line in lines:
-            parts = line.split()
-            if len(parts) >= 9 and not parts[0].startswith("d"):
-                name = parts[-1]
-                size = int(parts[4])
-                sizes[name] = size
+        full = f"/home/{CPANEL_USER}/{CPANEL_DIR}/{subdir}".rstrip("/")
+        requests.post(
+            f"{CPANEL_URL}/execute/Fileman/mkdir",
+            auth=(CPANEL_USER, CPANEL_PASS),
+            data={"path": full},
+            verify=False, timeout=15,
+        )
     except Exception:
         pass
-    return sizes
 
 
-def ensure_remote_dir(ftp: ftplib.FTP, remote_path: str):
-    """Create remote directory if it doesn't exist."""
-    parts = remote_path.strip("/").split("/")
-    current = ""
-    for part in parts:
-        current = f"{current}/{part}".lstrip("/")
-        try:
-            ftp.mkd(current)
-        except ftplib.error_perm:
-            pass  # already exists
+def cpanel_upload(local_path: Path, rel_str: str) -> bool:
+    try:
+        content_bytes = local_path.read_bytes()
+        parts = rel_str.replace("\\", "/").split("/")
+        filename = parts[-1]
+        subdir   = "/".join(parts[:-1])
+        full_dir = f"/home/{CPANEL_USER}/{CPANEL_DIR}/{subdir}".rstrip("/")
 
+        if local_path.suffix in TEXT_EXTS:
+            content_str = content_bytes.decode("utf-8", errors="replace")
+        else:
+            content_str = base64.b64encode(content_bytes).decode()
 
-def upload_directory(ftp: ftplib.FTP, local_dir: Path, remote_dir: str):
-    uploaded = 0
-    skipped  = 0
-
-    for local_file in sorted(local_dir.rglob("*")):
-        if local_file.is_dir():
-            continue
-
-        rel_path    = local_file.relative_to(local_dir)
-        remote_path = f"{remote_dir}/{'/'.join(rel_path.parts)}"
-        remote_folder = "/".join(remote_path.split("/")[:-1])
-
-        ensure_remote_dir(ftp, remote_folder)
-
-        # Check if file already exists with same size
-        remote_sizes = get_remote_sizes(ftp, remote_folder)
-        filename = local_file.name
-        local_size = local_file.stat().st_size
-
-        if filename in remote_sizes and remote_sizes[filename] == local_size:
-            skipped += 1
-            continue
-
-        try:
-            with open(local_file, "rb") as f:
-                ftp.storbinary(f"STOR {remote_path}", f)
-            print(f"  ↑ {rel_path}")
-            uploaded += 1
-        except Exception as e:
-            print(f"  ✗ Failed {rel_path}: {e}")
-
-    return uploaded, skipped
+        r = requests.post(
+            f"{CPANEL_URL}/execute/Fileman/save_file_content",
+            auth=(CPANEL_USER, CPANEL_PASS),
+            data={"dir": full_dir, "filename": filename, "content": content_str},
+            verify=False, timeout=30,
+        )
+        result = r.json()
+        if result.get("status") == 1:
+            return True
+        print(f"  ✗ {result.get('errors', result)}")
+        return False
+    except Exception as e:
+        print(f"  ✗ {rel_str}: {e}")
+        return False
 
 
 def main():
-    print(f"🔌 Connecting to {FTP_HOST}...")
-    with ftplib.FTP(FTP_HOST, timeout=30) as ftp:
-        ftp.login(FTP_USER, FTP_PASS)
-        ftp.set_pasv(True)
-        print(f"✅ Connected. Uploading to /{FTP_DIR}/")
+    import urllib3
+    urllib3.disable_warnings()
 
-        uploaded, skipped = upload_directory(ftp, LOCAL_DIR, FTP_DIR)
+    print(f"🔌 cPanel: {CPANEL_URL}  user={CPANEL_USER}  dir={CPANEL_DIR}")
 
-    print(f"\n📤 Upload complete: {uploaded} uploaded, {skipped} skipped (unchanged)")
+    cpanel_mkdir("")
+    cpanel_mkdir("posts")
+    cpanel_mkdir("networth")
+
+    files = [f for f in sorted(LOCAL_DIR.rglob("*")) if f.is_file()]
+    print(f"📤 {len(files)} files to upload...")
+
+    up, fail = 0, 0
+    for f in files:
+        rel = "/".join(f.relative_to(LOCAL_DIR).parts)
+        print(f"  ↑ {rel}")
+        if cpanel_upload(f, rel):
+            up += 1
+        else:
+            fail += 1
+
+    print(f"\n✅ Done! {up} uploaded, {fail} failed")
 
 
 if __name__ == "__main__":
