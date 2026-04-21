@@ -37,16 +37,6 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Restore cached state
-        uses: actions/cache@v4
-        with:
-          path: |
-            output/published.json
-            output/posts_index.json
-          key: autoblog-state-${{ github.run_id }}
-          restore-keys: |
-            autoblog-state-
-
       - name: Generate articles
         if: ${{ github.event.inputs.mode != 'networth' }}
         env:
@@ -71,11 +61,3 @@ jobs:
           git add output/
           git diff --staged --quiet || git commit -m "Auto: Add new articles $(date +'%Y-%m-%d %H:%M')"
           git push
-
-      - name: Save state
-        uses: actions/cache@v4
-        with:
-          path: |
-            output/published.json
-            output/posts_index.json
-          key: autoblog-state-${{ github.run_id }}
