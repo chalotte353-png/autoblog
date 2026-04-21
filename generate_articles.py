@@ -159,7 +159,7 @@ def build_topics(count, published):
 
 def write_article(topic, hint):
     now = datetime.now()
-    prompt = """Write a professional Forbes-quality news article dated """ + now.strftime("%B %d, %Y") + """ about this topic: """ + topic + """
+    prompt = """Write a professional news article dated """ + now.strftime("%B %d, %Y") + """ about this topic: """ + topic + """
 
 Background: """ + hint + """
 
@@ -175,7 +175,8 @@ Respond using EXACTLY this XML format:
 <excerpt>2-3 sentence compelling summary</excerpt>
 <tags>tag1,tag2,tag3</tags>
 <content>
-FULL ARTICLE HTML HERE - minimum 900 words - use h2 h3 p ul strong tags - professional Forbes-style writing
+Write minimum 900 words professional news article. Use h2 h3 p ul strong tags.
+IMPORTANT: Do NOT include any lines like "Forbes will continue to monitor", "This story will be updated", "Check back for updates" or any self-referential statements. Write the complete article only.
 </content>
 </article>"""
 
