@@ -157,3 +157,12 @@ a{color:inherit;text-decoration:none}
   .post-layout{padding:0 4px}
   .author-card{flex-direction:column}
 }
+
+/* ── Related Posts ── */
+.related-posts{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-top:32px}
+.related-posts h3{font-size:1rem;font-weight:700;color:var(--text);margin-bottom:12px;padding-bottom:10px;border-bottom:2px solid var(--red)}
+.related-posts ul{list-style:none;padding:0;display:flex;flex-direction:column;gap:8px}
+.related-posts li{padding:8px 0;border-bottom:1px solid var(--border)}
+.related-posts li:last-child{border-bottom:none}
+.related-posts a{color:var(--text);font-size:.9rem;font-weight:500;transition:color .2s}
+.related-posts a:hover{color:var(--red)}
