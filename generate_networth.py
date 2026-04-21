@@ -17,6 +17,7 @@ from pathlib import Path
 from jinja2 import Template
 
 # ─── CONFIG ────────────────────────────────────────────────────────────────────
+CLAUDE_API_KEY = os.environ.get("CLAUDE_API_KEY", "")
 SITE_URL       = os.environ.get("SITE_URL", "https://yoursite.com")
 SITE_NAME      = os.environ.get("SITE_NAME", "YourBlog")
 OUTPUT_DIR     = Path("output")
