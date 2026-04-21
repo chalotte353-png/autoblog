@@ -14,6 +14,7 @@ from jinja2 import Template
 
 GROQ_API_KEY     = os.environ.get("GROQ_API_KEY", "")
 CLAUDE_API_KEY   = os.environ.get("CLAUDE_API_KEY", "")
+UNSPLASH_KEY     = os.environ.get("UNSPLASH_KEY", "")
 NEWS_API_KEY     = os.environ.get("NEWS_API_KEY", "")
 SITE_URL         = os.environ.get("SITE_URL", "https://marketsnewstoday.info")
 SITE_NAME        = os.environ.get("SITE_NAME", "Markets News Today")
@@ -74,12 +75,47 @@ def slugify(text):
     text = re.sub(r"[\s_-]+", "-", text)
     return text[:70]
 
-def get_image(slug):
+def get_image(keyword, slug):
+    """Get relevant image from Unsplash or fallback to Picsum."""
+    if UNSPLASH_KEY:
+        try:
+            r = requests.get(
+                "https://api.unsplash.com/photos/random",
+                params={"query": keyword, "orientation": "landscape", "w": 1200, "h": 630},
+                headers={"Authorization": f"Client-ID {UNSPLASH_KEY}"},
+                timeout=8,
+            )
+            if r.status_code == 200:
+                return r.json()["urls"]["regular"]
+        except Exception:
+            pass
     seed = abs(hash(slug)) % 1000
     return f"https://picsum.photos/seed/{seed}/1200/630"
 
 def get_author(category):
     return random.choice(AUTHORS.get(category, AUTHORS["World"]))
+
+def add_internal_links(article_html: str, posts_index: list, current_slug: str, site_url: str) -> str:
+    """Add internal links to related articles in the article body."""
+    if not posts_index:
+        return article_html
+    
+    # Get 3 related posts (different from current)
+    related = [p for p in posts_index if p["slug"] != current_slug][:3]
+    if not related:
+        return article_html
+    
+    # Build related posts HTML
+    related_html = """<div class="related-posts">
+<h3>Related Articles</h3>
+<ul>"""
+    for p in related:
+        related_html += f'<li><a href="{site_url}/posts/{p["slug"]}.html">{p["title"]}</a></li>'
+    related_html += "</ul></div>"
+    
+    # Add before closing of article
+    article_html = article_html + related_html
+    return article_html
 
 def load_published():
     p = OUTPUT_DIR / "published.json"
@@ -195,10 +231,15 @@ def main():
         article["slug"] = slugify(article["title"])
         category = article.get("category","World")
         author = get_author(category)
-        image = get_image(article["slug"])
+        image = get_image(article.get("focus_keyword", article["title"]), article["slug"])
         article["image_url"] = image
 
         now = datetime.now(timezone.utc)
+
+        # Add internal links
+        article["article_html"] = add_internal_links(
+            article["article_html"], posts_index, article["slug"], SITE_URL
+        )
 
         # Save post HTML
         from jinja2 import Template as T
