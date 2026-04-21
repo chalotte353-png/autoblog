@@ -139,9 +139,13 @@ Return ONLY valid JSON (no markdown fences):
     try:
         r = requests.post("https://api.groq.com/openai/v1/chat/completions",
             headers={"Authorization":f"Bearer {GROQ_API_KEY}","Content-Type":"application/json"},
-            json={"model":"llama-3.1-8b-instant","max_tokens":2500,"temperature":0.8,
+            json={"model":"llama3-8b-8192","max_tokens":2500,"temperature":0.8,
                   "messages":[{"role":"user","content":prompt}]},timeout=60)
-        raw = r.json()["choices"][0]["message"]["content"].strip()
+        resp = r.json()
+        if "choices" not in resp:
+            print(f"  Groq resp: {resp}")
+            return None
+        raw = resp["choices"][0]["message"]["content"].strip()
         raw = re.sub(r"^```json\s*","",raw)
         raw = re.sub(r"\s*```$","",raw)
         data = json.loads(raw)
@@ -414,6 +418,11 @@ CAT_HTML = '''<!DOCTYPE html>
 
 def rebuild_all(posts):
     from jinja2 import Template as T
+    for p in posts:
+        if not p.get("excerpt"): p["excerpt"] = p.get("meta_description","")
+        if not p.get("author_name"): p["author_name"] = "Staff Reporter"
+        if not p.get("author_avatar"): p["author_avatar"] = "https://i.pravatar.cc/150?img=10"
+        if not p.get("author_title"): p["author_title"] = "News Desk"
     sorted_posts = sorted(posts, key=lambda x: x["date_iso"], reverse=True)
 
     # Homepage
