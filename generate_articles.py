@@ -185,23 +185,7 @@ def build_topics(count, published):
 def write_article(topic, hint):
     now = datetime.now()
     
-    # Build internal links context
-    related_context = ""
-    if related_posts:
-        links = [f'- URL: {SITE_URL}/posts/{p["slug"]}.html | Title: {p["title"]}' for p in related_posts[:2]]
-        related_context = f"""
-INTERNAL LINKING RULES (very important):
-- Add MAXIMUM 1-2 internal links in the ENTIRE article
-- Only add a link if it is GENUINELY relevant to the sentence
-- Link text must be natural words from your sentence, NOT the full article title
-- Example: "...analysts point to <a href=\"URL\">recent market volatility</a> as a key factor..."
-- Do NOT add links in every paragraph
-- Available articles to link (use sparingly):
-""" + "\n".join(links)
     
-    prompt = f"""Write a professional, Forbes-quality news article dated {now.strftime('%B %d, %Y')} about: "{topic}"
-Background: {hint}
-{related_context}
 
 Return ONLY valid JSON (no markdown fences, no extra text):
 {{
