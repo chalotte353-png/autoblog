@@ -209,7 +209,7 @@ def main():
         })
         published.add(article["slug"])
         new_count += 1
-        time.sleep(1.2)
+        time.sleep(20)
 
     print(f"\n✅ {new_count} new articles")
     rebuild_all(posts_index)
