@@ -1,7 +1,6 @@
 import os, json, time, random, requests, re
 from datetime import datetime, timezone
 from pathlib import Path
-from jinja2 import Template
 
 CLAUDE_API_KEY   = os.environ.get("CLAUDE_API_KEY", "")
 NEWS_API_KEY     = os.environ.get("NEWS_API_KEY", "")
@@ -70,7 +69,7 @@ AUTHORS = {
 }
 
 WIKI_TOPICS = [
-    "Stock market outlook May 2026","AI revolution in business 2026","Bitcoin price analysis 2026",
+    "Stock market outlook 2026","AI revolution in business 2026","Bitcoin price analysis 2026",
     "Tesla quarterly earnings report","Federal Reserve rate decision","Climate change business impact",
     "Electric vehicle market growth","US housing market trends","Global trade policy update",
     "Tech startup funding landscape","Cybersecurity threats enterprise","Mental health workplace 2026",
@@ -159,40 +158,30 @@ def build_topics(count, published):
 
 def write_article(topic, hint):
     now = datetime.now()
-    prompt = """Write a professional news article dated """ + now.strftime("%B %d, %Y") + """ about this topic: """ + topic + """
-
-Background: """ + hint + """
-
-Respond using EXACTLY this XML format:
-<article>
-<title>Compelling headline 55-70 chars</title>
-<slug>url-slug-from-title</slug>
-<meta_description>SEO description 150-158 chars</meta_description>
-<focus_keyword>primary keyword phrase</focus_keyword>
-<category>Business or Technology or Finance or World or Sports or Health or Travel or Science or Entertainment or Politics</category>
-<image_keyword>3-4 word image search</image_keyword>
-<read_time>X min read</read_time>
-<excerpt>2-3 sentence compelling summary</excerpt>
-<tags>tag1,tag2,tag3</tags>
-<content>
-Write minimum 900 words professional news article. Use h2 h3 p ul strong tags.
-IMPORTANT: Do NOT include any lines like "Forbes will continue to monitor", "This story will be updated", "Check back for updates" or any self-referential statements. Write the complete article only.
-</content>
-</article>"""
-
+    prompt = (
+        "Write a professional news article dated " + now.strftime("%B %d, %Y") + " about: " + topic + "\n"
+        "Background: " + hint + "\n\n"
+        "Respond with ONLY this XML format:\n"
+        "<article>\n"
+        "<title>Compelling headline 55-70 chars</title>\n"
+        "<slug>url-slug</slug>\n"
+        "<meta_description>SEO description 150-158 chars</meta_description>\n"
+        "<focus_keyword>primary keyword</focus_keyword>\n"
+        "<category>Business or Technology or Finance or World or Sports or Health or Travel or Science or Entertainment or Politics</category>\n"
+        "<image_keyword>specific 3-4 word image search</image_keyword>\n"
+        "<read_time>X min read</read_time>\n"
+        "<excerpt>2-3 sentence compelling summary</excerpt>\n"
+        "<tags>tag1,tag2,tag3</tags>\n"
+        "<content>\n"
+        "Write minimum 900 words. Use ONLY h2 h3 p ul li strong tags. No hr tags. No dashes. Do NOT mention any other news outlet. Write complete professional article.\n"
+        "</content>\n"
+        "</article>"
+    )
     try:
         r = requests.post(
             "https://api.anthropic.com/v1/messages",
-            headers={
-                "x-api-key": CLAUDE_API_KEY,
-                "anthropic-version": "2023-06-01",
-                "content-type": "application/json",
-            },
-            json={
-                "model": "claude-sonnet-4-6",
-                "max_tokens": 3000,
-                "messages": [{"role": "user", "content": prompt}],
-            },
+            headers={"x-api-key": CLAUDE_API_KEY, "anthropic-version": "2023-06-01", "content-type": "application/json"},
+            json={"model": "claude-sonnet-4-6", "max_tokens": 3000, "messages": [{"role": "user", "content": prompt}]},
             timeout=90,
         )
         resp = r.json()
@@ -202,18 +191,15 @@ IMPORTANT: Do NOT include any lines like "Forbes will continue to monitor", "Thi
         raw = resp["content"][0]["text"].strip()
 
         def extract(tag):
-            m = re.search(r"<" + tag + r">(.*?)</" + tag + r">", raw, re.DOTALL)
+            m = re.search("<" + tag + ">(.*?)</" + tag + ">", raw, re.DOTALL)
             return m.group(1).strip() if m else ""
 
         title = extract("title")
         if not title:
-            print("  Could not parse response")
+            print("  Parse failed")
             return None
 
-        tags_str = extract("tags")
-        tags = [t.strip() for t in tags_str.split(",") if t.strip()]
-
-        data = {
+        return {
             "title": title,
             "slug": slugify(title),
             "meta_description": extract("meta_description"),
@@ -222,24 +208,23 @@ IMPORTANT: Do NOT include any lines like "Forbes will continue to monitor", "Thi
             "image_keyword": extract("image_keyword"),
             "read_time": extract("read_time") or "5 min read",
             "excerpt": extract("excerpt"),
-            "tags": tags,
+            "tags": [t.strip() for t in extract("tags").split(",") if t.strip()],
             "article_html": extract("content"),
         }
-        return data
     except Exception as e:
         print("  Article error: " + str(e))
         return None
 
-def get_nav(prefix=""):
-    year = datetime.now().year
+def get_masthead(prefix=""):
     return (
         '<header>'
-        '<div class="top-bar"><div class="top-bar-inner">'
-        '<span class="top-bar-date">' + datetime.now().strftime("%A, %B %d, %Y") + '</span>'
-        '<a href="' + prefix + 'index.html" class="top-bar-logo">Markets<span>News</span>Today</a>'
-        '<span class="top-bar-tagline">Business - Finance - Technology</span>'
+        '<div class="masthead">'
+        '<div class="masthead-inner">'
+        '<span class="masthead-left">' + datetime.now().strftime("%A, %B %d, %Y") + '</span>'
+        '<div class="masthead-logo"><a href="' + prefix + 'index.html" class="logo-text">Markets<span class="red">News</span>Today</a></div>'
+        '<span class="masthead-right">Business &middot; Finance &middot; Technology</span>'
         '</div></div>'
-        '<nav class="main-nav-bar"><div class="nav-inner">'
+        '<nav class="site-nav"><div class="nav-inner">'
         '<a href="' + prefix + 'index.html">Home</a>'
         '<a href="' + prefix + 'category-business.html">Business</a>'
         '<a href="' + prefix + 'category-technology.html">Technology</a>'
@@ -258,8 +243,8 @@ def get_footer(prefix=""):
         '<footer class="site-footer">'
         '<div class="footer-top"><div class="container"><div class="footer-grid">'
         '<div class="footer-brand">'
-        '<div class="footer-brand-name">Markets<span>News</span>Today</div>'
-        '<p>Your trusted source for breaking news and expert analysis.</p>'
+        '<div class="footer-logo-text">Markets<span class="red">News</span>Today</div>'
+        '<p>Your trusted source for breaking news and expert analysis on business, finance and world affairs.</p>'
         '</div>'
         '<div class="footer-col"><h4>Business</h4>'
         '<a href="' + prefix + 'category-business.html">Business</a>'
@@ -286,51 +271,57 @@ def get_footer(prefix=""):
         '</footer>'
     )
 
-def build_sidebar(posts, current_slug="", count=5):
-    html = ""
-    for p in [x for x in posts if x["slug"] != current_slug][:count]:
-        title = p["title"][:55] + ("..." if len(p["title"]) > 55 else "")
-        html += (
-            '<a href="' + SITE_URL + '/posts/' + p["slug"] + '.html" class="sidebar-post">'
-            '<div class="sidebar-post-img"><img src="' + p["image_url"] + '" alt="' + title + '" loading="lazy"></div>'
-            '<div><h4>' + title + '</h4>'
-            '<div class="sidebar-post-date">' + p["date_human"] + '</div></div>'
-            '</a>'
-        )
-    return html
-
-def build_related(posts, current_slug, count=3):
-    related = [p for p in posts if p["slug"] != current_slug][:count]
-    if not related:
-        return ""
-    html = '<div class="related-posts"><h3>Related Articles</h3><ul>'
-    for p in related:
-        html += '<li><a href="' + SITE_URL + '/posts/' + p["slug"] + '.html">' + p["title"] + '</a></li>'
-    html += "</ul></div>"
-    return html
+def meta_card(p, prefix=""):
+    return (
+        '<div class="meta">'
+        '<img src="' + p.get("author_avatar","") + '" alt="' + p.get("author_name","") + '" class="meta-avatar">'
+        '<a href="' + prefix + 'authors/' + p.get("author_id","staff") + '.html" class="meta-author">' + p.get("author_name","Staff") + '</a>'
+        '<span class="meta-dot">·</span>'
+        '<time>' + p.get("date_human","") + '</time>'
+        '<span class="meta-dot">·</span>'
+        '<span>' + p.get("read_time","5 min read") + '</span>'
+        '</div>'
+    )
 
 def build_post_html(data, author, posts_index, now):
-    sidebar = build_sidebar(posts_index, data["slug"])
-    related = build_related(posts_index, data["slug"])
+    related = [p for p in posts_index if p["slug"] != data["slug"]][:3]
+    related_html = ""
+    if related:
+        related_html = '<div class="related"><h3>Related Articles</h3><ul>'
+        for p in related:
+            related_html += '<li><a href="' + SITE_URL + '/posts/' + p["slug"] + '.html">' + p["title"] + '</a></li>'
+        related_html += "</ul></div>"
+
+    sidebar_html = ""
+    for p in [x for x in posts_index if x["slug"] != data["slug"]][:6]:
+        t = p["title"][:52] + ("..." if len(p["title"]) > 52 else "")
+        sidebar_html += (
+            '<a href="' + SITE_URL + '/posts/' + p["slug"] + '.html" class="sidebar-item">'
+            '<div class="sidebar-item-img"><img src="' + p["image_url"] + '" alt="' + t + '" loading="lazy"></div>'
+            '<div><h4>' + t + '</h4><div class="sidebar-item-date">' + p["date_human"] + '</div></div>'
+            '</a>'
+        )
+
+    tags_html = "".join(['<a href="' + SITE_URL + '/index.html" class="tag">' + t + '</a>' for t in data.get("tags", [])])
     schema = (
         '{"@context":"https://schema.org","@type":"Article",'
-        '"headline":"' + data["title"] + '",'
+        '"headline":"' + data["title"].replace('"',"'") + '",'
         '"image":"' + data["image_url"] + '",'
         '"datePublished":"' + now.isoformat() + '",'
         '"author":{"@type":"Person","name":"' + author["name"] + '","url":"' + SITE_URL + '/authors/' + author["id"] + '.html"},'
-        '"publisher":{"@type":"Organization","name":"' + SITE_NAME + '","url":"' + SITE_URL + '"}}'
+        '"publisher":{"@type":"Organization","name":"Markets News Today","url":"' + SITE_URL + '"}}'
     )
-    tags_html = "".join(['<a href="' + SITE_URL + '/index.html" class="tag">' + t + '</a>' for t in data.get("tags", [])])
-    html = (
+
+    return (
         '<!DOCTYPE html><html lang="en"><head>'
         '<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
-        '<title>' + data["title"] + ' | ' + SITE_NAME + '</title>'
-        '<meta name="description" content="' + data["meta_description"] + '">'
+        '<title>' + data["title"] + ' | Markets News Today</title>'
+        '<meta name="description" content="' + data["meta_description"].replace('"',"'") + '">'
         '<meta name="author" content="' + author["name"] + '">'
         '<meta name="robots" content="index,follow">'
         '<link rel="canonical" href="' + SITE_URL + '/posts/' + data["slug"] + '.html">'
-        '<meta property="og:title" content="' + data["title"] + '">'
-        '<meta property="og:description" content="' + data["meta_description"] + '">'
+        '<meta property="og:title" content="' + data["title"].replace('"',"'") + '">'
+        '<meta property="og:description" content="' + data["meta_description"].replace('"',"'") + '">'
         '<meta property="og:image" content="' + data["image_url"] + '">'
         '<meta property="og:type" content="article">'
         '<script type="application/ld+json">' + schema + '</script>'
@@ -338,123 +329,148 @@ def build_post_html(data, author, posts_index, now):
         '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
         '<link rel="stylesheet" href="../style.css">'
         '</head><body>'
-        + get_nav("../") +
-        '<div class="post-wrap"><div class="container post-layout"><article class="post-main">'
+        + get_masthead("../") +
+        '<div class="post-wrap"><div class="container post-grid">'
+        '<article>'
         '<div class="post-header">'
-        '<a href="../category-' + data["category"].lower() + '.html" class="cat-badge">' + data["category"] + '</a>'
+        '<a href="../category-' + data["category"].lower() + '.html" class="cat">' + data["category"] + '</a>'
         '<h1>' + data["title"] + '</h1>'
         '<p class="post-desc">' + data.get("excerpt", data["meta_description"]) + '</p>'
-        '<div class="post-meta-bar">'
-        '<img src="' + author["avatar"] + '" alt="' + author["name"] + '" class="author-avatar">'
-        '<div><a href="../authors/' + author["id"] + '.html" class="author-link">' + author["name"] + '</a>'
-        '<div class="author-title-text">' + author["title"] + '</div></div>'
-        '<span class="meta-sep">·</span>'
-        '<time datetime="' + now.isoformat() + '">' + now.strftime("%B %d, %Y") + '</time>'
-        '<span class="meta-sep">·</span>'
-        '<span>' + data.get("read_time", "5 min read") + '</span>'
+        '<div class="post-meta">'
+        '<img src="' + author["avatar"] + '" alt="' + author["name"] + '" class="post-meta-avatar">'
+        '<div><div class="post-meta-name"><a href="../authors/' + author["id"] + '.html" style="color:inherit">' + author["name"] + '</a></div>'
+        '<div class="post-meta-title">' + author["title"] + '</div></div>'
+        '<span class="meta-dot">·</span>'
+        '<time>' + now.strftime("%B %d, %Y") + '</time>'
+        '<span class="meta-dot">·</span>'
+        '<span>' + data.get("read_time","5 min read") + '</span>'
         '</div></div>'
-        '<figure class="post-hero-img">'
-        '<img src="' + data["image_url"] + '" alt="' + data["title"] + '" loading="eager" width="820" height="461">'
-        '</figure>'
+        '<div class="post-hero"><img src="' + data["image_url"] + '" alt="' + data["title"].replace('"',"'") + '" loading="eager">'
+        '<div class="post-hero-cap">Photo: Unsplash</div></div>'
         '<div class="post-body">' + data["article_html"] + '</div>'
-        + related +
-        '<div class="post-tags-wrap">' + tags_html + '</div>'
+        + related_html +
+        '<div class="post-tags">' + tags_html + '</div>'
         '<div class="author-card">'
         '<img src="' + author["avatar"] + '" alt="' + author["name"] + '" class="author-card-img">'
         '<div><div class="author-card-name">' + author["name"] + '</div>'
         '<div class="author-card-role">' + author["title"] + '</div>'
-        '<p class="author-card-bio">' + author["bio"] + '</p>'
-        '<a href="../authors/' + author["id"] + '.html" class="cat-badge" style="margin-top:10px;display:inline-block">View Profile</a>'
-        '</div></div>'
+        '<p class="author-card-bio">' + author["bio"] + '</p></div>'
+        '</div>'
         '</article>'
-        '<aside><div class="sidebar-widget"><div class="sidebar-widget-title">Trending Now</div>' + sidebar + '</div></aside>'
+        '<aside class="sidebar">'
+        '<div class="sidebar-widget"><div class="sidebar-widget-title">Trending Now</div>' + sidebar_html + '</div>'
+        '</aside>'
         '</div></div>'
         + get_footer("../") +
         '</body></html>'
     )
-    return html
 
-def rebuild_homepage(posts):
+def build_homepage(posts):
     sorted_posts = sorted(posts, key=lambda x: x["date_iso"], reverse=True)
     for p in sorted_posts:
-        if not p.get("excerpt"): p["excerpt"] = p.get("meta_description", "")
+        if not p.get("excerpt"): p["excerpt"] = p.get("meta_description","")
         if not p.get("author_name"): p["author_name"] = "Staff Reporter"
         if not p.get("author_avatar"): p["author_avatar"] = "https://i.pravatar.cc/150?img=10"
         if not p.get("author_id"): p["author_id"] = "staff"
 
-    hero = sorted_posts[0] if sorted_posts else None
-    sidebar_posts = sorted_posts[1:5] if len(sorted_posts) > 1 else []
-    grid_posts = sorted_posts[5:] if len(sorted_posts) > 5 else []
-
+    # Hero section
     hero_html = ""
-    if hero:
-        sidebar_items = ""
-        for p in sidebar_posts:
-            sidebar_items += (
-                '<a href="posts/' + p["slug"] + '.html" class="sidebar-story">'
-                '<div class="sidebar-story-img"><img src="' + p["image_url"] + '" alt="' + p["title"] + '" loading="lazy"></div>'
-                '<div><span class="cat-badge">' + p["category"] + '</span>'
+    if sorted_posts:
+        hero = sorted_posts[0]
+        side_stories = sorted_posts[1:5]
+        side_html = ""
+        for p in side_stories:
+            side_html += (
+                '<a href="posts/' + p["slug"] + '.html" class="hero-side-story">'
+                '<a href="category-' + p["category"].lower() + '.html" class="cat">' + p["category"] + '</a>'
                 '<h3>' + p["title"] + '</h3>'
-                '<div class="sidebar-story-meta">' + p["author_name"] + ' · ' + p["date_human"] + '</div></div>'
+                '<div class="hero-side-meta">' + p.get("author_name","") + ' &middot; ' + p.get("date_human","") + '</div>'
                 '</a>'
             )
         hero_html = (
-            '<section class="top-stories"><div class="container">'
-            '<div class="section-label"><span class="section-label-text">Top Stories</span>'
-            '<div class="section-label-line"></div>'
-            '<span class="section-label-sub">' + datetime.now().strftime("%B %d, %Y") + '</span></div>'
-            '<div class="top-stories-grid">'
-            '<a href="posts/' + hero["slug"] + '.html" class="hero-story">'
-            '<div class="hero-story-img"><img src="' + hero["image_url"] + '" alt="' + hero["title"] + '" loading="eager"></div>'
-            '<a href="category-' + hero["category"].lower() + '.html" class="cat-badge">' + hero["category"] + '</a>'
+            '<section class="hero-wrap"><div class="container">'
+            '<div class="hero-grid">'
+            '<a href="posts/' + hero["slug"] + '.html" class="hero-main">'
+            '<div class="hero-main-img"><img src="' + hero["image_url"] + '" alt="' + hero["title"].replace('"',"'") + '" loading="eager"></div>'
+            '<a href="category-' + hero["category"].lower() + '.html" class="cat">' + hero["category"] + '</a>'
             '<h1>' + hero["title"] + '</h1>'
-            '<p>' + hero["excerpt"] + '</p>'
-            '<div class="hero-meta">'
-            '<img src="' + hero["author_avatar"] + '" alt="' + hero["author_name"] + '" class="hero-avatar">'
-            '<a href="authors/' + hero.get("author_id","staff") + '.html" class="author-link">' + hero["author_name"] + '</a>'
-            '<span class="dot">·</span><span>' + hero["date_human"] + '</span>'
+            '<p>' + hero.get("excerpt","")[:160] + '</p>'
+            '<div class="meta">'
+            '<img src="' + hero.get("author_avatar","") + '" alt="' + hero.get("author_name","") + '" class="meta-avatar">'
+            '<a href="authors/' + hero.get("author_id","staff") + '.html" class="meta-author">' + hero.get("author_name","") + '</a>'
+            '<span class="meta-dot">&middot;</span><time>' + hero.get("date_human","") + '</time>'
             '</div></a>'
-            '<div class="sidebar-stories">' + sidebar_items + '</div>'
+            '<div class="hero-divider"></div>'
+            '<div class="hero-side">' + side_html + '</div>'
             '</div></div></section>'
         )
 
-    grid_html = ""
-    for p in grid_posts:
-        excerpt = p.get("excerpt", p.get("meta_description",""))[:110]
-        grid_html += (
-            '<article class="news-card">'
-            '<a href="posts/' + p["slug"] + '.html" class="news-card-img">'
-            '<img src="' + p["image_url"] + '" alt="' + p["title"] + '" loading="lazy"></a>'
-            '<a href="category-' + p["category"].lower() + '.html" class="cat-badge">' + p["category"] + '</a>'
-            '<h3><a href="posts/' + p["slug"] + '.html">' + p["title"] + '</a></h3>'
-            '<p>' + excerpt + '...</p>'
-            '<div class="news-card-meta">'
-            '<img src="' + p["author_avatar"] + '" alt="' + p["author_name"] + '" class="news-card-avatar">'
-            '<a href="authors/' + p.get("author_id","staff") + '.html" class="author-link" style="font-size:.73rem">' + p["author_name"] + '</a>'
-            '<span class="dot">·</span><time>' + p["date_human"] + '</time>'
-            '</div></article>'
+    # Category sections
+    cat_sections_html = ""
+    for cat in CATEGORIES:
+        cat_posts = [p for p in sorted_posts if p.get("category","").lower() == cat.lower()]
+        if not cat_posts:
+            continue
+        lead = cat_posts[0]
+        small = cat_posts[1:3]
+
+        small_html = ""
+        for p in small:
+            small_html += (
+                '<a href="posts/' + p["slug"] + '.html" class="small-card">'
+                '<div class="small-card-img"><img src="' + p["image_url"] + '" alt="' + p["title"].replace('"',"'") + '" loading="lazy"></div>'
+                '<div>'
+                '<a href="category-' + p["category"].lower() + '.html" class="cat">' + p["category"] + '</a>'
+                '<h3>' + p["title"] + '</h3>'
+                '<div class="meta" style="margin-top:4px">'
+                '<span>' + p.get("author_name","") + '</span>'
+                '<span class="meta-dot">&middot;</span><time>' + p.get("date_human","") + '</time>'
+                '</div></div></a>'
+            )
+
+        cat_sections_html += (
+            '<div class="cat-section">'
+            '<div class="section-hdr">'
+            '<span class="section-hdr-title">' + cat + '</span>'
+            '<div class="section-hdr-line"></div>'
+            '<a href="category-' + cat.lower() + '.html" class="section-hdr-more">More ' + cat + ' &rarr;</a>'
+            '</div>'
+            '<div class="cat-section-grid">'
+            '<a href="posts/' + lead["slug"] + '.html" class="lead-card">'
+            '<div class="lead-card-img"><img src="' + lead["image_url"] + '" alt="' + lead["title"].replace('"',"'") + '" loading="lazy"></div>'
+            '<a href="category-' + lead["category"].lower() + '.html" class="cat">' + lead["category"] + '</a>'
+            '<h2>' + lead["title"] + '</h2>'
+            '<p>' + lead.get("excerpt","")[:120] + '...</p>'
+            '<div class="meta">'
+            '<img src="' + lead.get("author_avatar","") + '" alt="" class="meta-avatar">'
+            '<span class="meta-author">' + lead.get("author_name","") + '</span>'
+            '<span class="meta-dot">&middot;</span><time>' + lead.get("date_human","") + '</time>'
+            '</div></a>'
+            '<div class="small-cards">' + small_html + '</div>'
+            '</div></div>'
         )
 
-    sidebar_widget = ""
-    for p in sorted_posts[:6]:
-        title = p["title"][:55] + ("..." if len(p["title"]) > 55 else "")
-        sidebar_widget += (
-            '<a href="posts/' + p["slug"] + '.html" class="sidebar-post">'
-            '<div class="sidebar-post-img"><img src="' + p["image_url"] + '" alt="' + title + '" loading="lazy"></div>'
-            '<div><h4>' + title + '</h4><div class="sidebar-post-date">' + p["date_human"] + '</div></div>'
+    # Sidebar
+    sidebar_html = ""
+    for p in sorted_posts[:7]:
+        t = p["title"][:52] + ("..." if len(p["title"]) > 52 else "")
+        sidebar_html += (
+            '<a href="posts/' + p["slug"] + '.html" class="sidebar-item">'
+            '<div class="sidebar-item-img"><img src="' + p["image_url"] + '" alt="' + t.replace('"',"'") + '" loading="lazy"></div>'
+            '<div><h4>' + t + '</h4><div class="sidebar-item-date">' + p.get("date_human","") + '</div></div>'
             '</a>'
         )
 
-    cat_widget = ""
+    cat_links = ""
     for cat in CATEGORIES:
-        cat_widget += '<a href="category-' + cat.lower() + '.html" style="display:block;padding:8px 0;border-bottom:1px solid var(--border);font-size:.82rem;font-weight:700;text-transform:uppercase">' + cat + '</a>'
+        cat_links += '<a href="category-' + cat.lower() + '.html" class="sidebar-cat-link">' + cat + '</a>'
 
-    schema = '{"@context":"https://schema.org","@type":"WebSite","name":"' + SITE_NAME + '","url":"' + SITE_URL + '"}'
+    schema = '{"@context":"https://schema.org","@type":"WebSite","name":"Markets News Today","url":"' + SITE_URL + '"}'
 
     html = (
         '<!DOCTYPE html><html lang="en"><head>'
         '<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
-        '<title>' + SITE_NAME + ' - ' + SITE_TAGLINE + '</title>'
+        '<title>Markets News Today - Business, Finance & World News</title>'
         '<meta name="description" content="Breaking news and analysis on business, finance, technology and world affairs.">'
         '<meta name="robots" content="index,follow"><link rel="canonical" href="' + SITE_URL + '/">'
         '<script type="application/ld+json">' + schema + '</script>'
@@ -462,70 +478,81 @@ def rebuild_homepage(posts):
         '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
         '<link rel="stylesheet" href="style.css">'
         '</head><body>'
-        + get_nav() + hero_html +
-        '<div class="container main-layout"><main>'
-        '<div class="section-label"><span class="section-label-text">Latest News</span><div class="section-label-line"></div></div>'
-        '<div class="news-grid-3">' + grid_html + '</div>'
-        '</main><aside>'
-        '<div class="sidebar-widget"><div class="sidebar-widget-title">Most Read</div>' + sidebar_widget + '</div>'
-        '<div class="sidebar-widget"><div class="sidebar-widget-title">Sections</div>' + cat_widget + '</div>'
-        '</aside></div>'
+        + get_masthead() + hero_html +
+        '<div class="container page-body">'
+        '<main>' + cat_sections_html + '</main>'
+        '<aside class="sidebar">'
+        '<div class="sidebar-widget"><div class="sidebar-widget-title">Most Read</div>' + sidebar_html + '</div>'
+        '<div class="sidebar-widget"><div class="sidebar-widget-title">Sections</div>' + cat_links + '</div>'
+        '</aside>'
+        '</div>'
         + get_footer() +
         '</body></html>'
     )
     (OUTPUT_DIR / "index.html").write_text(html)
 
-def rebuild_categories(posts):
+def build_category_pages(posts):
     sorted_posts = sorted(posts, key=lambda x: x["date_iso"], reverse=True)
     for cat in CATEGORIES:
         cat_posts = [p for p in sorted_posts if p.get("category","").lower() == cat.lower()]
+
         grid_html = ""
         for p in cat_posts:
             excerpt = p.get("excerpt", p.get("meta_description",""))[:110]
             grid_html += (
-                '<article class="news-card">'
-                '<a href="posts/' + p["slug"] + '.html" class="news-card-img">'
-                '<img src="' + p["image_url"] + '" alt="' + p["title"] + '" loading="lazy"></a>'
-                '<a href="category-' + p["category"].lower() + '.html" class="cat-badge">' + p["category"] + '</a>'
-                '<h3><a href="posts/' + p["slug"] + '.html">' + p["title"] + '</a></h3>'
+                '<div class="cat-section" style="margin-bottom:24px">'
+                '<div class="cat-section-grid">'
+                '<a href="posts/' + p["slug"] + '.html" class="lead-card">'
+                '<div class="lead-card-img"><img src="' + p["image_url"] + '" alt="' + p["title"].replace('"',"'") + '" loading="lazy"></div>'
+                '<a href="category-' + p["category"].lower() + '.html" class="cat">' + p["category"] + '</a>'
+                '<h2>' + p["title"] + '</h2>'
                 '<p>' + excerpt + '...</p>'
-                '<div class="news-card-meta">'
-                '<img src="' + p.get("author_avatar","") + '" alt="' + p.get("author_name","") + '" class="news-card-avatar">'
-                '<span style="font-size:.73rem">' + p.get("author_name","Staff") + '</span>'
-                '<span class="dot">·</span><time>' + p["date_human"] + '</time>'
-                '</div></article>'
+                '<div class="meta">'
+                '<img src="' + p.get("author_avatar","") + '" alt="" class="meta-avatar">'
+                '<span>' + p.get("author_name","Staff") + '</span>'
+                '<span class="meta-dot">&middot;</span><time>' + p.get("date_human","") + '</time>'
+                '</div></a>'
+                '<div class="small-cards"></div>'
+                '</div></div>'
             )
-        empty = '<div class="empty-cat"><p>No articles yet. Check back soon!</p><a href="index.html" class="btn-back">Back to Home</a></div>' if not cat_posts else ""
-        cat_widget = ""
+
+        empty = '<div class="empty-cat"><p>No articles yet.</p><a href="index.html" class="btn-back">Back to Home</a></div>' if not cat_posts else ""
+
+        cat_links = ""
         for c in CATEGORIES:
-            cat_widget += '<a href="category-' + c.lower() + '.html" style="display:block;padding:8px 0;border-bottom:1px solid var(--border);font-size:.82rem;font-weight:700;text-transform:uppercase">' + c + '</a>'
+            active = ' style="color:var(--red)"' if c == cat else ""
+            cat_links += '<a href="category-' + c.lower() + '.html" class="sidebar-cat-link"' + active + '>' + c + '</a>'
+
         html = (
             '<!DOCTYPE html><html lang="en"><head>'
             '<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
-            '<title>' + cat + ' News | ' + SITE_NAME + '</title>'
-            '<meta name="description" content="Latest ' + cat + ' news and analysis on ' + SITE_NAME + '.">'
+            '<title>' + cat + ' News | Markets News Today</title>'
+            '<meta name="description" content="Latest ' + cat + ' news and analysis.">'
             '<meta name="robots" content="index,follow">'
             '<link rel="canonical" href="' + SITE_URL + '/category-' + cat.lower() + '.html">'
             '<link rel="preconnect" href="https://fonts.googleapis.com">'
             '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
             '<link rel="stylesheet" href="style.css">'
             '</head><body>'
-            + get_nav() +
+            + get_masthead() +
             '<div class="container">'
-            '<div class="cat-header"><div class="cat-header-label">Section</div>'
+            '<div class="cat-header">'
+            '<div class="cat-header-label">Section</div>'
             '<h1>' + cat + '</h1>'
-            '<p>Latest ' + cat + ' news, analysis and expert commentary</p></div>'
-            '<div class="main-layout"><main>'
-            '<div class="news-grid-3">' + grid_html + '</div>' + empty +
-            '</main><aside>'
-            '<div class="sidebar-widget"><div class="sidebar-widget-title">All Sections</div>' + cat_widget + '</div>'
-            '</aside></div></div>'
+            '<p>Latest ' + cat + ' news, analysis and expert commentary</p>'
+            '</div>'
+            '<div class="page-body">'
+            '<main>' + grid_html + empty + '</main>'
+            '<aside class="sidebar">'
+            '<div class="sidebar-widget"><div class="sidebar-widget-title">All Sections</div>' + cat_links + '</div>'
+            '</aside>'
+            '</div></div>'
             + get_footer() +
             '</body></html>'
         )
         (OUTPUT_DIR / ("category-" + cat.lower() + ".html")).write_text(html)
 
-def rebuild_author_pages(posts):
+def build_author_pages(posts):
     AUTHORS_DIR.mkdir(exist_ok=True)
     all_authors = {}
     for cat_authors in AUTHORS.values():
@@ -536,30 +563,31 @@ def rebuild_author_pages(posts):
         author_posts = sorted([p for p in posts if p.get("author_id") == author_id], key=lambda x: x["date_iso"], reverse=True)
         grid_html = ""
         for p in author_posts:
-            excerpt = p.get("excerpt", p.get("meta_description",""))[:100]
+            excerpt = p.get("excerpt","")[:100]
             grid_html += (
-                '<article class="news-card">'
-                '<a href="../posts/' + p["slug"] + '.html" class="news-card-img">'
-                '<img src="' + p["image_url"] + '" alt="' + p["title"] + '" loading="lazy"></a>'
-                '<a href="../category-' + p["category"].lower() + '.html" class="cat-badge">' + p["category"] + '</a>'
-                '<h3><a href="../posts/' + p["slug"] + '.html">' + p["title"] + '</a></h3>'
+                '<div class="cat-section" style="margin-bottom:20px">'
+                '<div class="cat-section-grid">'
+                '<a href="../posts/' + p["slug"] + '.html" class="lead-card">'
+                '<div class="lead-card-img"><img src="' + p["image_url"] + '" alt="' + p["title"].replace('"',"'") + '" loading="lazy"></div>'
+                '<a href="../category-' + p["category"].lower() + '.html" class="cat">' + p["category"] + '</a>'
+                '<h2>' + p["title"] + '</h2>'
                 '<p>' + excerpt + '...</p>'
-                '<div class="news-card-meta"><time>' + p["date_human"] + '</time></div>'
-                '</article>'
+                '</a><div class="small-cards"></div></div></div>'
             )
+
         schema = (
             '{"@context":"https://schema.org","@type":"Person",'
             '"name":"' + author["name"] + '",'
             '"jobTitle":"' + author["title"] + '",'
-            '"description":"' + author["bio"] + '",'
             '"image":"' + author["avatar"] + '",'
             '"url":"' + SITE_URL + '/authors/' + author["id"] + '.html",'
-            '"worksFor":{"@type":"Organization","name":"' + SITE_NAME + '"}}'
+            '"worksFor":{"@type":"Organization","name":"Markets News Today"}}'
         )
+
         html = (
             '<!DOCTYPE html><html lang="en"><head>'
             '<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
-            '<title>' + author["name"] + ' - ' + author["title"] + ' | ' + SITE_NAME + '</title>'
+            '<title>' + author["name"] + ' - ' + author["title"] + ' | Markets News Today</title>'
             '<meta name="description" content="' + author["bio"] + '">'
             '<meta name="robots" content="index,follow">'
             '<link rel="canonical" href="' + SITE_URL + '/authors/' + author["id"] + '.html">'
@@ -568,24 +596,25 @@ def rebuild_author_pages(posts):
             '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
             '<link rel="stylesheet" href="../style.css">'
             '</head><body>'
-            + get_nav("../") +
+            + get_masthead("../") +
             '<div class="container author-profile">'
             '<div class="author-profile-header">'
             '<img src="' + author["avatar"] + '" alt="' + author["name"] + '" class="author-profile-img">'
-            '<div><div class="author-profile-name">' + author["name"] + '</div>'
+            '<div>'
+            '<div class="author-profile-name">' + author["name"] + '</div>'
             '<div class="author-profile-role">' + author["title"] + '</div>'
             '<p class="author-profile-bio">' + author["bio"] + '</p>'
-            '<div style="margin-top:8px;font-size:.8rem;color:var(--text3)">' + author["twitter"] + '</div>'
+            '<div style="margin-top:8px;font-size:.78rem;color:#999">' + author["twitter"] + '</div>'
             '</div></div>'
-            '<div class="section-label"><span class="section-label-text">Articles by ' + author["name"] + '</span><div class="section-label-line"></div></div>'
-            '<div class="news-grid-3">' + grid_html + '</div>'
+            '<div class="section-hdr"><span class="section-hdr-title">Articles by ' + author["name"] + '</span><div class="section-hdr-line"></div></div>'
+            + grid_html +
             '</div>'
             + get_footer("../") +
             '</body></html>'
         )
         (AUTHORS_DIR / (author_id + ".html")).write_text(html)
 
-def rebuild_sitemap(posts):
+def build_sitemap(posts):
     lines = [
         '<?xml version="1.0" encoding="UTF-8"?>',
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
@@ -603,16 +632,16 @@ def main():
     POSTS_DIR.mkdir(exist_ok=True)
     AUTHORS_DIR.mkdir(exist_ok=True)
 
-    published   = load_published()
+    published = load_published()
     posts_index = load_posts_index()
 
-    print("Getting " + str(ARTICLES_PER_RUN) + " unique topics...")
+    print("Getting " + str(ARTICLES_PER_RUN) + " topics...")
     topics = build_topics(ARTICLES_PER_RUN, published)
 
     new_count = 0
     for i, t in enumerate(topics):
         title = t["title"]
-        slug  = slugify(title)
+        slug = slugify(title)
         if slug in published:
             continue
 
@@ -623,14 +652,11 @@ def main():
 
         article["slug"] = slugify(article["title"])
         category = article.get("category", "World")
-        author   = get_author(category)
-        # Build better image search from title + category
-        img_keyword = article.get("image_keyword", "")
-        if not img_keyword:
-            # Extract key person/place/thing from title
-            title_words = article["title"].split()[:4]
-            img_keyword = " ".join(title_words)
-        image    = get_image(img_keyword, article["slug"])
+        if category not in CATEGORIES:
+            category = "World"
+        author = get_author(category)
+        img_kw = article.get("image_keyword","") or " ".join(article["title"].split()[:4])
+        image = get_image(img_kw, article["slug"])
         article["image_url"] = image
 
         now = datetime.now(timezone.utc)
@@ -638,30 +664,24 @@ def main():
         (POSTS_DIR / (article["slug"] + ".html")).write_text(html)
 
         posts_index.append({
-            "slug":             article["slug"],
-            "title":            article["title"],
+            "slug": article["slug"], "title": article["title"],
             "meta_description": article["meta_description"],
-            "excerpt":          article.get("excerpt", article["meta_description"]),
-            "category":         category,
-            "tags":             article.get("tags", []),
-            "image_url":        image,
-            "read_time":        article.get("read_time", "5 min read"),
-            "author_name":      author["name"],
-            "author_title":     author["title"],
-            "author_avatar":    author["avatar"],
-            "author_id":        author["id"],
-            "date_iso":         now.isoformat(),
-            "date_human":       now.strftime("%B %d, %Y"),
+            "excerpt": article.get("excerpt", article["meta_description"]),
+            "category": category, "tags": article.get("tags", []),
+            "image_url": image, "read_time": article.get("read_time","5 min read"),
+            "author_name": author["name"], "author_title": author["title"],
+            "author_avatar": author["avatar"], "author_id": author["id"],
+            "date_iso": now.isoformat(), "date_human": now.strftime("%B %d, %Y"),
         })
         published.add(article["slug"])
         new_count += 1
         time.sleep(2)
 
     print("Generated " + str(new_count) + " new articles")
-    rebuild_homepage(posts_index)
-    rebuild_categories(posts_index)
-    rebuild_author_pages(posts_index)
-    rebuild_sitemap(posts_index)
+    build_homepage(posts_index)
+    build_category_pages(posts_index)
+    build_author_pages(posts_index)
+    build_sitemap(posts_index)
     save_published(published)
     save_posts_index(posts_index)
     print("Done!")
