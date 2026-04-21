@@ -220,11 +220,11 @@ def get_masthead(prefix=""):
         '<header>'
         '<div class="masthead">'
         '<div class="masthead-inner">'
-        '<span class="masthead-left">' + datetime.now().strftime("%A, %B %d, %Y") + '</span>'
-        '<div class="masthead-logo"><a href="' + prefix + 'index.html" class="logo-text">Markets<span class="red">News</span>Today</a></div>'
-        '<span class="masthead-right">Business &middot; Finance &middot; Technology</span>'
+        '<span class="masthead-date">' + datetime.now().strftime("%A, %B %d, %Y") + '</span>'
+        '<div class="masthead-logo"><a href="' + prefix + 'index.html" class="logo-link"><span>Markets </span><span class="r">News</span><span>Today</span></a></div>'
+        '<span class="masthead-tagline">Business &middot; Finance &middot; Technology</span>'
         '</div></div>'
-        '<nav class="site-nav"><div class="nav-inner">'
+        '<nav class="site-nav"><div class="nav-list">'
         '<a href="' + prefix + 'index.html">Home</a>'
         '<a href="' + prefix + 'category-business.html">Business</a>'
         '<a href="' + prefix + 'category-technology.html">Technology</a>'
@@ -242,9 +242,9 @@ def get_footer(prefix=""):
     return (
         '<footer class="site-footer">'
         '<div class="footer-top"><div class="container"><div class="footer-grid">'
-        '<div class="footer-brand">'
-        '<div class="footer-logo-text">Markets<span class="red">News</span>Today</div>'
-        '<p>Your trusted source for breaking news and expert analysis on business, finance and world affairs.</p>'
+        '<div>'
+        '<div class="footer-logo"><span>Markets </span><span class="r">News</span><span>Today</span></div>'
+        '<p class="footer-tagline">Your trusted source for breaking news and expert analysis.</p>'
         '</div>'
         '<div class="footer-col"><h4>Business</h4>'
         '<a href="' + prefix + 'category-business.html">Business</a>'
@@ -284,7 +284,12 @@ def meta_card(p, prefix=""):
     )
 
 def build_post_html(data, author, posts_index, now):
-    related = [p for p in posts_index if p["slug"] != data["slug"]][:3]
+    # Same category articles first, then others
+    same_cat = [p for p in posts_index if p["slug"] != data["slug"] and p.get("category") == data.get("category")][:3]
+    if len(same_cat) < 3:
+        other = [p for p in posts_index if p["slug"] != data["slug"] and p.get("category") != data.get("category")]
+        same_cat = same_cat + other[:3-len(same_cat)]
+    related = same_cat[:3]
     related_html = ""
     if related:
         related_html = '<div class="related"><h3>Related Articles</h3><ul>'
@@ -296,9 +301,9 @@ def build_post_html(data, author, posts_index, now):
     for p in [x for x in posts_index if x["slug"] != data["slug"]][:6]:
         t = p["title"][:52] + ("..." if len(p["title"]) > 52 else "")
         sidebar_html += (
-            '<a href="' + SITE_URL + '/posts/' + p["slug"] + '.html" class="sidebar-item">'
-            '<div class="sidebar-item-img"><img src="' + p["image_url"] + '" alt="' + t + '" loading="lazy"></div>'
-            '<div><h4>' + t + '</h4><div class="sidebar-item-date">' + p["date_human"] + '</div></div>'
+            '<a href="' + SITE_URL + '/posts/' + p["slug"] + '.html" class="s-item">'
+            '<div class="s-item-img"><img src="' + p["image_url"] + '" alt="' + t + '" loading="lazy"></div>'
+            '<div><h4>' + t + '</h4><div class="s-item-date">' + p["date_human"] + '</div></div>'
             '</a>'
         )
 
@@ -381,26 +386,25 @@ def build_homepage(posts):
         side_html = ""
         for p in side_stories:
             side_html += (
-                '<a href="posts/' + p["slug"] + '.html" class="hero-side-story">'
+                '<a href="posts/' + p["slug"] + '.html" class="hero-side-item">'
                 '<a href="category-' + p["category"].lower() + '.html" class="cat">' + p["category"] + '</a>'
                 '<h3>' + p["title"] + '</h3>'
                 '<div class="hero-side-meta">' + p.get("author_name","") + ' &middot; ' + p.get("date_human","") + '</div>'
                 '</a>'
             )
         hero_html = (
-            '<section class="hero-wrap"><div class="container">'
-            '<div class="hero-grid">'
-            '<a href="posts/' + hero["slug"] + '.html" class="hero-main">'
-            '<div class="hero-main-img"><img src="' + hero["image_url"] + '" alt="' + hero["title"].replace('"',"'") + '" loading="eager"></div>'
+            '<section class="hero-section"><div class="container">'
+            '<div class="hero-layout">'
+            '<a href="posts/' + hero["slug"] + '.html" class="hero-main-link">'
+            '<div class="hero-img"><img src="' + hero["image_url"] + '" alt="' + hero["title"].replace('"',"'") + '" loading="eager"></div>'
             '<a href="category-' + hero["category"].lower() + '.html" class="cat">' + hero["category"] + '</a>'
             '<h1>' + hero["title"] + '</h1>'
             '<p>' + hero.get("excerpt","")[:160] + '</p>'
-            '<div class="meta">'
-            '<img src="' + hero.get("author_avatar","") + '" alt="' + hero.get("author_name","") + '" class="meta-avatar">'
-            '<a href="authors/' + hero.get("author_id","staff") + '.html" class="meta-author">' + hero.get("author_name","") + '</a>'
-            '<span class="meta-dot">&middot;</span><time>' + hero.get("date_human","") + '</time>'
+            '<div class="byline">'
+            '<img src="' + hero.get("author_avatar","") + '" alt="' + hero.get("author_name","") + '">'
+            '<a href="authors/' + hero.get("author_id","staff") + '.html" class="byline-name">' + hero.get("author_name","") + '</a>'
+            '<span class="dot">&middot;</span><time>' + hero.get("date_human","") + '</time>'
             '</div></a>'
-            '<div class="hero-divider"></div>'
             '<div class="hero-side">' + side_html + '</div>'
             '</div></div></section>'
         )
@@ -417,23 +421,23 @@ def build_homepage(posts):
         small_html = ""
         for p in small:
             small_html += (
-                '<a href="posts/' + p["slug"] + '.html" class="small-card">'
-                '<div class="small-card-img"><img src="' + p["image_url"] + '" alt="' + p["title"].replace('"',"'") + '" loading="lazy"></div>'
+                '<a href="posts/' + p["slug"] + '.html" class="cat-small">'
+                '<div class="cat-small-img"><img src="' + p["image_url"] + '" alt="' + p["title"].replace('"',"'") + '" loading="lazy"></div>'
                 '<div>'
                 '<a href="category-' + p["category"].lower() + '.html" class="cat">' + p["category"] + '</a>'
                 '<h3>' + p["title"] + '</h3>'
-                '<div class="meta" style="margin-top:4px">'
+                '<div class="byline" style="margin-top:4px">'
                 '<span>' + p.get("author_name","") + '</span>'
-                '<span class="meta-dot">&middot;</span><time>' + p.get("date_human","") + '</time>'
+                '<span class="dot">&middot;</span><time>' + p.get("date_human","") + '</time>'
                 '</div></div></a>'
             )
 
         cat_sections_html += (
             '<div class="cat-section">'
-            '<div class="section-hdr">'
-            '<span class="section-hdr-title">' + cat + '</span>'
-            '<div class="section-hdr-line"></div>'
-            '<a href="category-' + cat.lower() + '.html" class="section-hdr-more">More ' + cat + ' &rarr;</a>'
+            '<div class="sec-header">'
+            '<span class="sec-title">' + cat + '</span>'
+            '<div class="sec-line"></div>'
+            '<a href="category-' + cat.lower() + '.html" class="sec-more">More ' + cat + ' &rarr;</a>'
             '</div>'
             '<div class="cat-section-grid">'
             '<a href="posts/' + lead["slug"] + '.html" class="lead-card">'
@@ -455,15 +459,15 @@ def build_homepage(posts):
     for p in sorted_posts[:7]:
         t = p["title"][:52] + ("..." if len(p["title"]) > 52 else "")
         sidebar_html += (
-            '<a href="posts/' + p["slug"] + '.html" class="sidebar-item">'
-            '<div class="sidebar-item-img"><img src="' + p["image_url"] + '" alt="' + t.replace('"',"'") + '" loading="lazy"></div>'
-            '<div><h4>' + t + '</h4><div class="sidebar-item-date">' + p.get("date_human","") + '</div></div>'
+            '<a href="posts/' + p["slug"] + '.html" class="sw-item">'
+            '<div class="sw-img"><img src="' + p["image_url"] + '" alt="' + t.replace('"',"'") + '" loading="lazy"></div>'
+            '<div><h4>' + t + '</h4><div class="sw-date">' + p.get("date_human","") + '</div></div>'
             '</a>'
         )
 
     cat_links = ""
     for cat in CATEGORIES:
-        cat_links += '<a href="category-' + cat.lower() + '.html" class="sidebar-cat-link">' + cat + '</a>'
+        cat_links += '<a href="category-' + cat.lower() + '.html" class="sw-cat">' + cat + '</a>'
 
     schema = '{"@context":"https://schema.org","@type":"WebSite","name":"Markets News Today","url":"' + SITE_URL + '"}'
 
@@ -479,13 +483,13 @@ def build_homepage(posts):
         '<link rel="stylesheet" href="style.css">'
         '</head><body>'
         + get_masthead() + hero_html +
-        '<div class="container page-body">'
+        '<div class="container">'
         '<main>' + cat_sections_html + '</main>'
         '<aside class="sidebar">'
-        '<div class="sidebar-widget"><div class="sidebar-widget-title">Most Read</div>' + sidebar_html + '</div>'
-        '<div class="sidebar-widget"><div class="sidebar-widget-title">Sections</div>' + cat_links + '</div>'
+        '<div class="sw"><div class="sw-title">Most Read</div>' + sidebar_html + '</div>'
+        '<div class="sw"><div class="sw-title">Sections</div>' + cat_links + '</div>'
         '</aside>'
-        '</div>'
+        '</div></div>'
         + get_footer() +
         '</body></html>'
     )
