@@ -624,7 +624,13 @@ def main():
         article["slug"] = slugify(article["title"])
         category = article.get("category", "World")
         author   = get_author(category)
-        image    = get_image(article.get("image_keyword", article["focus_keyword"]), article["slug"])
+        # Build better image search from title + category
+        img_keyword = article.get("image_keyword", "")
+        if not img_keyword:
+            # Extract key person/place/thing from title
+            title_words = article["title"].split()[:4]
+            img_keyword = " ".join(title_words)
+        image    = get_image(img_keyword, article["slug"])
         article["image_url"] = image
 
         now = datetime.now(timezone.utc)
