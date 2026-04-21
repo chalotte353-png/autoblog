@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Celebrity Net Worth 2026 — Markets News Today</title>
+<meta name="description" content="Complete list of celebrity, influencer and billionaire net worth estimates for 2026. YouTubers, athletes, actors, musicians and more.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://marketsnewstoday.info/networth/">
+<link rel="stylesheet" href="../style.css">
+<style>
+.nw-index-hero{background:linear-gradient(135deg,#1a1a2e,#0052cc);color:#fff;padding:48px 0;text-align:center;margin-bottom:40px}
+.nw-index-hero h1{font-size:clamp(1.8rem,5vw,3rem);font-weight:800;margin-bottom:12px}
+.nw-index-hero p{font-size:1.1rem;opacity:.85}
+.nw-filter{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:28px;justify-content:center}
+.nw-filter-btn{padding:7px 18px;border:2px solid #e9ecef;border-radius:20px;cursor:pointer;font-size:.85rem;font-weight:600;background:#fff;color:#555;transition:all .2s}
+.nw-filter-btn.active,.nw-filter-btn:hover{background:#0052cc;color:#fff;border-color:#0052cc}
+.nw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}
+.nw-card{background:#fff;border:1px solid #e9ecef;border-radius:10px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.06);transition:transform .2s,box-shadow .2s}
+.nw-card:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,0,0,.1)}
+.nw-card-name{font-size:1.1rem;font-weight:700;color:#1a1a2e;margin-bottom:4px}
+.nw-card-worth{font-size:1.3rem;font-weight:800;color:#0052cc;margin:8px 0}
+.nw-card a{text-decoration:none}
+.nw-card a:hover .nw-card-name{color:#0052cc}
+.nw-count{text-align:center;color:#888;font-size:.9rem;margin-bottom:20px}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a href="../index.html" class="logo">Markets News Today</a>
+    <nav><a href="../index.html">Home</a><a href="index.html">Net Worth</a></nav>
+  </div>
+</header>
+
+<div class="nw-index-hero">
+  <div class="container">
+    <h1>Celebrity Net Worth 2026</h1>
+    <p>Estimated net worth of 0 celebrities, influencers & billionaires</p>
+  </div>
+</div>
+
+<main class="container">
+  <div class="nw-filter" id="filters">
+    <button class="nw-filter-btn active" onclick="filter('all')">All</button>
+    
+  </div>
+
+  <div class="nw-count" id="count">Showing 0 profiles</div>
+
+  <div class="nw-grid" id="grid">
+    
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>Estimates based on publicly available information. &copy; 2026 Markets News Today</p>
+  </div>
+</footer>
+
+<script>
+function filter(cat) {
+  document.querySelectorAll('.nw-filter-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  const cards = document.querySelectorAll('.nw-card');
+  let visible = 0;
+  cards.forEach(c => {
+    const show = cat === 'all' || c.dataset.cat === cat;
+    c.style.display = show ? '' : 'none';
+    if (show) visible++;
+  });
+  document.getElementById('count').textContent = 'Showing ' + visible + ' profiles';
+}
+</script>
+</body>
+</html>
