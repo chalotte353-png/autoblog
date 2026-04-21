@@ -483,11 +483,11 @@ def build_homepage(posts):
         '<link rel="stylesheet" href="style.css">'
         '</head><body>'
         + get_masthead() + hero_html +
-        '<div class="container">'
+        '<div class="container"><div class="page-layout">'
         '<main>' + cat_sections_html + '</main>'
         '<aside class="sidebar">'
-        '<div class="sw"><div class="sw-title">Most Read</div>' + sidebar_html + '</div>'
-        '<div class="sw"><div class="sw-title">Sections</div>' + cat_links + '</div>'
+        '<div class="s-widget"><div class="s-widget-title">Most Read</div>' + sidebar_html + '</div>'
+        '<div class="s-widget"><div class="s-widget-title">Sections</div>' + cat_links + '</div>'
         '</aside>'
         '</div></div>'
         + get_footer() +
@@ -682,6 +682,66 @@ def main():
         time.sleep(2)
 
     print("Generated " + str(new_count) + " new articles")
+    
+    # Rebuild ALL existing post HTML files with latest CSS/templates
+    print("Rebuilding all post pages...")
+    rebuilt = 0
+    for p in posts_index:
+        try:
+            cat = p.get("category", "World")
+            if cat not in CATEGORIES:
+                cat = "World"
+            author = AUTHORS.get(cat, AUTHORS["World"])
+            # Find matching author by id
+            matched = None
+            for a in author:
+                if a["id"] == p.get("author_id",""):
+                    matched = a
+                    break
+            if not matched:
+                matched = {"id": p.get("author_id","staff"), "name": p.get("author_name","Staff Reporter"),
+                          "title": p.get("author_title","News Desk"), "bio": "Markets News Today editorial team.",
+                          "avatar": p.get("author_avatar","https://i.pravatar.cc/150?img=10"), "twitter":""}
+            
+            from datetime import datetime as dt2, timezone as tz2
+            try:
+                now2 = dt2.fromisoformat(p["date_iso"])
+            except:
+                now2 = dt2.now(tz2.utc)
+            
+            # Build article data for rebuild
+            article_data = {
+                "slug": p["slug"], "title": p["title"],
+                "meta_description": p["meta_description"],
+                "excerpt": p.get("excerpt", p["meta_description"]),
+                "category": cat, "tags": p.get("tags",[]),
+                "image_url": p["image_url"],
+                "read_time": p.get("read_time","5 min read"),
+                "article_html": "",  # Will be read from existing file
+            }
+            
+            # Read existing article HTML content
+            post_file = POSTS_DIR / (p["slug"] + ".html")
+            if post_file.exists():
+                existing = post_file.read_text()
+                # Extract article body
+                import re as re2
+                m = re2.search(r'<div class="post-body">(.*?)</div>\s*<div class="related"', existing, re2.DOTALL)
+                if not m:
+                    m = re2.search(r'<div class="post-body">(.*?)<div class="related', existing, re2.DOTALL)
+                if not m:
+                    m = re2.search(r'<div class="post-body">(.*?)</div>\s*<div class="post-tags"', existing, re2.DOTALL)
+                if m:
+                    article_data["article_html"] = m.group(1).strip()
+                
+                if article_data["article_html"]:
+                    new_html = build_post_html(article_data, matched, posts_index, now2)
+                    post_file.write_text(new_html)
+                    rebuilt += 1
+        except Exception as e:
+            pass
+    
+    print("Rebuilt " + str(rebuilt) + " existing post pages")
     build_homepage(posts_index)
     build_category_pages(posts_index)
     build_author_pages(posts_index)
