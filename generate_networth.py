@@ -1,6 +1,6 @@
 """
 NetWorth Profile Generator
-- 500+ celebrities/influencers list
+- 1000+ celebrities/influencers list
 - Wikipedia se data fetch karta hai
 - Claude API se full profile page likhta hai
 - /networth/ folder mein HTML save karta hai
@@ -17,7 +17,6 @@ from pathlib import Path
 from jinja2 import Template
 
 # ─── CONFIG ────────────────────────────────────────────────────────────────────
-GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
 SITE_URL       = os.environ.get("SITE_URL", "https://yoursite.com")
 SITE_NAME      = os.environ.get("SITE_NAME", "YourBlog")
 OUTPUT_DIR     = Path("output")
@@ -5137,7 +5136,7 @@ Rules:
                 "content-type": "application/json",
             },
             json={
-                "model": "claude-haiku-4-5-20251001",
+                "model": "claude-sonnet-4-6",
                 "max_tokens": 2500,
                 "messages": [{"role": "user", "content": prompt}],
             },
