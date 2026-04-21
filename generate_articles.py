@@ -159,23 +159,26 @@ def build_topics(count, published):
 
 def write_article(topic, hint):
     now = datetime.now()
-    prompt = (
-        'Write a professional Forbes-quality news article dated ' + now.strftime('%B %d, %Y') + ' about: "' + topic + '"\n'
-        'Background context: ' + hint + '\n\n'
-        'Return ONLY valid JSON with no markdown fences:\n'
-        '{\n'
-        '  "title": "Compelling headline 55-70 chars",\n'
-        '  "slug": "url-slug-from-title",\n'
-        '  "meta_description": "SEO description 150-158 chars",\n'
-        '  "focus_keyword": "primary keyword",\n'
-        '  "category": "one of Business/Technology/Finance/World/Sports/Health/Travel/Science/Entertainment/Politics",\n'
-        '  "image_keyword": "3-4 word image search term",\n'
-        '  "article_html": "<h2>Subheading</h2><p>Minimum 900 words professional article. Use h2 h3 p ul strong tags.</p>",\n'
-        '  "tags": ["tag1","tag2","tag3"],\n'
-        '  "read_time": "X min read",\n'
-        '  "excerpt": "2-3 sentence compelling summary"\n'
-        '}'
-    )
+    prompt = """Write a professional Forbes-quality news article dated """ + now.strftime("%B %d, %Y") + """ about this topic: """ + topic + """
+
+Background: """ + hint + """
+
+Respond using EXACTLY this XML format:
+<article>
+<title>Compelling headline 55-70 chars</title>
+<slug>url-slug-from-title</slug>
+<meta_description>SEO description 150-158 chars</meta_description>
+<focus_keyword>primary keyword phrase</focus_keyword>
+<category>Business or Technology or Finance or World or Sports or Health or Travel or Science or Entertainment or Politics</category>
+<image_keyword>3-4 word image search</image_keyword>
+<read_time>X min read</read_time>
+<excerpt>2-3 sentence compelling summary</excerpt>
+<tags>tag1,tag2,tag3</tags>
+<content>
+FULL ARTICLE HTML HERE - minimum 900 words - use h2 h3 p ul strong tags - professional Forbes-style writing
+</content>
+</article>"""
+
     try:
         r = requests.post(
             "https://api.anthropic.com/v1/messages",
@@ -196,10 +199,31 @@ def write_article(topic, hint):
             print("  Claude error: " + str(resp))
             return None
         raw = resp["content"][0]["text"].strip()
-        raw = re.sub(r"^```json\s*", "", raw)
-        raw = re.sub(r"\s*```$", "", raw)
-        data = json.loads(raw)
-        data["slug"] = slugify(data["title"])
+
+        def extract(tag):
+            m = re.search(r"<" + tag + r">(.*?)</" + tag + r">", raw, re.DOTALL)
+            return m.group(1).strip() if m else ""
+
+        title = extract("title")
+        if not title:
+            print("  Could not parse response")
+            return None
+
+        tags_str = extract("tags")
+        tags = [t.strip() for t in tags_str.split(",") if t.strip()]
+
+        data = {
+            "title": title,
+            "slug": slugify(title),
+            "meta_description": extract("meta_description"),
+            "focus_keyword": extract("focus_keyword"),
+            "category": extract("category").strip(),
+            "image_keyword": extract("image_keyword"),
+            "read_time": extract("read_time") or "5 min read",
+            "excerpt": extract("excerpt"),
+            "tags": tags,
+            "article_html": extract("content"),
+        }
         return data
     except Exception as e:
         print("  Article error: " + str(e))
@@ -498,7 +522,7 @@ def rebuild_categories(posts):
             + get_footer() +
             '</body></html>'
         )
-        (OUTPUT_DIR / "category-" + cat.lower() + ".html").write_text(html)
+        (OUTPUT_DIR / ("category-" + cat.lower() + ".html")).write_text(html)
 
 def rebuild_author_pages(posts):
     AUTHORS_DIR.mkdir(exist_ok=True)
