@@ -340,5 +340,45 @@
     "nationality": "British",
     "age": "Born July 28, 1985 (age 39)",
     "meta_description": "Discover Louise Pentland (Sprinkleofglitter) net worth, career highlights, income sources, and biography. Estimated net worth of $4 million in 2024."
+  },
+  {
+    "name": "PewDiePie",
+    "slug": "pewdiepie",
+    "category": "YouTuber",
+    "estimated_net_worth": "$40 Million",
+    "nationality": "Swedish",
+    "age": "35 (Born October 27, 1989)",
+    "image_url": "https://picsum.photos/seed/999/400/400",
+    "meta_description": "PewDiePie net worth estimated at $40 million. Swedish YouTuber and gaming content creator with 200M+ subscribers."
+  },
+  {
+    "name": "Pokimane",
+    "slug": "pokimane",
+    "category": "Streamer",
+    "estimated_net_worth": "$20 Million",
+    "nationality": "Moroccan-Canadian",
+    "age": "28",
+    "image_url": "https://picsum.photos/seed/320/400/400",
+    "meta_description": "Pokimane net worth estimated at $20 million. Leading female gaming streamer on Twitch with massive global following and diverse revenue streams."
+  },
+  {
+    "name": "Jeffree Star",
+    "slug": "jeffree-star",
+    "category": "Beauty YouTuber",
+    "estimated_net_worth": "$200 Million",
+    "nationality": "American",
+    "age": "38",
+    "image_url": "https://picsum.photos/seed/108/400/400",
+    "meta_description": "Jeffree Star net worth estimated at $200 million. Beauty YouTuber, makeup mogul, and entrepreneur with massive social media influence."
+  },
+  {
+    "name": "Smosh",
+    "slug": "smosh",
+    "category": "YouTuber",
+    "estimated_net_worth": "$25 Million",
+    "nationality": "United States",
+    "age": "Ian Hecox (born November 30, 1987) - 36 years old; Anthony Padilla (born September 16, 1987) - 36 years old",
+    "image_url": "https://picsum.photos/seed/116/400/400",
+    "meta_description": "Smosh net worth: $25 million. Ian Hecox and Anthony Padilla's comedy empire from YouTube to streaming and entertainment ventures."
   }
 ]
