@@ -18,7 +18,8 @@
     "excerpt": "US President Donald Trump has issued a dire warning to Iran, threatening to destroy every bridge and power plant in the country if Tehran does not accept a proposed peace settlement. Negotiations are set to resume in Pakistan soon.",
     "author_name": "Staff Reporter",
     "author_avatar": "https://i.pravatar.cc/150?img=10",
-    "author_title": "News Desk"
+    "author_title": "News Desk",
+    "author_id": "staff"
   },
   {
     "slug": "trump-threatens-iranian-bridges-as-talks-set-to-resume",
@@ -41,7 +42,8 @@
     "excerpt": "US President Donald Trump warns Iran that the US will destroy every bridge and power plant if Tehran does not accept a peace proposal, just as negotiations are set to resume in Pakistan.",
     "author_name": "Staff Reporter",
     "author_avatar": "https://i.pravatar.cc/150?img=10",
-    "author_title": "News Desk"
+    "author_title": "News Desk",
+    "author_id": "staff"
   },
   {
     "slug": "trumps-iran-threats-escalate-tensions-amid-cargo-ship-crisis",
@@ -63,7 +65,8 @@
     "excerpt": "U.S. negotiators prepare for more peace talks with Iran amid escalating tensions after President Trump's recent threat, following the seizure of an Iranian-flagged cargo ship in the Strait of Hormuz.",
     "author_name": "Staff Reporter",
     "author_avatar": "https://i.pravatar.cc/150?img=10",
-    "author_title": "News Desk"
+    "author_title": "News Desk",
+    "author_id": "staff"
   },
   {
     "slug": "magic-vs-pistons-live-score-real-time-stats-april-19",
@@ -89,7 +92,8 @@
     "author_title": "US Sports Reporter",
     "author_avatar": "https://i.pravatar.cc/150?img=18",
     "date_iso": "2026-04-21T04:10:52.933325+00:00",
-    "date_human": "April 21, 2026"
+    "date_human": "April 21, 2026",
+    "author_id": "staff"
   },
   {
     "slug": "euphoria-episode-2-recap-existential-crises-and-aperol-spritzes",
@@ -110,7 +114,8 @@
     "author_title": "Music Reporter",
     "author_avatar": "https://i.pravatar.cc/150?img=56",
     "date_iso": "2026-04-21T04:11:13.165104+00:00",
-    "date_human": "April 21, 2026"
+    "date_human": "April 21, 2026",
+    "author_id": "staff"
   },
   {
     "slug": "tariff-refund-portal-launches-monday-what-you-need",
@@ -131,7 +136,8 @@
     "author_title": "Finance Reporter",
     "author_avatar": "https://i.pravatar.cc/150?img=47",
     "date_iso": "2026-04-21T04:11:31.400828+00:00",
-    "date_human": "April 21, 2026"
+    "date_human": "April 21, 2026",
+    "author_id": "staff"
   },
   {
     "slug": "trumps-disapproval-surges-as-iran-war-drags-on",
@@ -154,7 +160,8 @@
     "author_title": "International Affairs",
     "author_avatar": "https://i.pravatar.cc/150?img=38",
     "date_iso": "2026-04-21T04:11:49.175399+00:00",
-    "date_human": "April 21, 2026"
+    "date_human": "April 21, 2026",
+    "author_id": "staff"
   },
   {
     "slug": "china-holds-lending-rates-as-growth-accelerates-amid-mideast-tensions",
@@ -175,7 +182,8 @@
     "author_title": "Investment Reporter",
     "author_avatar": "https://i.pravatar.cc/150?img=49",
     "date_iso": "2026-04-21T04:12:07.594231+00:00",
-    "date_human": "April 21, 2026"
+    "date_human": "April 21, 2026",
+    "author_id": "staff"
   },
   {
     "slug": "magic-edge-past-pistons-in-defensive-showcase",
@@ -197,7 +205,8 @@
     "author_title": "Sports Editor",
     "author_avatar": "https://i.pravatar.cc/150?img=14",
     "date_iso": "2026-04-21T04:40:51.705570+00:00",
-    "date_human": "April 21, 2026"
+    "date_human": "April 21, 2026",
+    "author_id": "staff"
   },
   {
     "slug": "euphoria-episode-2-recap-existential-crises-and-aperol-spritzes",
@@ -220,7 +229,8 @@
     "author_title": "Entertainment Editor",
     "author_avatar": "https://i.pravatar.cc/150?img=35",
     "date_iso": "2026-04-21T04:41:09.397677+00:00",
-    "date_human": "April 21, 2026"
+    "date_human": "April 21, 2026",
+    "author_id": "staff"
   },
   {
     "slug": "trumps-disapproval-grows-as-iran-war-remains-unpopular",
@@ -243,7 +253,8 @@
     "author_title": "International Affairs",
     "author_avatar": "https://i.pravatar.cc/150?img=38",
     "date_iso": "2026-04-21T04:41:42.642565+00:00",
-    "date_human": "April 21, 2026"
+    "date_human": "April 21, 2026",
+    "author_id": "staff"
   },
   {
     "slug": "kim-kardashian-and-lewis-hamilton-spark-romance-at-nobu",
@@ -264,7 +275,8 @@
     "author_title": "Film Critic",
     "author_avatar": "https://i.pravatar.cc/150?img=36",
     "date_iso": "2026-04-21T04:42:16.115636+00:00",
-    "date_human": "April 21, 2026"
+    "date_human": "April 21, 2026",
+    "author_id": "staff"
   },
   {
     "slug": "2026-nba-awards-finalists-revealed-sga-eyes-repeat-mvp",
@@ -287,7 +299,8 @@
     "author_title": "Sports Editor",
     "author_avatar": "https://i.pravatar.cc/150?img=14",
     "date_iso": "2026-04-21T04:42:30.778104+00:00",
-    "date_human": "April 21, 2026"
+    "date_human": "April 21, 2026",
+    "author_id": "staff"
   },
   {
     "slug": "obamas-higher-ground-productions-goes-independent-after-netflix-deal",
@@ -311,7 +324,8 @@
     "author_title": "Entertainment Editor",
     "author_avatar": "https://i.pravatar.cc/150?img=35",
     "date_iso": "2026-04-21T04:42:46.685071+00:00",
-    "date_human": "April 21, 2026"
+    "date_human": "April 21, 2026",
+    "author_id": "staff"
   },
   {
     "slug": "oil-prices-jump-as-strait-of-hormuz-tensions-escalate",
@@ -334,7 +348,8 @@
     "author_title": "Economics Correspondent",
     "author_avatar": "https://i.pravatar.cc/150?img=15",
     "date_iso": "2026-04-21T04:43:04.307263+00:00",
-    "date_human": "April 21, 2026"
+    "date_human": "April 21, 2026",
+    "author_id": "staff"
   },
   {
     "slug": "climate-economy-reaches-2-trillion-milestone-in-2026",
@@ -358,6 +373,209 @@
     "author_title": "Finance Reporter",
     "author_avatar": "https://i.pravatar.cc/150?img=47",
     "date_iso": "2026-04-21T04:43:21.060335+00:00",
+    "date_human": "April 21, 2026",
+    "author_id": "staff"
+  },
+  {
+    "slug": "louisiana-mass-shooting-kills-8-children-in-deadliest-attack-since-202",
+    "title": "Louisiana Mass Shooting Kills 8 Children in Deadliest Attack Since 2024",
+    "meta_description": "A Louisiana man opened fire killing 8 children and injuring two women in the deadliest mass shooting since 2024. Details on the tragic incident.",
+    "excerpt": "A Louisiana man opened fire on April 21, 2026, killing eight children and injuring two women in the deadliest mass shooting since 2024. The tragedy has reignited national debates on gun control, mental health resources, and public safety measures while devastating the local community.",
+    "category": "Politics",
+    "tags": [
+      "Louisiana shooting",
+      "mass shooting",
+      "gun violence",
+      "public safety",
+      "8 children killed"
+    ],
+    "image_url": "https://images.unsplash.com/photo-1745610976636-1686a70d3a7d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MzA5MzN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NzY3NDc3NTB8&ixlib=rb-4.1.0&q=80&w=1080",
+    "read_time": "6 min read",
+    "author_name": "Andrew Collins",
+    "author_title": "Political Editor",
+    "author_avatar": "https://i.pravatar.cc/150?img=37",
+    "author_id": "andrew-collins",
+    "date_iso": "2026-04-21T05:02:30.500167+00:00",
+    "date_human": "April 21, 2026"
+  },
+  {
+    "slug": "apples-touch-screen-macbook-pro-delayed-by-memory-chip-shortage",
+    "title": "Apple's Touch Screen MacBook Pro Delayed by Memory Chip Shortage",
+    "meta_description": "Apple's anticipated MacBook Pro with touch screen and new Mac Studio face production delays due to global memory chip shortage, according to MacRumors.",
+    "excerpt": "Apple's eagerly anticipated MacBook Pro with touch screen and redesigned Mac Studio face significant launch delays due to global memory chip shortages, according to MacRumors sources. The devices, initially expected in late 2026, may not reach consumers until early 2027 as semiconductor manufacturing capacity constraints continue affecting tech manufacturers worldwide.",
+    "category": "Technology",
+    "tags": [
+      "Apple",
+      "MacBook Pro",
+      "Mac Studio",
+      "Memory Chip Shortage",
+      "Technology News",
+      "Product Delays"
+    ],
+    "image_url": "https://images.unsplash.com/photo-1580522154071-c6ca47a859ad?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MzA5MzN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NzY3NDc3ODl8&ixlib=rb-4.1.0&q=80&w=1080",
+    "read_time": "8 min read",
+    "author_name": "Alex Rivera",
+    "author_title": "Tech Editor",
+    "author_avatar": "https://i.pravatar.cc/150?img=12",
+    "author_id": "alex-rivera",
+    "date_iso": "2026-04-21T05:03:09.957779+00:00",
+    "date_human": "April 21, 2026"
+  },
+  {
+    "slug": "billions-in-tariff-refunds-coming-what-companies-need-to-know",
+    "title": "Billions in Tariff Refunds Coming: What Companies Need to Know",
+    "meta_description": "A major tariff refund portal goes live Monday in the first phase of court-ordered compliance. Here's what businesses need to know about reclaiming billions.",
+    "excerpt": "The federal government launches a historic tariff refund portal on Monday, beginning the first phase of court-ordered compliance that could return billions of dollars to American importers. Companies importing goods between 2018 and 2024 can now file claims for tariffs deemed unlawfully imposed.",
+    "category": "Business",
+    "tags": [
+      "tariffs",
+      "refunds",
+      "trade policy",
+      "business compliance",
+      "customs"
+    ],
+    "image_url": "https://images.unsplash.com/photo-1571893652827-a3e071ab463b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MzA5MzN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NzY3NDc4MTF8&ixlib=rb-4.1.0&q=80&w=1080",
+    "read_time": "7 min read",
+    "author_name": "James Mitchell",
+    "author_title": "Business Editor",
+    "author_avatar": "https://i.pravatar.cc/150?img=11",
+    "author_id": "james-mitchell",
+    "date_iso": "2026-04-21T05:03:31.843750+00:00",
+    "date_human": "April 21, 2026"
+  },
+  {
+    "slug": "canadas-pm-carney-us-economic-dependence-is-a-weakness",
+    "title": "Canada's PM Carney: U.S. Economic Dependence Is a 'Weakness'",
+    "meta_description": "Mark Carney warns Canada must diversify economic ties and reduce reliance on U.S. partnership to protect against disruption and volatility.",
+    "excerpt": "Canadian Prime Minister Mark Carney declares that Canada's economic reliance on the United States represents a critical weakness requiring immediate strategic correction. In a video address, Carney outlined plans for economic diversification to reduce vulnerability to disruptions from U.S. policy.",
+    "category": "Politics",
+    "tags": [
+      "Canada",
+      "Mark Carney",
+      "US Canada Relations",
+      "Economic Policy",
+      "Trade Diversification",
+      "North American Economy"
+    ],
+    "image_url": "https://images.unsplash.com/photo-1633775218380-30c7ab85a5c5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MzA5MzN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NzY3NDc4MzZ8&ixlib=rb-4.1.0&q=80&w=1080",
+    "read_time": "8 min read",
+    "author_name": "Andrew Collins",
+    "author_title": "Political Editor",
+    "author_avatar": "https://i.pravatar.cc/150?img=37",
+    "author_id": "andrew-collins",
+    "date_iso": "2026-04-21T05:03:56.393723+00:00",
+    "date_human": "April 21, 2026"
+  },
+  {
+    "slug": "trumps-disapproval-surges-as-iran-war-remains-unpopular",
+    "title": "Trump's Disapproval Surges as Iran War Remains Unpopular",
+    "meta_description": "New NBC News poll shows Trump's approval rating at 37% as Iran war negotiations stall. Disapproval continues to climb amid public opposition.",
+    "excerpt": "President Trump's job approval rating has plummeted to 37% according to a new NBC News poll, as the unpopular Iran War continues to erode public confidence. With 64% of Americans disapproving of his handling of the conflict, the administration faces significant political headwinds ahead of 2026 elections.",
+    "category": "Politics",
+    "tags": [
+      "Trump",
+      "Iran War",
+      "2026 Election",
+      "Approval Rating",
+      "Foreign Policy"
+    ],
+    "image_url": "https://images.unsplash.com/photo-1622629217820-436bbce004df?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MzA5MzN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NzY3NDc4NTZ8&ixlib=rb-4.1.0&q=80&w=1080",
+    "read_time": "6 min read",
+    "author_name": "Andrew Collins",
+    "author_title": "Political Editor",
+    "author_avatar": "https://i.pravatar.cc/150?img=37",
+    "author_id": "andrew-collins",
+    "date_iso": "2026-04-21T05:04:16.850079+00:00",
+    "date_human": "April 21, 2026"
+  },
+  {
+    "slug": "wwe-wrestlemania-42-night-2-results-winners-grades",
+    "title": "WWE WrestleMania 42 Night 2: Results, Winners, Grades",
+    "meta_description": "WWE WrestleMania 42 Night 2 full results, match winners, and expert grades from April 19, 2026. Complete coverage of wrestling's biggest event.",
+    "excerpt": "WWE WrestleMania 42 Night 2 concluded April 19, 2026, with exceptional championship matches and shocking title changes. The women's championship bout earned top marks with A+ grades, while the overall event delivers solid storytelling and wrestling excellence worthy of the WrestleMania name.",
+    "category": "Sports",
+    "tags": [
+      "WWE",
+      "WrestleMania 42",
+      "Professional Wrestling",
+      "Sports Entertainment",
+      "Championship Wrestling"
+    ],
+    "image_url": "https://picsum.photos/seed/408/1200/630",
+    "read_time": "8 min read",
+    "author_name": "Maria Santos",
+    "author_title": "Football Correspondent",
+    "author_avatar": "https://i.pravatar.cc/150?img=44",
+    "author_id": "maria-santos",
+    "date_iso": "2026-04-21T05:04:39.569078+00:00",
+    "date_human": "April 21, 2026"
+  },
+  {
+    "slug": "british-police-probe-iranian-linked-group-behind-jewish-sites-arson-sp",
+    "title": "British Police Probe Iranian-Linked Group Behind Jewish Sites Arson Spree",
+    "meta_description": "UK authorities investigate shadowy online group with alleged Iranian ties after coordinated arson attacks targeting Jewish community sites in London.",
+    "excerpt": "British law enforcement is investigating a shadowy online extremist group with suspected Iranian connections following a coordinated arson campaign targeting Jewish community sites across London. The investigation reveals the sophisticated nature of digitally-coordinated extremist networks and raises significant questions about online radicalization prevention and international security cooperation.",
+    "category": "World",
+    "tags": [
+      "British police",
+      "antisemitism",
+      "Iran",
+      "counterterrorism",
+      "London security",
+      "extremism investigation"
+    ],
+    "image_url": "https://images.unsplash.com/photo-1693611597145-1ee98938f986?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MzA5MzN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NzY3NDc4OTl8&ixlib=rb-4.1.0&q=80&w=1080",
+    "read_time": "7 min read",
+    "author_name": "Elena Vasquez",
+    "author_title": "World Affairs Editor",
+    "author_avatar": "https://i.pravatar.cc/150?img=21",
+    "author_id": "elena-vasquez",
+    "date_iso": "2026-04-21T05:04:59.062280+00:00",
+    "date_human": "April 21, 2026"
+  },
+  {
+    "slug": "china-holds-rates-steady-as-growth-accelerates-mideast-tensions-rise",
+    "title": "China Holds Rates Steady as Growth Accelerates, Mideast Tensions Rise",
+    "meta_description": "China keeps benchmark lending rates unchanged as economic growth revs up. Economists delay rate cut forecasts amid geopolitical risks in the Middle East.",
+    "excerpt": "China's central bank held benchmark lending rates steady on April 21, 2026, as robust economic growth reduces pressure for fresh stimulus measures. The decision reflects confidence in the recovery, though rising Middle East tensions complicate the outlook for monetary policy ahead.",
+    "category": "Finance",
+    "tags": [
+      "China economy",
+      "PBOC",
+      "monetary policy",
+      "interest rates",
+      "economic growth",
+      "geopolitical risk"
+    ],
+    "image_url": "https://images.unsplash.com/photo-1543158015-04650a9d832a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MzA5MzN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NzY3NDc5MjF8&ixlib=rb-4.1.0&q=80&w=1080",
+    "read_time": "8 min read",
+    "author_name": "Lisa Wong",
+    "author_title": "Investment Reporter",
+    "author_avatar": "https://i.pravatar.cc/150?img=49",
+    "author_id": "lisa-wong",
+    "date_iso": "2026-04-21T05:05:21.314991+00:00",
+    "date_human": "April 21, 2026"
+  },
+  {
+    "slug": "kim-kardashian-and-lewis-hamiltons-nobu-date-night-sparks-romance-spec",
+    "title": "Kim Kardashian and Lewis Hamilton's Nobu Date Night Sparks Romance Speculation",
+    "meta_description": "Kim Kardashian and Formula 1 champion Lewis Hamilton spotted on romantic dinner date at Nobu. Details on their budding relationship and what insiders are saying.",
+    "excerpt": "Formula 1 champion Lewis Hamilton and reality television mogul Kim Kardashian were spotted on a romantic dinner date at exclusive Nobu restaurant in Malibu, sparking widespread speculation about their budding relationship. The high-profile pair spent approximately three hours together in a private dining area, with sources suggesting genuine chemistry between the two successful entrepreneurs.",
+    "category": "Entertainment",
+    "tags": [
+      "Kim Kardashian",
+      "Lewis Hamilton",
+      "Celebrity Dating",
+      "Entertainment News",
+      "Nobu Restaurant"
+    ],
+    "image_url": "https://picsum.photos/seed/87/1200/630",
+    "read_time": "6 min read",
+    "author_name": "Jessica Taylor",
+    "author_title": "Entertainment Editor",
+    "author_avatar": "https://i.pravatar.cc/150?img=35",
+    "author_id": "jessica-taylor",
+    "date_iso": "2026-04-21T05:05:42.248439+00:00",
     "date_human": "April 21, 2026"
   }
 ]
