@@ -16,6 +16,10 @@ on:
         description: "Articles per run"
         required: false
         default: "10"
+      profiles_count:
+        description: "Net worth profiles per run"
+        required: false
+        default: "50"
 
 jobs:
   generate-and-deploy:
@@ -32,12 +36,11 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-          cache: "pip"
 
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Generate articles
+      - name: Generate blog articles
         if: ${{ github.event.inputs.mode != 'networth' }}
         env:
           CLAUDE_API_KEY:   ${{ secrets.CLAUDE_API_KEY }}
@@ -45,19 +48,27 @@ jobs:
           UNSPLASH_KEY:     ${{ secrets.UNSPLASH_KEY }}
           SITE_URL:         ${{ secrets.SITE_URL }}
           SITE_NAME:        ${{ secrets.SITE_NAME }}
-          SITE_TAGLINE:     ${{ secrets.SITE_TAGLINE }}
           ARTICLES_PER_RUN: ${{ github.event.inputs.articles_count || '10' }}
         run: python generate_articles.py
+
+      - name: Generate net worth profiles
+        if: ${{ github.event.inputs.mode == 'networth' || github.event.inputs.mode == 'both' }}
+        env:
+          CLAUDE_API_KEY:   ${{ secrets.CLAUDE_API_KEY }}
+          SITE_URL:         ${{ secrets.SITE_URL }}
+          SITE_NAME:        ${{ secrets.SITE_NAME }}
+          PROFILES_PER_RUN: ${{ github.event.inputs.profiles_count || '50' }}
+        run: python generate_networth.py
 
       - name: Copy static assets
         run: |
           cp style.css output/style.css
           cp robots.txt output/robots.txt
 
-      - name: Commit output to GitHub
+      - name: Commit and push output
         run: |
-          git config user.name "AutoBlog Bot"
-          git config user.email "bot@autoblog.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git add output/
-          git diff --staged --quiet || git commit -m "Auto: Add new articles $(date +'%Y-%m-%d %H:%M')"
+          git diff --staged --quiet || git commit -m "Auto: generate content $(date -u '+%Y-%m-%d %H:%M')"
           git push
