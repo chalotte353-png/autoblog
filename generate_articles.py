@@ -13,6 +13,7 @@ from pathlib import Path
 from jinja2 import Template
 
 GROQ_API_KEY     = os.environ.get("GROQ_API_KEY", "")
+CLAUDE_API_KEY   = os.environ.get("CLAUDE_API_KEY", "")
 NEWS_API_KEY     = os.environ.get("NEWS_API_KEY", "")
 SITE_URL         = os.environ.get("SITE_URL", "https://marketsnewstoday.info")
 SITE_NAME        = os.environ.get("SITE_NAME", "Markets News Today")
@@ -137,15 +138,25 @@ Return ONLY valid JSON (no markdown fences):
   "excerpt": "2-3 sentence summary"
 }}"""
     try:
-        r = requests.post("https://api.groq.com/openai/v1/chat/completions",
-            headers={"Authorization":f"Bearer {GROQ_API_KEY}","Content-Type":"application/json"},
-            json={"model":"llama3-8b-8192","max_tokens":2500,"temperature":0.8,
-                  "messages":[{"role":"user","content":prompt}]},timeout=60)
+        r = requests.post(
+            "https://api.anthropic.com/v1/messages",
+            headers={
+                "x-api-key": CLAUDE_API_KEY,
+                "anthropic-version": "2023-06-01",
+                "content-type": "application/json",
+            },
+            json={
+                "model": "claude-haiku-4-5-20251001",
+                "max_tokens": 2500,
+                "messages": [{"role": "user", "content": prompt}],
+            },
+            timeout=60,
+        )
         resp = r.json()
-        if "choices" not in resp:
-            print(f"  Groq resp: {resp}")
+        if "content" not in resp:
+            print(f"  Claude resp: {resp}")
             return None
-        raw = resp["choices"][0]["message"]["content"].strip()
+        raw = resp["content"][0]["text"].strip()
         raw = re.sub(r"^```json\s*","",raw)
         raw = re.sub(r"\s*```$","",raw)
         data = json.loads(raw)
@@ -209,7 +220,7 @@ def main():
         })
         published.add(article["slug"])
         new_count += 1
-        time.sleep(20)
+        time.sleep(2)
 
     print(f"\n✅ {new_count} new articles")
     rebuild_all(posts_index)
