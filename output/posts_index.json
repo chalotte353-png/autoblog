@@ -14,7 +14,11 @@
     "image_url": "https://picsum.photos/seed/195/1200/600",
     "read_time": "10 min read",
     "date_iso": "2026-04-20T15:28:34.892113+00:00",
-    "date_human": "April 20, 2026"
+    "date_human": "April 20, 2026",
+    "excerpt": "US President Donald Trump has issued a dire warning to Iran, threatening to destroy every bridge and power plant in the country if Tehran does not accept a proposed peace settlement. Negotiations are set to resume in Pakistan soon.",
+    "author_name": "Staff Reporter",
+    "author_avatar": "https://i.pravatar.cc/150?img=10",
+    "author_title": "News Desk"
   },
   {
     "slug": "trump-threatens-iranian-bridges-as-talks-set-to-resume",
@@ -33,7 +37,11 @@
     "image_url": "https://picsum.photos/seed/673/1200/600",
     "read_time": "12 min read",
     "date_iso": "2026-04-20T16:20:50.813388+00:00",
-    "date_human": "April 20, 2026"
+    "date_human": "April 20, 2026",
+    "excerpt": "US President Donald Trump warns Iran that the US will destroy every bridge and power plant if Tehran does not accept a peace proposal, just as negotiations are set to resume in Pakistan.",
+    "author_name": "Staff Reporter",
+    "author_avatar": "https://i.pravatar.cc/150?img=10",
+    "author_title": "News Desk"
   },
   {
     "slug": "trumps-iran-threats-escalate-tensions-amid-cargo-ship-crisis",
@@ -51,6 +59,10 @@
     "image_url": "https://picsum.photos/seed/789/1200/600",
     "read_time": "10 min read",
     "date_iso": "2026-04-20T20:11:42.667814+00:00",
-    "date_human": "April 20, 2026"
+    "date_human": "April 20, 2026",
+    "excerpt": "U.S. negotiators prepare for more peace talks with Iran amid escalating tensions after President Trump's recent threat, following the seizure of an Iranian-flagged cargo ship in the Strait of Hormuz.",
+    "author_name": "Staff Reporter",
+    "author_avatar": "https://i.pravatar.cc/150?img=10",
+    "author_title": "News Desk"
   }
 ]
