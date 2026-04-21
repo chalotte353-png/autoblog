@@ -5137,7 +5137,7 @@ Rules:
                 "content-type": "application/json",
             },
             json={
-                "model": "claude-sonnet-4-6",
+                "model": "claude-haiku-4-5-20251001",
                 "max_tokens": 2500,
                 "messages": [{"role": "user", "content": prompt}],
             },
@@ -5159,163 +5159,269 @@ PROFILE_TEMPLATE = """<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{{ name }} Net Worth {{ year }} — {{ site_name }}</title>
+<title>{{ name }} Net Worth {{ year }} | {{ site_name }}</title>
 <meta name="description" content="{{ meta_description }}">
-<meta name="keywords" content="{{ name }} net worth, {{ name }} earnings, {{ name }} salary, {{ category }} net worth">
-<meta name="robots" content="index, follow">
+<meta name="keywords" content="{{ name }} net worth, {{ name }} earnings, {{ name }} salary, {{ category }} net worth {{ year }}">
+<meta name="robots" content="index,follow">
 <link rel="canonical" href="{{ site_url }}/networth/{{ slug }}.html">
 <meta property="og:title" content="{{ name }} Net Worth {{ year }}">
 <meta property="og:description" content="{{ meta_description }}">
-<meta property="og:url" content="{{ site_url }}/networth/{{ slug }}.html">
+<meta property="og:image" content="{{ image_url }}">
+<meta property="og:type" content="profile">
 <script type="application/ld+json">
 {
-  "@context":"https://schema.org",
-  "@type":"Person",
-  "name":"{{ name }}",
-  "description":"{{ meta_description }}",
-  "url":"{{ site_url }}/networth/{{ slug }}.html"
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "{{ name }}",
+  "description": "{{ meta_description }}",
+  "url": "{{ site_url }}/networth/{{ slug }}.html",
+  "image": "{{ image_url }}"
 }
 </script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="../style.css">
 <style>
-.nw-hero{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);color:#fff;padding:40px 0;margin-bottom:32px}
-.nw-hero .container{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center}
-.nw-name{font-size:clamp(1.8rem,5vw,2.8rem);font-weight:800;margin-bottom:6px}
-.nw-real{font-size:.95rem;color:#aab4c8;margin-bottom:12px}
-.nw-worth{background:#0052cc;color:#fff;font-size:1.6rem;font-weight:800;padding:16px 28px;border-radius:12px;text-align:center;min-width:180px}
-.nw-worth-label{font-size:.7rem;font-weight:400;opacity:.8;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px}
-.nw-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:32px}
-.nw-stat{background:#f8f9fa;border:1px solid #e9ecef;border-radius:8px;padding:16px;text-align:center}
-.nw-stat-label{font-size:.75rem;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
-.nw-stat-value{font-size:1.1rem;font-weight:700;color:#1a1a2e}
-.nw-section{margin-bottom:28px}
-.nw-section h2{font-size:1.3rem;font-weight:700;color:#1a1a2e;border-left:4px solid #0052cc;padding-left:12px;margin-bottom:16px}
-.nw-list{list-style:none;padding:0}
-.nw-list li{padding:8px 12px;background:#f8f9fa;border-radius:6px;margin-bottom:8px;font-size:.93rem;display:flex;align-items:center;gap:8px}
-.nw-list li::before{content:"✓";color:#0052cc;font-weight:700}
-.nw-grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-.nw-content{max-width:760px}
-@media(max-width:600px){.nw-hero .container{grid-template-columns:1fr}.nw-grid2{grid-template-columns:1fr}.nw-worth{text-align:left;min-width:auto}}
+.nw-profile-hero {
+  position: relative;
+  background: var(--dark);
+  color: #fff;
+  overflow: hidden;
+  margin-bottom: 0;
+}
+.nw-profile-hero-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center top;
+  filter: blur(8px) brightness(0.25);
+  transform: scale(1.1);
+}
+.nw-profile-hero-inner {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 32px;
+  align-items: center;
+  padding: 48px 0;
+  width: 94%;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+.nw-profile-img {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid rgba(255,255,255,0.2);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  flex-shrink: 0;
+}
+.nw-profile-info h1 {
+  font-family: var(--serif);
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 900;
+  line-height: 1.1;
+  margin-bottom: 6px;
+}
+.nw-profile-realname {
+  font-size: 14px;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 14px;
+}
+.nw-profile-cat {
+  display: inline-block;
+  background: var(--red);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 4px 12px;
+  margin-bottom: 20px;
+}
+.nw-worth-badge {
+  display: inline-flex;
+  flex-direction: column;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 14px 22px;
+  border-radius: 4px;
+  backdrop-filter: blur(10px);
+}
+.nw-worth-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 4px;
+}
+.nw-worth-value {
+  font-family: var(--serif);
+  font-size: 28px;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1;
+}
+.nw-body { padding: 40px 0 60px; }
+.nw-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 40px;
+  width: 94%;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+.nw-stats-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 32px;
+  width: 94%;
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--border);
+}
+.nw-stat {
+  text-align: center;
+  padding: 14px;
+  border: 1px solid var(--border);
+  background: var(--gray);
+}
+.nw-stat-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.nw-stat-value {
+  font-family: var(--serif);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--dark);
+}
+.nw-section { margin-bottom: 28px; }
+.nw-section-title {
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--dark);
+  border-left: 4px solid var(--red);
+  padding-left: 12px;
+  margin-bottom: 16px;
+}
+.nw-list { list-style: none; padding: 0; }
+.nw-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.5;
+}
+.nw-list li:last-child { border-bottom: none; }
+.nw-list li::before {
+  content: "✓";
+  color: var(--red);
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.nw-sidebar-card {
+  background: var(--gray);
+  border: 1px solid var(--border);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+.nw-sidebar-card-title {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--dark);
+  border-bottom: 2px solid var(--dark);
+  padding-bottom: 8px;
+  margin-bottom: 14px;
+}
+.nw-bio { font-size: 16px; line-height: 1.85; color: #222; }
+.nw-bio h2 { font-family: var(--serif); font-size: 22px; font-weight: 700; margin: 2rem 0 0.8rem; }
+.nw-bio h3 { font-family: var(--serif); font-size: 18px; font-weight: 700; margin: 1.5rem 0 0.6rem; }
+.nw-bio p { margin-bottom: 1.1rem; }
+.nw-bio ul { padding-left: 1.5rem; margin-bottom: 1rem; }
+.nw-bio li { margin-bottom: 0.4rem; }
+@media (max-width: 1024px) {
+  .nw-layout { grid-template-columns: 1fr; }
+  .nw-profile-hero-inner { grid-template-columns: 140px 1fr; gap: 20px; }
+  .nw-profile-img { width: 130px; height: 130px; }
+}
+@media (max-width: 640px) {
+  .nw-profile-hero-inner { grid-template-columns: 1fr; text-align: center; }
+  .nw-profile-img { width: 120px; height: 120px; margin: 0 auto; }
+  .nw-stats-bar { grid-template-columns: 1fr 1fr; }
+}
 </style>
 </head>
 <body>
-<div class="topbar"><div class="topbar-inner">
-  <span class="topbar-left"></span>
-  <a href="../" class="topbar-logo">Markets <span class="accent">News</span> Today</a>
-  <span class="topbar-right">Business &middot; Finance &middot; Technology</span>
-</div></div>
-<nav class="navbar"><div class="navbar-inner">
-  <a href="../">Home</a>
-  <a href="../category-business.html">Business</a>
-  <a href="../category-technology.html">Technology</a>
-  <a href="../category-finance.html">Finance</a>
-  <a href="../category-world.html">World</a>
-  <a href="../category-sports.html">Sports</a>
-  <a href="../category-health.html">Health</a>
-  <a href="../category-politics.html">Politics</a>
-  <a href="index.html">Net Worth</a>
-</div></nav>
-
-<div class="nw-hero">
-  <div class="container">
-    <div>
-      <div class="nw-name">{{ name }}</div>
-      <div class="nw-real">{{ real_name }}</div>
-      <span class="category">{{ category }}</span>
-    </div>
-    <div class="nw-worth">
-      <span class="nw-worth-label">Est. Net Worth {{ year }}</span>
-      {{ estimated_net_worth }}
+{{ nav_html }}
+<div class="nw-profile-hero">
+  <div class="nw-profile-hero-bg" style="background-image:url('{{ image_url }}')"></div>
+  <div class="nw-profile-hero-inner">
+    <img src="{{ image_url }}" alt="{{ name }}" class="nw-profile-img" onerror="this.src='https://ui-avatars.com/api/?name={{ name|urlencode }}&size=200&background=1a1a1a&color=fff&bold=true'">
+    <div class="nw-profile-info">
+      <h1>{{ name }}</h1>
+      <div class="nw-profile-realname">{{ real_name }}</div>
+      <div class="nw-profile-cat">{{ category }}</div>
+      <div class="nw-worth-badge">
+        <span class="nw-worth-label">Est. Net Worth {{ year }}</span>
+        <span class="nw-worth-value">{{ estimated_net_worth }}</span>
+      </div>
     </div>
   </div>
 </div>
 
-<main class="container">
-  <div class="nw-stats">
-    <div class="nw-stat">
-      <div class="nw-stat-label">Category</div>
-      <div class="nw-stat-value">{{ category }}</div>
-    </div>
-    <div class="nw-stat">
-      <div class="nw-stat-label">Nationality</div>
-      <div class="nw-stat-value">{{ nationality }}</div>
-    </div>
-    <div class="nw-stat">
-      <div class="nw-stat-label">Age</div>
-      <div class="nw-stat-value">{{ age }}</div>
-    </div>
-    <div class="nw-stat">
-      <div class="nw-stat-label">Social Following</div>
-      <div class="nw-stat-value">{{ social_following }}</div>
-    </div>
-    <div class="nw-stat">
-      <div class="nw-stat-label">Known For</div>
-      <div class="nw-stat-value">{{ known_for }}</div>
-    </div>
-    <div class="nw-stat">
-      <div class="nw-stat-label">Ranking</div>
-      <div class="nw-stat-value">{{ net_worth_rank }}</div>
-    </div>
-  </div>
+<div class="nw-stats-bar">
+  <div class="nw-stat"><div class="nw-stat-label">Nationality</div><div class="nw-stat-value">{{ nationality }}</div></div>
+  <div class="nw-stat"><div class="nw-stat-label">Age</div><div class="nw-stat-value">{{ age }}</div></div>
+  <div class="nw-stat"><div class="nw-stat-label">Social Following</div><div class="nw-stat-value">{{ social_following }}</div></div>
+  <div class="nw-stat"><div class="nw-stat-label">Ranking</div><div class="nw-stat-value">{{ net_worth_rank }}</div></div>
+  <div class="nw-stat"><div class="nw-stat-label">Known For</div><div class="nw-stat-value">{{ known_for[:40] }}</div></div>
+</div>
 
-  <div class="nw-grid2">
-    <div>
+<div class="nw-body">
+  <div class="nw-layout">
+    <main>
       <div class="nw-section">
-        <h2>💰 Income Sources</h2>
-        <ul class="nw-list">
-          {% for s in income_sources %}<li>{{ s }}</li>{% endfor %}
-        </ul>
+        <div class="nw-section-title">Biography</div>
+        <div class="nw-bio">{{ biography_html }}</div>
       </div>
-      <div class="nw-section">
-        <h2>🏆 Career Highlights</h2>
-        <ul class="nw-list">
-          {% for h in career_highlights %}<li>{{ h }}</li>{% endfor %}
-        </ul>
+    </main>
+    <aside>
+      <div class="nw-sidebar-card">
+        <div class="nw-sidebar-card-title">Income Sources</div>
+        <ul class="nw-list">{% for s in income_sources %}<li>{{ s }}</li>{% endfor %}</ul>
       </div>
-      <div class="nw-section">
-        <h2>🤝 Brand Deals</h2>
-        <ul class="nw-list">
-          {% for b in brand_deals %}<li>{{ b }}</li>{% endfor %}
-        </ul>
+      <div class="nw-sidebar-card">
+        <div class="nw-sidebar-card-title">Career Highlights</div>
+        <ul class="nw-list">{% for h in career_highlights %}<li>{{ h }}</li>{% endfor %}</ul>
       </div>
-    </div>
-    <div class="nw-content">
-      <div class="nw-section">
-        <h2>📖 Full Biography</h2>
-        <div class="post-body">{{ biography_html }}</div>
+      <div class="nw-sidebar-card">
+        <div class="nw-sidebar-card-title">Brand Deals</div>
+        <ul class="nw-list">{% for b in brand_deals %}<li>{{ b }}</li>{% endfor %}</ul>
       </div>
-    </div>
+      <div class="post-tags" style="margin-top:8px">
+        {% for tag in tags %}<span class="tag">{{ tag }}</span>{% endfor %}
+      </div>
+    </aside>
   </div>
-
-  <div class="post-tags" style="margin-top:24px">
-    {% for tag in tags %}<span class="tag">{{ tag }}</span>{% endfor %}
-  </div>
-</main>
-
-<footer class="footer">
-<div class="footer-top"><div class="container"><div class="footer-grid">
-  <div class="footer-brand">
-    <div class="footer-logo">Markets <span class="accent">News</span> Today</div>
-    <p>Your trusted source for breaking news and in-depth analysis.</p>
-  </div>
-  <div class="footer-col"><h4>Business</h4>
-    <a href="../category-business.html">Business</a>
-    <a href="../category-finance.html">Finance</a>
-    <a href="../category-technology.html">Technology</a>
-    <a href="index.html">Net Worth</a></div>
-  <div class="footer-col"><h4>World</h4>
-    <a href="../category-world.html">World</a>
-    <a href="../category-politics.html">Politics</a>
-    <a href="../category-sports.html">Sports</a>
-    <a href="../category-entertainment.html">Entertainment</a></div>
-  <div class="footer-col"><h4>More</h4>
-    <a href="../category-health.html">Health</a>
-    <a href="../category-science.html">Science</a>
-    <a href="../category-travel.html">Travel</a>
-    <a href="../sitemap.xml">Sitemap</a></div>
-</div></div></div>
-<div class="footer-btm"><div class="container">&copy; {{ year }} Markets News Today. All rights reserved.</div></div>
-</footer>
+</div>
+{{ foot_html }}
 </body>
 </html>"""
 
@@ -5324,30 +5430,162 @@ NETWORTH_INDEX_TEMPLATE = """<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Celebrity Net Worth {{ year }} — {{ site_name }}</title>
+<title>Celebrity Net Worth {{ year }} | {{ site_name }}</title>
 <meta name="description" content="Complete list of celebrity, influencer and billionaire net worth estimates for {{ year }}. YouTubers, athletes, actors, musicians and more.">
-<meta name="robots" content="index, follow">
+<meta name="robots" content="index,follow">
 <link rel="canonical" href="{{ site_url }}/networth/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="../style.css">
 <style>
-.nw-index-hero{background:linear-gradient(135deg,#1a1a2e,#0052cc);color:#fff;padding:48px 0;text-align:center;margin-bottom:40px}
-.nw-index-hero h1{font-size:clamp(1.8rem,5vw,3rem);font-weight:800;margin-bottom:12px}
-.nw-index-hero p{font-size:1.1rem;opacity:.85}
-.nw-filter{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:28px;justify-content:center}
-.nw-filter-btn{padding:7px 18px;border:2px solid #e9ecef;border-radius:20px;cursor:pointer;font-size:.85rem;font-weight:600;background:#fff;color:#555;transition:all .2s}
-.nw-filter-btn.active,.nw-filter-btn:hover{background:#0052cc;color:#fff;border-color:#0052cc}
-.nw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}
-.nw-card{background:#fff;border:1px solid #e9ecef;border-radius:10px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.06);transition:transform .2s,box-shadow .2s}
-.nw-card:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,0,0,.1)}
-.nw-card-name{font-size:1.1rem;font-weight:700;color:#1a1a2e;margin-bottom:4px}
-.nw-card-worth{font-size:1.3rem;font-weight:800;color:#0052cc;margin:8px 0}
-.nw-card a{text-decoration:none}
-.nw-card a:hover .nw-card-name{color:#0052cc}
-.nw-count{text-align:center;color:#888;font-size:.9rem;margin-bottom:20px}
+.nw-index-hero {
+  background: var(--dark);
+  color: #fff;
+  padding: 56px 0;
+  text-align: center;
+  border-bottom: 3px solid var(--red);
+}
+.nw-index-hero h1 {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 900;
+  margin-bottom: 10px;
+}
+.nw-index-hero p { font-size: 16px; color: rgba(255,255,255,0.6); }
+.nw-index-body { padding: 36px 0 60px; }
+.nw-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 28px;
+  justify-content: center;
+}
+.nw-filter-btn {
+  padding: 6px 16px;
+  border: 1.5px solid var(--border);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 700;
+  background: #fff;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.15s;
+  font-family: var(--sans);
+}
+.nw-filter-btn.active,
+.nw-filter-btn:hover { background: var(--red); color: #fff; border-color: var(--red); }
+.nw-count { text-align: center; color: var(--muted); font-size: 13px; margin-bottom: 24px; }
+.nw-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+.nw-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  transition: box-shadow 0.2s, transform 0.2s;
+  background: #fff;
+  text-decoration: none;
+  color: inherit;
+}
+.nw-card:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.1); transform: translateY(-2px); }
+.nw-card-img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  object-position: top;
+  background: var(--gray);
+}
+.nw-card-body { padding: 14px; flex: 1; display: flex; flex-direction: column; }
+.nw-card-cat {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--red);
+  margin-bottom: 5px;
+}
+.nw-card-name {
+  font-family: var(--serif);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--dark);
+  margin-bottom: 6px;
+  line-height: 1.3;
+  transition: color 0.2s;
+}
+.nw-card:hover .nw-card-name { color: var(--red); }
+.nw-card-worth {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--dark);
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+.nw-card-meta { font-size: 11px; color: var(--muted); margin-top: 4px; }
+@media (max-width: 640px) {
+  .nw-grid { grid-template-columns: repeat(2, 1fr); }
+}
 </style>
 </head>
 <body>
-<div class="topbar"><div class="topbar-inner">
+{{ nav_html }}
+<div class="nw-index-hero">
+  <div class="container">
+    <h1>Celebrity Net Worth {{ year }}</h1>
+    <p>Estimated net worth of {{ total }} celebrities, influencers &amp; billionaires</p>
+  </div>
+</div>
+<div class="nw-index-body">
+  <div class="container">
+    <div class="nw-filter" id="filters">
+      <button class="nw-filter-btn active" onclick="filter('all',this)">All</button>
+      {% for cat in categories %}
+      <button class="nw-filter-btn" onclick="filter('{{ cat|lower|replace(' ','-') }}',this)">{{ cat }}</button>
+      {% endfor %}
+    </div>
+    <div class="nw-count" id="count">Showing {{ total }} profiles</div>
+    <div class="nw-grid" id="grid">
+      {% for p in profiles %}
+      <a href="{{ p.slug }}.html" class="nw-card" data-cat="{{ p.category|lower|replace(' ','-') }}">
+        <img src="{{ p.image_url }}" alt="{{ p.name }}" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name={{ p.name|urlencode }}&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">{{ p.category }}</div>
+          <div class="nw-card-name">{{ p.name }}</div>
+          <div class="nw-card-worth">{{ p.estimated_net_worth }}</div>
+          <div class="nw-card-meta">{{ p.nationality }}</div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{{ foot_html }}
+<script>
+function filter(cat, btn) {
+  document.querySelectorAll('.nw-filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const cards = document.querySelectorAll('.nw-card');
+  let v = 0;
+  cards.forEach(c => {
+    const show = cat === 'all' || c.dataset.cat === cat;
+    c.style.display = show ? '' : 'none';
+    if (show) v++;
+  });
+  document.getElementById('count').textContent = 'Showing ' + v + ' profiles';
+}
+</script>
+</body>
+</html>"""
+
+
+def get_nw_nav():
+    return """<div class="topbar"><div class="topbar-inner">
   <span class="topbar-left"></span>
   <a href="../" class="topbar-logo">Markets <span class="accent">News</span> Today</a>
   <span class="topbar-right">Business &middot; Finance &middot; Technology</span>
@@ -5362,44 +5600,13 @@ NETWORTH_INDEX_TEMPLATE = """<!DOCTYPE html>
   <a href="../category-health.html">Health</a>
   <a href="../category-politics.html">Politics</a>
   <a href="index.html">Net Worth</a>
-</div></nav>
+</div></nav>"""
 
-<div class="nw-index-hero">
-  <div class="container">
-    <h1>Celebrity Net Worth {{ year }}</h1>
-    <p>Estimated net worth of {{ total }} celebrities, influencers & billionaires</p>
-  </div>
-</div>
-
-<main class="container">
-  <div class="nw-filter" id="filters">
-    <button class="nw-filter-btn active" onclick="filter('all')">All</button>
-    {% for cat in categories %}
-    <button class="nw-filter-btn" onclick="filter('{{ cat|lower|replace(' ','-') }}')">{{ cat }}</button>
-    {% endfor %}
-  </div>
-
-  <div class="nw-count" id="count">Showing {{ total }} profiles</div>
-
-  <div class="nw-grid" id="grid">
-    {% for p in profiles %}
-    <div class="nw-card" data-cat="{{ p.category|lower|replace(' ','-') }}">
-      <a href="{{ p.slug }}.html">
-        <div class="nw-card-name">{{ p.name }}</div>
-        <span class="category">{{ p.category }}</span>
-        <div class="nw-card-worth">{{ p.estimated_net_worth }}</div>
-        <div style="font-size:.82rem;color:#888">{{ p.nationality }} · {{ p.age }}</div>
-      </a>
-    </div>
-    {% endfor %}
-  </div>
-</main>
-
-<footer class="footer">
-<div class="footer-top"><div class="container"><div class="footer-grid">
+def get_nw_footer(year):
+    return f"""<footer class="footer"><div class="footer-top"><div class="container"><div class="footer-grid">
   <div class="footer-brand">
     <div class="footer-logo">Markets <span class="accent">News</span> Today</div>
-    <p>Your trusted source for breaking news and in-depth analysis.</p>
+    <p>Your trusted source for breaking news and expert analysis.</p>
   </div>
   <div class="footer-col"><h4>Business</h4>
     <a href="../category-business.html">Business</a>
@@ -5417,34 +5624,33 @@ NETWORTH_INDEX_TEMPLATE = """<!DOCTYPE html>
     <a href="../category-travel.html">Travel</a>
     <a href="../sitemap.xml">Sitemap</a></div>
 </div></div></div>
-<div class="footer-btm"><div class="container">&copy; {{ year }} Markets News Today. All rights reserved.</div></div>
-</footer>
+<div class="footer-btm"><div class="container">&copy; {year} Markets News Today. All rights reserved.</div></div>
+</footer>"""
 
-<script>
-function filter(cat) {
-  document.querySelectorAll('.nw-filter-btn').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
-  const cards = document.querySelectorAll('.nw-card');
-  let visible = 0;
-  cards.forEach(c => {
-    const show = cat === 'all' || c.dataset.cat === cat;
-    c.style.display = show ? '' : 'none';
-    if (show) visible++;
-  });
-  document.getElementById('count').textContent = 'Showing ' + visible + ' profiles';
-}
-</script>
-</body>
-</html>"""
-
+def get_celeb_image(name, slug):
+    """Get celebrity image from Unsplash or fallback to avatar"""
+    unsplash_key = os.environ.get("UNSPLASH_KEY", "")
+    if unsplash_key:
+        try:
+            r = requests.get("https://api.unsplash.com/photos/random",
+                params={"query": name + " celebrity portrait", "orientation": "squarish"},
+                headers={"Authorization": "Client-ID " + unsplash_key}, timeout=8)
+            if r.status_code == 200:
+                return r.json()["urls"]["regular"]
+        except Exception:
+            pass
+    seed = abs(hash(slug)) % 1000
+    return f"https://picsum.photos/seed/{seed}/400/400"
 
 def build_profile_html(data: dict) -> str:
     now = datetime.now(timezone.utc)
     tpl = Template(PROFILE_TEMPLATE)
-    return tpl.render(**data, site_name=SITE_NAME, site_url=SITE_URL, year=now.year)
+    return tpl.render(**data, site_name=SITE_NAME, site_url=SITE_URL, year=now.year,
+                      nav_html=get_nw_nav(), foot_html=get_nw_footer(now.year))
 
 
 def rebuild_networth_index(profiles: list):
+    now = datetime.now()
     categories = sorted(set(p["category"] for p in profiles))
     tpl = Template(NETWORTH_INDEX_TEMPLATE)
     html = tpl.render(
@@ -5453,7 +5659,9 @@ def rebuild_networth_index(profiles: list):
         total=len(profiles),
         site_name=SITE_NAME,
         site_url=SITE_URL,
-        year=datetime.now().year,
+        year=now.year,
+        nav_html=get_nw_nav(),
+        foot_html=get_nw_footer(now.year),
     )
     (NETWORTH_DIR / "index.html").write_text(html)
 
@@ -5485,6 +5693,10 @@ def main():
 
         profile["slug"] = slug
 
+        # Get celebrity image
+        image_url = get_celeb_image(name, slug)
+        profile["image_url"] = image_url
+
         # Save profile HTML
         html = build_profile_html(profile)
         (NETWORTH_DIR / f"{slug}.html").write_text(html)
@@ -5497,6 +5709,7 @@ def main():
             "estimated_net_worth": profile.get("estimated_net_worth", "N/A"),
             "nationality":       profile.get("nationality", ""),
             "age":               profile.get("age", ""),
+            "image_url":         image_url,
             "meta_description":  profile.get("meta_description", ""),
         })
         done.add(slug)
