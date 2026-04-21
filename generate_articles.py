@@ -195,11 +195,11 @@ def nav_html(prefix=""):
     d = datetime.now().strftime("%A, %B %d, %Y")
     return f"""<div class="topbar"><div class="topbar-inner">
   <span class="topbar-left">{d}</span>
-  <a href="{prefix}index.html" class="topbar-logo">Markets <span class="accent">News</span> Today</a>
+  <a href="{prefix}" class="topbar-logo">Markets <span class="accent">News</span> Today</a>
   <span class="topbar-right">Business &middot; Finance &middot; Technology</span>
 </div></div>
 <nav class="navbar"><div class="navbar-inner">
-  <a href="{prefix}index.html">Home</a>
+  <a href="{prefix}">Home</a>
   <a href="{prefix}category-business.html">Business</a>
   <a href="{prefix}category-technology.html">Technology</a>
   <a href="{prefix}category-finance.html">Finance</a>
