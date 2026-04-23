@@ -5089,6 +5089,58 @@ def fetch_wiki(name: str) -> str:
         return ""
 
 
+def fetch_wiki_image(name: str, real_name: str = "") -> str:
+    """Fetch real person image from Wikipedia. Returns URL or empty string."""
+    # Try real name first, then stage name
+    search_names = []
+    if real_name and real_name != name:
+        search_names.append(real_name)
+    search_names.append(name)
+
+    for search_name in search_names:
+        try:
+            # Use Wikipedia REST API summary endpoint (returns thumbnail)
+            url = f"https://en.wikipedia.org/api/rest_v1/page/summary/{search_name.replace(' ', '_')}"
+            r = requests.get(url, timeout=10, headers={"User-Agent": "AutoBlogBot/1.0"})
+            if r.status_code == 200:
+                data = r.json()
+                thumb = data.get("thumbnail", {})
+                img_url = thumb.get("source", "")
+                if img_url:
+                    # Upscale to 400px for better quality
+                    import re as _re
+                    img_url = _re.sub(r"/(\d+)px-", "/400px-", img_url)
+                    return img_url
+        except Exception:
+            pass
+
+        try:
+            # Fallback: Wikipedia Action API pageimages
+            params = {
+                "action": "query",
+                "titles": search_name,
+                "prop": "pageimages",
+                "pithumbsize": 400,
+                "format": "json",
+                "redirects": 1,
+            }
+            r = requests.get(
+                "https://en.wikipedia.org/w/api.php",
+                params=params, timeout=10,
+                headers={"User-Agent": "AutoBlogBot/1.0"},
+            )
+            if r.status_code == 200:
+                pages = r.json().get("query", {}).get("pages", {})
+                for page in pages.values():
+                    thumb = page.get("thumbnail", {})
+                    if thumb.get("source"):
+                        return thumb["source"]
+        except Exception:
+            pass
+
+    return ""
+
+
 # ─── CLAUDE PROFILE WRITER ─────────────────────────────────────────────────────
 
 def generate_profile(celeb: dict, wiki_text: str) -> dict | None:
@@ -5627,20 +5679,28 @@ def get_nw_footer(year):
 <div class="footer-btm"><div class="container">&copy; {year} Markets News Today. All rights reserved.</div></div>
 </footer>"""
 
-def get_celeb_image(name, slug):
-    """Get celebrity image from Unsplash or fallback to avatar"""
+def get_celeb_image(name, slug, real_name=""):
+    """Get real celebrity image. Priority: Wikipedia → Unsplash → ui-avatars fallback."""
+    # 1. Try Wikipedia (most reliable source of real person photos)
+    wiki_img = fetch_wiki_image(name, real_name)
+    if wiki_img:
+        return wiki_img
+
+    # 2. Try Unsplash with person's name
     unsplash_key = os.environ.get("UNSPLASH_KEY", "")
     if unsplash_key:
         try:
             r = requests.get("https://api.unsplash.com/photos/random",
-                params={"query": name + " celebrity portrait", "orientation": "squarish"},
+                params={"query": name + " portrait", "orientation": "squarish"},
                 headers={"Authorization": "Client-ID " + unsplash_key}, timeout=8)
             if r.status_code == 200:
                 return r.json()["urls"]["regular"]
         except Exception:
             pass
-    seed = abs(hash(slug)) % 1000
-    return f"https://picsum.photos/seed/{seed}/400/400"
+
+    # 3. Fallback: ui-avatars with person's name (better than random picsum)
+    from urllib.parse import quote
+    return f"https://ui-avatars.com/api/?name={quote(name)}&size=400&background=1a1a2e&color=fff&bold=true&font-size=0.4"
 
 def build_profile_html(data: dict) -> str:
     now = datetime.now(timezone.utc)
@@ -5693,8 +5753,9 @@ def main():
 
         profile["slug"] = slug
 
-        # Get celebrity image
-        image_url = get_celeb_image(name, slug)
+        # Get celebrity image (real photo from Wikipedia first)
+        real_name_val = celeb.get("real_name", name)
+        image_url = get_celeb_image(name, slug, real_name=real_name_val)
         profile["image_url"] = image_url
 
         # Save profile HTML
