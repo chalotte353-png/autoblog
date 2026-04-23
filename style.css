@@ -537,3 +537,12 @@ a { color: inherit; text-decoration: none; }
 .author-name { font-weight: 700; color: var(--dark); font-size: 14px; }
 .author-title-text { font-size: 11px; color: var(--muted); }
 .author-avatar { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; }
+
+/* Hide duplicate plain related articles box */
+.post-body + h3,
+.post-body ~ h3 {
+  display: none;
+}
+.post-body ~ ul {
+  display: none;
+}
