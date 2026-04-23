@@ -3,466 +3,665 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Celebrity Net Worth 2026 — Markets News Today</title>
+<title>Celebrity Net Worth 2026 | Markets News Today</title>
 <meta name="description" content="Complete list of celebrity, influencer and billionaire net worth estimates for 2026. YouTubers, athletes, actors, musicians and more.">
-<meta name="robots" content="index, follow">
+<meta name="robots" content="index,follow">
 <link rel="canonical" href="https://marketsnewstoday.info/networth/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="../style.css">
 <style>
-.nw-index-hero{background:linear-gradient(135deg,#1a1a2e,#0052cc);color:#fff;padding:48px 0;text-align:center;margin-bottom:40px}
-.nw-index-hero h1{font-size:clamp(1.8rem,5vw,3rem);font-weight:800;margin-bottom:12px}
-.nw-index-hero p{font-size:1.1rem;opacity:.85}
-.nw-filter{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:28px;justify-content:center}
-.nw-filter-btn{padding:7px 18px;border:2px solid #e9ecef;border-radius:20px;cursor:pointer;font-size:.85rem;font-weight:600;background:#fff;color:#555;transition:all .2s}
-.nw-filter-btn.active,.nw-filter-btn:hover{background:#0052cc;color:#fff;border-color:#0052cc}
-.nw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}
-.nw-card{background:#fff;border:1px solid #e9ecef;border-radius:10px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.06);transition:transform .2s,box-shadow .2s}
-.nw-card:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,0,0,.1)}
-.nw-card-name{font-size:1.1rem;font-weight:700;color:#1a1a2e;margin-bottom:4px}
-.nw-card-worth{font-size:1.3rem;font-weight:800;color:#0052cc;margin:8px 0}
-.nw-card a{text-decoration:none}
-.nw-card a:hover .nw-card-name{color:#0052cc}
-.nw-count{text-align:center;color:#888;font-size:.9rem;margin-bottom:20px}
+.nw-index-hero {
+  background: var(--dark);
+  color: #fff;
+  padding: 56px 0;
+  text-align: center;
+  border-bottom: 3px solid var(--red);
+}
+.nw-index-hero h1 {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 900;
+  margin-bottom: 10px;
+}
+.nw-index-hero p { font-size: 16px; color: rgba(255,255,255,0.6); }
+.nw-index-body { padding: 36px 0 60px; }
+.nw-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 28px;
+  justify-content: center;
+}
+.nw-filter-btn {
+  padding: 6px 16px;
+  border: 1.5px solid var(--border);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 700;
+  background: #fff;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.15s;
+  font-family: var(--sans);
+}
+.nw-filter-btn.active,
+.nw-filter-btn:hover { background: var(--red); color: #fff; border-color: var(--red); }
+.nw-count { text-align: center; color: var(--muted); font-size: 13px; margin-bottom: 24px; }
+.nw-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+.nw-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  transition: box-shadow 0.2s, transform 0.2s;
+  background: #fff;
+  text-decoration: none;
+  color: inherit;
+}
+.nw-card:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.1); transform: translateY(-2px); }
+.nw-card-img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  object-position: top;
+  background: var(--gray);
+}
+.nw-card-body { padding: 14px; flex: 1; display: flex; flex-direction: column; }
+.nw-card-cat {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--red);
+  margin-bottom: 5px;
+}
+.nw-card-name {
+  font-family: var(--serif);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--dark);
+  margin-bottom: 6px;
+  line-height: 1.3;
+  transition: color 0.2s;
+}
+.nw-card:hover .nw-card-name { color: var(--red); }
+.nw-card-worth {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--dark);
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+.nw-card-meta { font-size: 11px; color: var(--muted); margin-top: 4px; }
+@media (max-width: 640px) {
+  .nw-grid { grid-template-columns: repeat(2, 1fr); }
+}
 </style>
 </head>
 <body>
-<header class="site-header">
-  <div class="container">
-    <a href="../index.html" class="logo">Markets News Today</a>
-    <nav><a href="../index.html">Home</a><a href="index.html">Net Worth</a></nav>
-  </div>
-</header>
-
+<div class="topbar"><div class="topbar-inner">
+  <span class="topbar-left"></span>
+  <a href="../" class="topbar-logo">Markets <span class="accent">News</span> Today</a>
+  <span class="topbar-right">Business &middot; Finance &middot; Technology</span>
+</div></div>
+<nav class="navbar"><div class="navbar-inner">
+  <a href="../">Home</a>
+  <a href="../category-business.html">Business</a>
+  <a href="../category-technology.html">Technology</a>
+  <a href="../category-finance.html">Finance</a>
+  <a href="../category-world.html">World</a>
+  <a href="../category-sports.html">Sports</a>
+  <a href="../category-health.html">Health</a>
+  <a href="../category-politics.html">Politics</a>
+  <a href="index.html">Net Worth</a>
+</div></nav>
 <div class="nw-index-hero">
   <div class="container">
     <h1>Celebrity Net Worth 2026</h1>
-    <p>Estimated net worth of 42 celebrities, influencers & billionaires</p>
+    <p>Estimated net worth of 43 celebrities, influencers &amp; billionaires</p>
   </div>
 </div>
-
-<main class="container">
-  <div class="nw-filter" id="filters">
-    <button class="nw-filter-btn active" onclick="filter('all')">All</button>
-    
-    <button class="nw-filter-btn" onclick="filter('beauty-youtuber')">Beauty YouTuber</button>
-    
-    <button class="nw-filter-btn" onclick="filter('gamer/streamer')">Gamer/Streamer</button>
-    
-    <button class="nw-filter-btn" onclick="filter('lifestyle-youtuber')">Lifestyle YouTuber</button>
-    
-    <button class="nw-filter-btn" onclick="filter('streamer')">Streamer</button>
-    
-    <button class="nw-filter-btn" onclick="filter('tech-youtuber')">Tech YouTuber</button>
-    
-    <button class="nw-filter-btn" onclick="filter('youtuber')">YouTuber</button>
-    
-    <button class="nw-filter-btn" onclick="filter('youtuber/boxer')">YouTuber/Boxer</button>
-    
-  </div>
-
-  <div class="nw-count" id="count">Showing 42 profiles</div>
-
-  <div class="nw-grid" id="grid">
-    
-    <div class="nw-card" data-cat="youtuber">
-      <a href="alfie-deyes.html">
-        <div class="nw-card-name">Alfie Deyes</div>
-        <span class="category">YouTuber</span>
-        <div class="nw-card-worth">$8 Million</div>
-        <div style="font-size:.82rem;color:#888">British · Born September 17, 1993 (age 30)</div>
-      </a>
-    </div>
-    
-    <div class="nw-card" data-cat="youtuber">
-      <a href="behzinga.html">
-        <div class="nw-card-name">Behzinga</div>
-        <span class="category">YouTuber</span>
-        <div class="nw-card-worth">$4 Million</div>
-        <div style="font-size:.82rem;color:#888">British · Born April 1995 (29 years old)</div>
-      </a>
-    </div>
-    
-    <div class="nw-card" data-cat="youtuber">
-      <a href="calfreezy.html">
-        <div class="nw-card-name">Calfreezy</div>
-        <span class="category">YouTuber</span>
-        <div class="nw-card-worth">$3 Million</div>
-        <div style="font-size:.82rem;color:#888">British · Born 1994 (approx. 30 years old)</div>
-      </a>
-    </div>
-    
-    <div class="nw-card" data-cat="youtuber">
-      <a href="casey-neistat.html">
-        <div class="nw-card-name">Casey Neistat</div>
-        <span class="category">YouTuber</span>
-        <div class="nw-card-worth">$16 Million</div>
-        <div style="font-size:.82rem;color:#888">American · Born March 25, 1981 (Age 43)</div>
-      </a>
-    </div>
-    
-    <div class="nw-card" data-cat="youtuber">
-      <a href="connor-franta.html">
-        <div class="nw-card-name">Connor Franta</div>
-        <span class="category">YouTuber</span>
-        <div class="nw-card-worth">$3 Million</div>
-        <div style="font-size:.82rem;color:#888">American · Born September 12, 1992 (age 31)</div>
-      </a>
-    </div>
-    
-    <div class="nw-card" data-cat="youtuber">
-      <a href="david-dobrik.html">
-        <div class="nw-card-name">David Dobrik</div>
-        <span class="category">YouTuber</span>
-        <div class="nw-card-worth">$25 Million</div>
-        <div style="font-size:.82rem;color:#888">Slovak-American · Born July 23, 1996 (age 28)</div>
-      </a>
-    </div>
-    
-    <div class="nw-card" data-cat="youtuber">
-      <a href="dude-perfect.html">
-        <div class="nw-card-name">Dude Perfect</div>
-        <span class="category">YouTuber</span>
-        <div class="nw-card-worth">$100 Million+</div>
-        <div style="font-size:.82rem;color:#888">American · Founded 2009; members born early-mid 1980s (ages ~35-42)</div>
-      </a>
-    </div>
-    
-    <div class="nw-card" data-cat="youtuber">
-      <a href="emma-chamberlain.html">
-        <div class="nw-card-name">Emma Chamberlain</div>
-        <span class="category">YouTuber</span>
-        <div class="nw-card-worth">$20 Million</div>
-        <div style="font-size:.82rem;color:#888">American · Born May 22, 2001 (Age 23)</div>
-      </a>
-    </div>
-    
-    <div class="nw-card" data-cat="youtuber">
-      <a href="grace-helbig.html">
-        <div class="nw-card-name">Grace Helbig</div>
-        <span class="category">YouTuber</span>
-        <div class="nw-card-worth">$3 Million</div>
-        <div style="font-size:.82rem;color:#888">American · Born September 27, 1985 (age 38)</div>
-      </a>
-    </div>
-    
-    <div class="nw-card" data-cat="youtuber">
-      <a href="jacksfilms.html">
-        <div class="nw-card-name">Jacksfilms</div>
-        <span class="category">YouTuber</span>
-        <div class="nw-card-worth">$3 Million</div>
-        <div style="font-size:.82rem;color:#888">American · Born October 26, 1988 (age 35)</div>
-      </a>
-    </div>
-    
-    <div class="nw-card" data-cat="youtuber/boxer">
-      <a href="jake-paul.html">
-        <div class="nw-card-name">Jake Paul</div>
-        <span class="category">YouTuber/Boxer</span>
-        <div class="nw-card-worth">$80 Million</div>
-        <div style="font-size:.82rem;color:#888">American · 27 (born January 17, 1997)</div>
-      </a>
-    </div>
-    
-    <div class="nw-card" data-cat="beauty-youtuber">
-      <a href="james-charles.html">
-        <div class="nw-card-name">James Charles</div>
-        <span class="category">Beauty YouTuber</span>
-        <div class="nw-card-worth">$22 Million</div>
-        <div style="font-size:.82rem;color:#888">American · Born April 23, 1999 (age 25)</div>
-      </a>
-    </div>
-    
-    <div class="nw-card" data-cat="beauty-youtuber">
-      <a href="jeffree-star.html">
-        <div class="nw-card-name">Jeffree Star</div>
-        <span class="category">Beauty YouTuber</span>
-        <div class="nw-card-worth">$200 Million</div>
-        <div style="font-size:.82rem;color:#888">American · 38</div>
-      </a>
-    </div>
-    
-    <div class="nw-card" data-cat="youtuber">
-      <a href="jim-chapman.html">
-        <div class="nw-card-name">Jim Chapman</div>
-        <span class="category">YouTuber</span>
-        <div class="nw-card-worth">$4 Million</div>
-        <div style="font-size:.82rem;color:#888">British · Born 1987 (approx. 37 years old)</div>
-      </a>
-    </div>
-    
-    <div class="nw-card" data-cat="youtuber">
-      <a href="kurzgesagt.html">
-        <div class="nw-card-name">Kurzgesagt</div>
-        <span class="category">YouTuber</span>
-        <div class="nw-card-worth">$50 Million</div>
-        <div style="font-size:.82rem;color:#888">German · Founded 2013</div>
-      </a>
-    </div>
-    
-    <div class="nw-card" data-cat="youtuber">
-      <a href="lilly-singh.html">
-        <div class="nw-card-name">Lilly Singh</div>
-        <span class="category">YouTuber</span>
-        <div class="nw-card-worth">$20 Million</div>
-        <div style="font-size:.82rem;color:#888">Canadian · Born September 26, 1988 (Age 35)</div>
-      </a>
-    </div>
-    
-    <div class="nw-card" data-cat="tech-youtuber">
-      <a href="linus-tech-tips.html">
-        <div class="nw-card-name">Linus Tech Tips</div>
-        <span class="category">Tech YouTuber</span>
-        <div class="nw-card-worth">$50 Million</div>
-        <div style="font-size:.82rem;color:#888">Canadian · Born April 20, 1986 (age 38)</div>
-      </a>
-    </div>
-    
-    <div class="nw-card" data-cat="youtuber/boxer">
-      <a href="logan-paul.html">
-        <div class="nw-card-name">Logan Paul</div>
-        <span class="category">YouTuber/Boxer</span>
-        <div class="nw-card-worth">$45 Million</div>
-        <div style="font-size:.82rem;color:#888">American · 29 (born April 1, 1995)</div>
-      </a>
-    </div>
-    
-    <div class="nw-card" data-cat="tech-youtuber">
-      <a href="mkbhd.html">
-        <div class="nw-card-name">MKBHD</div>
-        <span class="category">Tech YouTuber</span>
-        <div class="nw-card-worth">$40 Million</div>
-        <div style="font-size:.82rem;color:#888">American · Born February 3, 1994 (age 30)</div>
-      </a>
-    </div>
-    
-    <div class="nw-card" data-cat="youtuber">
-      <a href="mark-rober.html">
-        <div class="nw-card-name">Mark Rober</div>
-        <span class="category">YouTuber</span>
-        <div class="nw-card-worth">$50 Million</div>
-        <div style="font-size:.82rem;color:#888">American · 47 (born March 11, 1980)</div>
-      </a>
-    </div>
-    
-    <div class="nw-card" data-cat="youtuber">
-      <a href="markiplier.html">
-        <div class="nw-card-name">Markiplier</div>
-        <span class="category">YouTuber</span>
-        <div class="nw-card-worth">$35 Million</div>
-        <div style="font-size:.82rem;color:#888">American · 34 (born June 28, 1989)</div>
-      </a>
-    </div>
-    
-    <div class="nw-card" data-cat="youtuber">
-      <a href="miniminter.html">
-        <div class="nw-card-name">Miniminter</div>
-        <span class="category">YouTuber</span>
-        <div class="nw-card-worth">$20 Million</div>
-        <div style="font-size:.82rem;color:#888">British · 31 (born September 7, 1992)</div>
-      </a>
-    </div>
-    
-    <div class="nw-card" data-cat="youtuber">
-      <a href="mrbeast.html">
-        <div class="nw-card-name">MrBeast</div>
-        <span class="category">YouTuber</span>
-        <div class="nw-card-worth">$700 Million</div>
-        <div style="font-size:.82rem;color:#888">American · 26 (born May 7, 1998)</div>
-      </a>
-    </div>
-    
-    <div class="nw-card" data-cat="gamer/streamer">
-      <a href="ninja.html">
-        <div class="nw-card-name">Ninja</div>
-        <span class="category">Gamer/Streamer</span>
-        <div class="nw-card-worth">$40 Million</div>
-        <div style="font-size:.82rem;color:#888">American · 33 (born June 5, 1991)</div>
-      </a>
-    </div>
-    
-    <div class="nw-card" data-cat="youtuber">
-      <a href="pewdiepie.html">
-        <div class="nw-card-name">PewDiePie</div>
-        <span class="category">YouTuber</span>
-        <div class="nw-card-worth">$40 Million</div>
-        <div style="font-size:.82rem;color:#888">Swedish · 35 (Born October 27, 1989)</div>
-      </a>
-    </div>
-    
-    <div class="nw-card" data-cat="youtuber">
-      <a href="phillip-defranco.html">
-        <div class="nw-card-name">Phillip DeFranco</div>
-        <span class="category">YouTuber</span>
-        <div class="nw-card-worth">$10 Million</div>
-        <div style="font-size:.82rem;color:#888">American · Born December 1, 1985</div>
-      </a>
-    </div>
-    
-    <div class="nw-card" data-cat="streamer">
-      <a href="pokimane.html">
-        <div class="nw-card-name">Pokimane</div>
-        <span class="category">Streamer</span>
-        <div class="nw-card-worth">$20 Million</div>
-        <div style="font-size:.82rem;color:#888">Moroccan-Canadian · 28</div>
-      </a>
-    </div>
-    
-    <div class="nw-card" data-cat="youtuber">
-      <a href="rhett-and-link.html">
-        <div class="nw-card-name">Rhett and Link</div>
-        <span class="category">YouTuber</span>
-        <div class="nw-card-worth">$35 Million (combined, ~$17-18M each)</div>
-        <div style="font-size:.82rem;color:#888">American · Rhett McLaughlin born October 11, 1977 (age 46); Link Neal born June 1, 1978 (age 45)</div>
-      </a>
-    </div>
-    
-    <div class="nw-card" data-cat="youtuber">
-      <a href="smosh.html">
-        <div class="nw-card-name">Smosh</div>
-        <span class="category">YouTuber</span>
-        <div class="nw-card-worth">$25 Million</div>
-        <div style="font-size:.82rem;color:#888">United States · Ian Hecox (born November 30, 1987) - 36 years old; Anthony Padilla (born September 16, 1987) - 36 years old</div>
-      </a>
-    </div>
-    
-    <div class="nw-card" data-cat="youtuber">
-      <a href="sprinkleofglitter.html">
-        <div class="nw-card-name">Sprinkleofglitter</div>
-        <span class="category">YouTuber</span>
-        <div class="nw-card-worth">$4 Million</div>
-        <div style="font-size:.82rem;color:#888">British · Born July 28, 1985 (age 39)</div>
-      </a>
-    </div>
-    
-    <div class="nw-card" data-cat="youtuber">
-      <a href="tana-mongeau.html">
-        <div class="nw-card-name">Tana Mongeau</div>
-        <span class="category">YouTuber</span>
-        <div class="nw-card-worth">$4 Million</div>
-        <div style="font-size:.82rem;color:#888">American · 26 (born June 24, 1998)</div>
-      </a>
-    </div>
-    
-    <div class="nw-card" data-cat="youtuber">
-      <a href="tobi-brown.html">
-        <div class="nw-card-name">Tobi Brown</div>
-        <span class="category">YouTuber</span>
-        <div class="nw-card-worth">$4 Million</div>
-        <div style="font-size:.82rem;color:#888">British · Born March 8, 1993 (age 31)</div>
-      </a>
-    </div>
-    
-    <div class="nw-card" data-cat="youtuber">
-      <a href="trisha-paytas.html">
-        <div class="nw-card-name">Trisha Paytas</div>
-        <span class="category">YouTuber</span>
-        <div class="nw-card-worth">$10 Million</div>
-        <div style="font-size:.82rem;color:#888">American · 36 (born May 8, 1988)</div>
-      </a>
-    </div>
-    
-    <div class="nw-card" data-cat="youtuber">
-      <a href="tyler-oakley.html">
-        <div class="nw-card-name">Tyler Oakley</div>
-        <span class="category">YouTuber</span>
-        <div class="nw-card-worth">$10 Million</div>
-        <div style="font-size:.82rem;color:#888">American · 35 (born March 22, 1989)</div>
-      </a>
-    </div>
-    
-    <div class="nw-card" data-cat="tech-youtuber">
-      <a href="unbox-therapy.html">
-        <div class="nw-card-name">Unbox Therapy</div>
-        <span class="category">Tech YouTuber</span>
-        <div class="nw-card-worth">$20 Million</div>
-        <div style="font-size:.82rem;color:#888">Canadian · Born 1985 (approx. 38-39 years old)</div>
-      </a>
-    </div>
-    
-    <div class="nw-card" data-cat="streamer">
-      <a href="valkyrae.html">
-        <div class="nw-card-name">Valkyrae</div>
-        <span class="category">Streamer</span>
-        <div class="nw-card-worth">$2 Million – $4 Million</div>
-        <div style="font-size:.82rem;color:#888">American (Filipino-German descent) · 32 (born January 8, 1992)</div>
-      </a>
-    </div>
-    
-    <div class="nw-card" data-cat="youtuber">
-      <a href="vikkstar123.html">
-        <div class="nw-card-name">Vikkstar123</div>
-        <span class="category">YouTuber</span>
-        <div class="nw-card-worth">$20 Million</div>
-        <div style="font-size:.82rem;color:#888">British · Born August 2, 1995 (age 29)</div>
-      </a>
-    </div>
-    
-    <div class="nw-card" data-cat="youtuber">
-      <a href="vsauce.html">
-        <div class="nw-card-name">Vsauce</div>
-        <span class="category">YouTuber</span>
-        <div class="nw-card-worth">$10 Million</div>
-        <div style="font-size:.82rem;color:#888">American · Born January 23, 1986 (age 38)</div>
-      </a>
-    </div>
-    
-    <div class="nw-card" data-cat="youtuber">
-      <a href="w2s.html">
-        <div class="nw-card-name">W2S</div>
-        <span class="category">YouTuber</span>
-        <div class="nw-card-worth">$20 Million</div>
-        <div style="font-size:.82rem;color:#888">British · Born November 24, 1996 (age 27)</div>
-      </a>
-    </div>
-    
-    <div class="nw-card" data-cat="youtuber">
-      <a href="zerkaa.html">
-        <div class="nw-card-name">Zerkaa</div>
-        <span class="category">YouTuber</span>
-        <div class="nw-card-worth">$4 Million</div>
-        <div style="font-size:.82rem;color:#888">British · born September 4, 1992</div>
-      </a>
-    </div>
-    
-    <div class="nw-card" data-cat="lifestyle-youtuber">
-      <a href="zoella.html">
-        <div class="nw-card-name">Zoella</div>
-        <span class="category">Lifestyle YouTuber</span>
-        <div class="nw-card-worth">$6 Million</div>
-        <div style="font-size:.82rem;color:#888">British · 34 (born March 28, 1990)</div>
-      </a>
-    </div>
-    
-    <div class="nw-card" data-cat="youtuber">
-      <a href="ijustine.html">
-        <div class="nw-card-name">iJustine</div>
-        <span class="category">YouTuber</span>
-        <div class="nw-card-worth">$4 Million</div>
-        <div style="font-size:.82rem;color:#888">American · Born March 20, 1984 (age 40)</div>
-      </a>
-    </div>
-    
-  </div>
-</main>
-
-<footer class="site-footer">
+<div class="nw-index-body">
   <div class="container">
-    <p>Estimates based on publicly available information. &copy; 2026 Markets News Today</p>
+    <div class="nw-filter" id="filters">
+      <button class="nw-filter-btn active" onclick="filter('all',this)">All</button>
+      
+      <button class="nw-filter-btn" onclick="filter('beauty-youtuber',this)">Beauty YouTuber</button>
+      
+      <button class="nw-filter-btn" onclick="filter('gamer/streamer',this)">Gamer/Streamer</button>
+      
+      <button class="nw-filter-btn" onclick="filter('lifestyle-youtuber',this)">Lifestyle YouTuber</button>
+      
+      <button class="nw-filter-btn" onclick="filter('streamer',this)">Streamer</button>
+      
+      <button class="nw-filter-btn" onclick="filter('tech-youtuber',this)">Tech YouTuber</button>
+      
+      <button class="nw-filter-btn" onclick="filter('youtuber',this)">YouTuber</button>
+      
+      <button class="nw-filter-btn" onclick="filter('youtuber/boxer',this)">YouTuber/Boxer</button>
+      
+    </div>
+    <div class="nw-count" id="count">Showing 43 profiles</div>
+    <div class="nw-grid" id="grid">
+      
+      <a href="alfie-deyes.html" class="nw-card" data-cat="youtuber">
+        <img src="" alt="Alfie Deyes" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=Alfie%20Deyes&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">YouTuber</div>
+          <div class="nw-card-name">Alfie Deyes</div>
+          <div class="nw-card-worth">$8 Million</div>
+          <div class="nw-card-meta">British</div>
+        </div>
+      </a>
+      
+      <a href="behzinga.html" class="nw-card" data-cat="youtuber">
+        <img src="" alt="Behzinga" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=Behzinga&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">YouTuber</div>
+          <div class="nw-card-name">Behzinga</div>
+          <div class="nw-card-worth">$4 Million</div>
+          <div class="nw-card-meta">British</div>
+        </div>
+      </a>
+      
+      <a href="calfreezy.html" class="nw-card" data-cat="youtuber">
+        <img src="" alt="Calfreezy" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=Calfreezy&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">YouTuber</div>
+          <div class="nw-card-name">Calfreezy</div>
+          <div class="nw-card-worth">$3 Million</div>
+          <div class="nw-card-meta">British</div>
+        </div>
+      </a>
+      
+      <a href="casey-neistat.html" class="nw-card" data-cat="youtuber">
+        <img src="" alt="Casey Neistat" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=Casey%20Neistat&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">YouTuber</div>
+          <div class="nw-card-name">Casey Neistat</div>
+          <div class="nw-card-worth">$16 Million</div>
+          <div class="nw-card-meta">American</div>
+        </div>
+      </a>
+      
+      <a href="connor-franta.html" class="nw-card" data-cat="youtuber">
+        <img src="" alt="Connor Franta" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=Connor%20Franta&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">YouTuber</div>
+          <div class="nw-card-name">Connor Franta</div>
+          <div class="nw-card-worth">$3 Million</div>
+          <div class="nw-card-meta">American</div>
+        </div>
+      </a>
+      
+      <a href="david-dobrik.html" class="nw-card" data-cat="youtuber">
+        <img src="" alt="David Dobrik" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=David%20Dobrik&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">YouTuber</div>
+          <div class="nw-card-name">David Dobrik</div>
+          <div class="nw-card-worth">$25 Million</div>
+          <div class="nw-card-meta">Slovak-American</div>
+        </div>
+      </a>
+      
+      <a href="dude-perfect.html" class="nw-card" data-cat="youtuber">
+        <img src="" alt="Dude Perfect" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=Dude%20Perfect&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">YouTuber</div>
+          <div class="nw-card-name">Dude Perfect</div>
+          <div class="nw-card-worth">$100 Million+</div>
+          <div class="nw-card-meta">American</div>
+        </div>
+      </a>
+      
+      <a href="emma-chamberlain.html" class="nw-card" data-cat="youtuber">
+        <img src="" alt="Emma Chamberlain" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=Emma%20Chamberlain&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">YouTuber</div>
+          <div class="nw-card-name">Emma Chamberlain</div>
+          <div class="nw-card-worth">$20 Million</div>
+          <div class="nw-card-meta">American</div>
+        </div>
+      </a>
+      
+      <a href="grace-helbig.html" class="nw-card" data-cat="youtuber">
+        <img src="" alt="Grace Helbig" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=Grace%20Helbig&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">YouTuber</div>
+          <div class="nw-card-name">Grace Helbig</div>
+          <div class="nw-card-worth">$3 Million</div>
+          <div class="nw-card-meta">American</div>
+        </div>
+      </a>
+      
+      <a href="jacksepticeye.html" class="nw-card" data-cat="youtuber">
+        <img src="https://picsum.photos/seed/889/400/400" alt="Jacksepticeye" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=Jacksepticeye&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">YouTuber</div>
+          <div class="nw-card-name">Jacksepticeye</div>
+          <div class="nw-card-worth">$25 Million</div>
+          <div class="nw-card-meta">Irish</div>
+        </div>
+      </a>
+      
+      <a href="jacksfilms.html" class="nw-card" data-cat="youtuber">
+        <img src="" alt="Jacksfilms" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=Jacksfilms&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">YouTuber</div>
+          <div class="nw-card-name">Jacksfilms</div>
+          <div class="nw-card-worth">$3 Million</div>
+          <div class="nw-card-meta">American</div>
+        </div>
+      </a>
+      
+      <a href="jake-paul.html" class="nw-card" data-cat="youtuber/boxer">
+        <img src="" alt="Jake Paul" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=Jake%20Paul&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">YouTuber/Boxer</div>
+          <div class="nw-card-name">Jake Paul</div>
+          <div class="nw-card-worth">$80 Million</div>
+          <div class="nw-card-meta">American</div>
+        </div>
+      </a>
+      
+      <a href="james-charles.html" class="nw-card" data-cat="beauty-youtuber">
+        <img src="" alt="James Charles" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=James%20Charles&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">Beauty YouTuber</div>
+          <div class="nw-card-name">James Charles</div>
+          <div class="nw-card-worth">$22 Million</div>
+          <div class="nw-card-meta">American</div>
+        </div>
+      </a>
+      
+      <a href="jeffree-star.html" class="nw-card" data-cat="beauty-youtuber">
+        <img src="https://picsum.photos/seed/108/400/400" alt="Jeffree Star" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=Jeffree%20Star&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">Beauty YouTuber</div>
+          <div class="nw-card-name">Jeffree Star</div>
+          <div class="nw-card-worth">$200 Million</div>
+          <div class="nw-card-meta">American</div>
+        </div>
+      </a>
+      
+      <a href="jim-chapman.html" class="nw-card" data-cat="youtuber">
+        <img src="" alt="Jim Chapman" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=Jim%20Chapman&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">YouTuber</div>
+          <div class="nw-card-name">Jim Chapman</div>
+          <div class="nw-card-worth">$4 Million</div>
+          <div class="nw-card-meta">British</div>
+        </div>
+      </a>
+      
+      <a href="kurzgesagt.html" class="nw-card" data-cat="youtuber">
+        <img src="" alt="Kurzgesagt" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=Kurzgesagt&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">YouTuber</div>
+          <div class="nw-card-name">Kurzgesagt</div>
+          <div class="nw-card-worth">$50 Million</div>
+          <div class="nw-card-meta">German</div>
+        </div>
+      </a>
+      
+      <a href="lilly-singh.html" class="nw-card" data-cat="youtuber">
+        <img src="" alt="Lilly Singh" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=Lilly%20Singh&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">YouTuber</div>
+          <div class="nw-card-name">Lilly Singh</div>
+          <div class="nw-card-worth">$20 Million</div>
+          <div class="nw-card-meta">Canadian</div>
+        </div>
+      </a>
+      
+      <a href="linus-tech-tips.html" class="nw-card" data-cat="tech-youtuber">
+        <img src="" alt="Linus Tech Tips" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=Linus%20Tech%20Tips&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">Tech YouTuber</div>
+          <div class="nw-card-name">Linus Tech Tips</div>
+          <div class="nw-card-worth">$50 Million</div>
+          <div class="nw-card-meta">Canadian</div>
+        </div>
+      </a>
+      
+      <a href="logan-paul.html" class="nw-card" data-cat="youtuber/boxer">
+        <img src="" alt="Logan Paul" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=Logan%20Paul&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">YouTuber/Boxer</div>
+          <div class="nw-card-name">Logan Paul</div>
+          <div class="nw-card-worth">$45 Million</div>
+          <div class="nw-card-meta">American</div>
+        </div>
+      </a>
+      
+      <a href="mkbhd.html" class="nw-card" data-cat="tech-youtuber">
+        <img src="" alt="MKBHD" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=MKBHD&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">Tech YouTuber</div>
+          <div class="nw-card-name">MKBHD</div>
+          <div class="nw-card-worth">$40 Million</div>
+          <div class="nw-card-meta">American</div>
+        </div>
+      </a>
+      
+      <a href="mark-rober.html" class="nw-card" data-cat="youtuber">
+        <img src="" alt="Mark Rober" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=Mark%20Rober&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">YouTuber</div>
+          <div class="nw-card-name">Mark Rober</div>
+          <div class="nw-card-worth">$50 Million</div>
+          <div class="nw-card-meta">American</div>
+        </div>
+      </a>
+      
+      <a href="markiplier.html" class="nw-card" data-cat="youtuber">
+        <img src="" alt="Markiplier" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=Markiplier&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">YouTuber</div>
+          <div class="nw-card-name">Markiplier</div>
+          <div class="nw-card-worth">$35 Million</div>
+          <div class="nw-card-meta">American</div>
+        </div>
+      </a>
+      
+      <a href="miniminter.html" class="nw-card" data-cat="youtuber">
+        <img src="" alt="Miniminter" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=Miniminter&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">YouTuber</div>
+          <div class="nw-card-name">Miniminter</div>
+          <div class="nw-card-worth">$20 Million</div>
+          <div class="nw-card-meta">British</div>
+        </div>
+      </a>
+      
+      <a href="mrbeast.html" class="nw-card" data-cat="youtuber">
+        <img src="" alt="MrBeast" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=MrBeast&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">YouTuber</div>
+          <div class="nw-card-name">MrBeast</div>
+          <div class="nw-card-worth">$700 Million</div>
+          <div class="nw-card-meta">American</div>
+        </div>
+      </a>
+      
+      <a href="ninja.html" class="nw-card" data-cat="gamer/streamer">
+        <img src="" alt="Ninja" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=Ninja&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">Gamer/Streamer</div>
+          <div class="nw-card-name">Ninja</div>
+          <div class="nw-card-worth">$40 Million</div>
+          <div class="nw-card-meta">American</div>
+        </div>
+      </a>
+      
+      <a href="pewdiepie.html" class="nw-card" data-cat="youtuber">
+        <img src="https://picsum.photos/seed/999/400/400" alt="PewDiePie" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=PewDiePie&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">YouTuber</div>
+          <div class="nw-card-name">PewDiePie</div>
+          <div class="nw-card-worth">$40 Million</div>
+          <div class="nw-card-meta">Swedish</div>
+        </div>
+      </a>
+      
+      <a href="phillip-defranco.html" class="nw-card" data-cat="youtuber">
+        <img src="" alt="Phillip DeFranco" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=Phillip%20DeFranco&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">YouTuber</div>
+          <div class="nw-card-name">Phillip DeFranco</div>
+          <div class="nw-card-worth">$10 Million</div>
+          <div class="nw-card-meta">American</div>
+        </div>
+      </a>
+      
+      <a href="pokimane.html" class="nw-card" data-cat="streamer">
+        <img src="https://picsum.photos/seed/320/400/400" alt="Pokimane" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=Pokimane&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">Streamer</div>
+          <div class="nw-card-name">Pokimane</div>
+          <div class="nw-card-worth">$20 Million</div>
+          <div class="nw-card-meta">Moroccan-Canadian</div>
+        </div>
+      </a>
+      
+      <a href="rhett-and-link.html" class="nw-card" data-cat="youtuber">
+        <img src="" alt="Rhett and Link" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=Rhett%20and%20Link&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">YouTuber</div>
+          <div class="nw-card-name">Rhett and Link</div>
+          <div class="nw-card-worth">$35 Million (combined, ~$17-18M each)</div>
+          <div class="nw-card-meta">American</div>
+        </div>
+      </a>
+      
+      <a href="smosh.html" class="nw-card" data-cat="youtuber">
+        <img src="https://picsum.photos/seed/116/400/400" alt="Smosh" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=Smosh&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">YouTuber</div>
+          <div class="nw-card-name">Smosh</div>
+          <div class="nw-card-worth">$25 Million</div>
+          <div class="nw-card-meta">United States</div>
+        </div>
+      </a>
+      
+      <a href="sprinkleofglitter.html" class="nw-card" data-cat="youtuber">
+        <img src="" alt="Sprinkleofglitter" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=Sprinkleofglitter&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">YouTuber</div>
+          <div class="nw-card-name">Sprinkleofglitter</div>
+          <div class="nw-card-worth">$4 Million</div>
+          <div class="nw-card-meta">British</div>
+        </div>
+      </a>
+      
+      <a href="tana-mongeau.html" class="nw-card" data-cat="youtuber">
+        <img src="" alt="Tana Mongeau" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=Tana%20Mongeau&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">YouTuber</div>
+          <div class="nw-card-name">Tana Mongeau</div>
+          <div class="nw-card-worth">$4 Million</div>
+          <div class="nw-card-meta">American</div>
+        </div>
+      </a>
+      
+      <a href="tobi-brown.html" class="nw-card" data-cat="youtuber">
+        <img src="" alt="Tobi Brown" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=Tobi%20Brown&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">YouTuber</div>
+          <div class="nw-card-name">Tobi Brown</div>
+          <div class="nw-card-worth">$4 Million</div>
+          <div class="nw-card-meta">British</div>
+        </div>
+      </a>
+      
+      <a href="trisha-paytas.html" class="nw-card" data-cat="youtuber">
+        <img src="" alt="Trisha Paytas" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=Trisha%20Paytas&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">YouTuber</div>
+          <div class="nw-card-name">Trisha Paytas</div>
+          <div class="nw-card-worth">$10 Million</div>
+          <div class="nw-card-meta">American</div>
+        </div>
+      </a>
+      
+      <a href="tyler-oakley.html" class="nw-card" data-cat="youtuber">
+        <img src="" alt="Tyler Oakley" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=Tyler%20Oakley&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">YouTuber</div>
+          <div class="nw-card-name">Tyler Oakley</div>
+          <div class="nw-card-worth">$10 Million</div>
+          <div class="nw-card-meta">American</div>
+        </div>
+      </a>
+      
+      <a href="unbox-therapy.html" class="nw-card" data-cat="tech-youtuber">
+        <img src="" alt="Unbox Therapy" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=Unbox%20Therapy&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">Tech YouTuber</div>
+          <div class="nw-card-name">Unbox Therapy</div>
+          <div class="nw-card-worth">$20 Million</div>
+          <div class="nw-card-meta">Canadian</div>
+        </div>
+      </a>
+      
+      <a href="valkyrae.html" class="nw-card" data-cat="streamer">
+        <img src="" alt="Valkyrae" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=Valkyrae&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">Streamer</div>
+          <div class="nw-card-name">Valkyrae</div>
+          <div class="nw-card-worth">$2 Million – $4 Million</div>
+          <div class="nw-card-meta">American (Filipino-German descent)</div>
+        </div>
+      </a>
+      
+      <a href="vikkstar123.html" class="nw-card" data-cat="youtuber">
+        <img src="" alt="Vikkstar123" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=Vikkstar123&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">YouTuber</div>
+          <div class="nw-card-name">Vikkstar123</div>
+          <div class="nw-card-worth">$20 Million</div>
+          <div class="nw-card-meta">British</div>
+        </div>
+      </a>
+      
+      <a href="vsauce.html" class="nw-card" data-cat="youtuber">
+        <img src="" alt="Vsauce" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=Vsauce&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">YouTuber</div>
+          <div class="nw-card-name">Vsauce</div>
+          <div class="nw-card-worth">$10 Million</div>
+          <div class="nw-card-meta">American</div>
+        </div>
+      </a>
+      
+      <a href="w2s.html" class="nw-card" data-cat="youtuber">
+        <img src="" alt="W2S" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=W2S&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">YouTuber</div>
+          <div class="nw-card-name">W2S</div>
+          <div class="nw-card-worth">$20 Million</div>
+          <div class="nw-card-meta">British</div>
+        </div>
+      </a>
+      
+      <a href="zerkaa.html" class="nw-card" data-cat="youtuber">
+        <img src="" alt="Zerkaa" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=Zerkaa&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">YouTuber</div>
+          <div class="nw-card-name">Zerkaa</div>
+          <div class="nw-card-worth">$4 Million</div>
+          <div class="nw-card-meta">British</div>
+        </div>
+      </a>
+      
+      <a href="zoella.html" class="nw-card" data-cat="lifestyle-youtuber">
+        <img src="" alt="Zoella" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=Zoella&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">Lifestyle YouTuber</div>
+          <div class="nw-card-name">Zoella</div>
+          <div class="nw-card-worth">$6 Million</div>
+          <div class="nw-card-meta">British</div>
+        </div>
+      </a>
+      
+      <a href="ijustine.html" class="nw-card" data-cat="youtuber">
+        <img src="" alt="iJustine" class="nw-card-img" loading="lazy"
+             onerror="this.src='https://ui-avatars.com/api/?name=iJustine&size=300&background=1a1a1a&color=fff&bold=true'">
+        <div class="nw-card-body">
+          <div class="nw-card-cat">YouTuber</div>
+          <div class="nw-card-name">iJustine</div>
+          <div class="nw-card-worth">$4 Million</div>
+          <div class="nw-card-meta">American</div>
+        </div>
+      </a>
+      
+    </div>
   </div>
+</div>
+<footer class="footer"><div class="footer-top"><div class="container"><div class="footer-grid">
+  <div class="footer-brand">
+    <div class="footer-logo">Markets <span class="accent">News</span> Today</div>
+    <p>Your trusted source for breaking news and expert analysis.</p>
+  </div>
+  <div class="footer-col"><h4>Business</h4>
+    <a href="../category-business.html">Business</a>
+    <a href="../category-finance.html">Finance</a>
+    <a href="../category-technology.html">Technology</a>
+    <a href="index.html">Net Worth</a></div>
+  <div class="footer-col"><h4>World</h4>
+    <a href="../category-world.html">World</a>
+    <a href="../category-politics.html">Politics</a>
+    <a href="../category-sports.html">Sports</a>
+    <a href="../category-entertainment.html">Entertainment</a></div>
+  <div class="footer-col"><h4>More</h4>
+    <a href="../category-health.html">Health</a>
+    <a href="../category-science.html">Science</a>
+    <a href="../category-travel.html">Travel</a>
+    <a href="../sitemap.xml">Sitemap</a></div>
+</div></div></div>
+<div class="footer-btm"><div class="container">&copy; 2026 Markets News Today. All rights reserved.</div></div>
 </footer>
-
 <script>
-function filter(cat) {
+function filter(cat, btn) {
   document.querySelectorAll('.nw-filter-btn').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
+  btn.classList.add('active');
   const cards = document.querySelectorAll('.nw-card');
-  let visible = 0;
+  let v = 0;
   cards.forEach(c => {
     const show = cat === 'all' || c.dataset.cat === cat;
     c.style.display = show ? '' : 'none';
-    if (show) visible++;
+    if (show) v++;
   });
-  document.getElementById('count').textContent = 'Showing ' + visible + ' profiles';
+  document.getElementById('count').textContent = 'Showing ' + v + ' profiles';
 }
 </script>
 </body>
