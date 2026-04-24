@@ -5165,7 +5165,7 @@ PROFILE_TEMPLATE = """<!DOCTYPE html>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{{ name }} Net Worth {{ year }} | {{ site_name }}</title>
 <meta name="description" content="{{ meta_description }}">
-<meta name="keywords" content="{{ name }} net worth, {{ name }} earnings, {{ name }} salary, {{ category }} net worth {{ year }}">
+<meta name="keywords" content="{{ name }} net worth, {{ name }} earnings, {{ category }} net worth {{ year }}">
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="{{ site_url }}/networth/{{ slug }}.html">
 <meta property="og:title" content="{{ name }} Net Worth {{ year }}">
@@ -5188,43 +5188,44 @@ PROFILE_TEMPLATE = """<!DOCTYPE html>
 <style>
 .nw-profile-hero{position:relative;background:var(--dark);color:#fff;padding:48px 0;overflow:hidden;border-bottom:3px solid var(--red)}
 .nw-hero-bg{position:absolute;inset:0;background-image:url('/celeb-images/{{ slug }}.jpg');background-size:cover;background-position:top center;filter:blur(12px) brightness(0.18);transform:scale(1.1)}
-.nw-hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:180px 1fr;gap:32px;align-items:center}
-.nw-hero-photo{width:180px;height:180px;border-radius:50%;object-fit:cover;object-position:top center;border:4px solid rgba(255,255,255,0.2);box-shadow:0 8px 32px rgba(0,0,0,0.5);display:block}
+.nw-hero-inner{position:relative;z-index:2;display:flex;align-items:center;gap:32px}
+.nw-hero-photo{width:180px;height:180px;border-radius:50%;object-fit:cover;object-position:top center;border:4px solid rgba(255,255,255,0.2);box-shadow:0 8px 32px rgba(0,0,0,0.5);flex-shrink:0}
+.nw-hero-info{flex:1}
 .nw-hero-name{font-family:var(--serif);font-size:clamp(2rem,5vw,3rem);font-weight:900;line-height:1.1;margin-bottom:4px}
-.nw-hero-real{font-size:14px;color:rgba(255,255,255,0.5);margin-bottom:12px}
-.nw-hero-cat{display:inline-block;background:var(--red);color:#fff;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;padding:4px 12px;margin-bottom:20px}
-.nw-hero-worth{display:inline-flex;flex-direction:column;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);padding:14px 24px;backdrop-filter:blur(10px)}
-.nw-hero-worth-label{font-size:9px;text-transform:uppercase;letter-spacing:2px;color:rgba(255,255,255,0.5);margin-bottom:4px}
-.nw-hero-worth-val{font-family:var(--serif);font-size:2rem;font-weight:900;color:#fff;line-height:1}
+.nw-hero-real{font-size:14px;color:rgba(255,255,255,0.5);margin-bottom:14px}
+.nw-hero-meta{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.nw-hero-cat{background:var(--red);color:#fff;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;padding:5px 14px}
+.nw-hero-worth{display:flex;flex-direction:column;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);padding:10px 20px}
+.nw-hero-worth-label{font-size:9px;text-transform:uppercase;letter-spacing:2px;color:rgba(255,255,255,0.5);margin-bottom:2px}
+.nw-hero-worth-val{font-family:var(--serif);font-size:1.6rem;font-weight:900;color:#fff;line-height:1.2}
 .nw-stats-bar{background:var(--gray);border-bottom:1px solid var(--border);padding:20px 0}
 .nw-stats-inner{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px}
 .nw-stat-item{text-align:center}
 .nw-stat-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:4px}
 .nw-stat-value{font-family:var(--serif);font-size:15px;font-weight:700;color:var(--dark)}
 .nw-body{padding:40px 0 60px}
-.nw-layout{display:grid;grid-template-columns:1fr 300px;gap:40px}
+.nw-layout{display:grid;grid-template-columns:1fr 320px;gap:40px}
 .nw-section{margin-bottom:32px}
 .nw-section-title{font-family:var(--serif);font-size:18px;font-weight:700;color:var(--dark);border-left:4px solid var(--red);padding-left:12px;margin-bottom:16px}
 .nw-list{list-style:none;padding:0}
-.nw-list li{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:14px;color:var(--text);line-height:1.5}
+.nw-list li{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;color:#222;line-height:1.5}
 .nw-list li:last-child{border-bottom:none}
-.nw-list li::before{content:"✓";color:var(--red);font-weight:700;flex-shrink:0}
-.nw-bio{font-size:15px;line-height:1.85;color:#222}
-.nw-bio p{margin-bottom:1rem}
-.nw-sidebar-card{background:var(--gray);border:1px solid var(--border);border-top:3px solid var(--dark);padding:20px;margin-bottom:20px}
-.nw-sidebar-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--dark);margin-bottom:14px}
+.nw-list li::before{content:"✓";color:var(--red);font-weight:700;flex-shrink:0;margin-top:2px}
+.nw-sidebar-card{background:var(--gray);border:1px solid var(--border);border-top:3px solid var(--dark);padding:18px;margin-bottom:16px}
+.nw-sidebar-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--dark);margin-bottom:12px}
 .nw-similar{margin-top:40px;padding-top:32px;border-top:2px solid var(--border)}
 .nw-similar-title{font-family:var(--serif);font-size:22px;font-weight:700;color:var(--dark);margin-bottom:20px}
 .nw-similar-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px}
-.nw-similar-card{border:1px solid var(--border);overflow:hidden;text-decoration:none;color:inherit;transition:transform 0.2s,box-shadow 0.2s;display:block;background:#fff}
+.nw-similar-card{border:1px solid var(--border);overflow:hidden;text-decoration:none;color:inherit;transition:transform 0.2s;display:block;background:#fff}
 .nw-similar-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.1)}
 .nw-similar-img{width:100%;aspect-ratio:1/1;object-fit:cover;object-position:top center;display:block;background:var(--dark)}
 .nw-similar-body{padding:12px}
 .nw-similar-name{font-weight:700;font-size:14px;color:var(--dark);margin-bottom:4px}
 .nw-similar-worth{font-size:13px;color:var(--red);font-weight:700}
 @media(max-width:768px){
-  .nw-hero-inner{grid-template-columns:1fr;text-align:center}
-  .nw-hero-photo{margin:0 auto;width:140px;height:140px}
+  .nw-hero-inner{flex-direction:column;text-align:center}
+  .nw-hero-photo{width:140px;height:140px}
+  .nw-hero-meta{justify-content:center}
   .nw-layout{grid-template-columns:1fr}
   .nw-similar-grid{grid-template-columns:repeat(2,1fr)}
 }
@@ -5238,13 +5239,15 @@ PROFILE_TEMPLATE = """<!DOCTYPE html>
   <div class="container">
     <div class="nw-hero-inner">
       <img src="/celeb-images/{{ slug }}.jpg" alt="{{ name }}" class="nw-hero-photo" onerror="this.style.display='none'">
-      <div>
+      <div class="nw-hero-info">
         <div class="nw-hero-name">{{ name }}</div>
         <div class="nw-hero-real">{{ real_name }}</div>
-        <div class="nw-hero-cat">{{ category }}</div>
-        <div class="nw-hero-worth">
-          <span class="nw-hero-worth-label">Est. Net Worth {{ year }}</span>
-          <span class="nw-hero-worth-val">{{ estimated_net_worth }}</span>
+        <div class="nw-hero-meta">
+          <span class="nw-hero-cat">{{ category }}</span>
+          <div class="nw-hero-worth">
+            <span class="nw-hero-worth-label">Est. Net Worth {{ year }}</span>
+            <span class="nw-hero-worth-val">{{ estimated_net_worth }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -5268,15 +5271,7 @@ PROFILE_TEMPLATE = """<!DOCTYPE html>
       <main>
         <div class="nw-section">
           <div class="nw-section-title">About {{ name }}</div>
-          <div class="nw-bio">{{ biography_html }}</div>
-        </div>
-        <div class="nw-section">
-          <div class="nw-section-title">Income Sources</div>
-          <ul class="nw-list">{% for s in income_sources %}<li>{{ s }}</li>{% endfor %}</ul>
-        </div>
-        <div class="nw-section">
-          <div class="nw-section-title">Career Highlights</div>
-          <ul class="nw-list">{% for h in career_highlights %}<li>{{ h }}</li>{% endfor %}</ul>
+          <div style="font-size:15px;line-height:1.85;color:#222">{{ biography_html }}</div>
         </div>
         {% if similar_profiles %}
         <div class="nw-similar">
@@ -5307,9 +5302,19 @@ PROFILE_TEMPLATE = """<!DOCTYPE html>
           </ul>
         </div>
         <div class="nw-sidebar-card">
+          <div class="nw-sidebar-title">Income Sources</div>
+          <ul class="nw-list">{% for s in income_sources %}<li>{{ s }}</li>{% endfor %}</ul>
+        </div>
+        <div class="nw-sidebar-card">
+          <div class="nw-sidebar-title">Career Highlights</div>
+          <ul class="nw-list">{% for h in career_highlights %}<li>{{ h }}</li>{% endfor %}</ul>
+        </div>
+        {% if brand_deals %}
+        <div class="nw-sidebar-card">
           <div class="nw-sidebar-title">Brand Deals</div>
           <ul class="nw-list">{% for b in brand_deals %}<li>{{ b }}</li>{% endfor %}</ul>
         </div>
+        {% endif %}
         <div class="post-tags" style="margin-top:8px">
           {% for tag in tags %}<span class="tag">{{ tag }}</span>{% endfor %}
         </div>
@@ -5651,6 +5656,21 @@ def main():
     rebuild_networth_index(profiles)
     save_profiles_index(profiles)
     save_done(done)
+
+    # SAFETY CHECK: verify index.html is NOT a profile page
+    index_file = NETWORTH_DIR / "index.html"
+    if index_file.exists():
+        content = index_file.read_text()
+        if "nw-grid" not in content or "nw-card" not in content:
+            print("⚠️  index.html looks wrong! Regenerating...")
+            rebuild_networth_index(profiles)
+            content2 = index_file.read_text()
+            if "nw-grid" in content2:
+                print("✅ index.html fixed!")
+            else:
+                print("❌ index.html still wrong - manual fix needed")
+        else:
+            print("✅ index.html verified - cards page correct")
     print("🎉 Done!")
 
 
