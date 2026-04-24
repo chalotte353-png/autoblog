@@ -17,23 +17,33 @@
 .nw-filter-btn.active,.nw-filter-btn:hover{background:#0052cc;color:#fff;border-color:#0052cc}
 .nw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}
 .nw-card{background:#fff;border:1px solid #e9ecef;border-radius:10px;padding:0;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06);transition:transform .2s,box-shadow .2s}
+.nw-card-img{width:100%;aspect-ratio:1/1;object-fit:cover;object-position:top center;display:block}
+.nw-card-inner{padding:16px}
+.nw-card a{text-decoration:none;display:flex;flex-direction:column}
 .nw-card:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,0,0,.1)}
 .nw-card-name{font-size:1.1rem;font-weight:700;color:#1a1a2e;margin-bottom:4px}
 .nw-card-worth{font-size:1.3rem;font-weight:800;color:#0052cc;margin:8px 0}
-.nw-card a{text-decoration:none;display:flex;flex-direction:column}
 .nw-card a:hover .nw-card-name{color:#0052cc}
-.nw-card-img{width:100%;aspect-ratio:1/1;object-fit:cover;object-position:top center;display:block}
-.nw-card-inner{padding:20px}
 .nw-count{text-align:center;color:#888;font-size:.9rem;margin-bottom:20px}
 </style>
 </head>
 <body>
-<header class="site-header">
-  <div class="container">
-    <a href="../index.html" class="logo">Markets News Today</a>
-    <nav><a href="../index.html">Home</a><a href="index.html">Net Worth</a></nav>
-  </div>
-</header>
+<div class="topbar"><div class="topbar-inner">
+  <span class="topbar-left"></span>
+  <a href="../" class="topbar-logo">Markets <span class="accent">News</span> Today</a>
+  <span class="topbar-right">Business &middot; Finance &middot; Technology</span>
+</div></div>
+<nav class="navbar"><div class="navbar-inner">
+  <a href="../">Home</a>
+  <a href="../category-business.html">Business</a>
+  <a href="../category-technology.html">Technology</a>
+  <a href="../category-finance.html">Finance</a>
+  <a href="../category-world.html">World</a>
+  <a href="../category-sports.html">Sports</a>
+  <a href="../category-health.html">Health</a>
+  <a href="../category-politics.html">Politics</a>
+  <a href="index.html">Net Worth</a>
+</div></nav>
 
 <div class="nw-index-hero">
   <div class="container">
@@ -447,10 +457,28 @@
   </div>
 </main>
 
-<footer class="site-footer">
-  <div class="container">
-    <p>Estimates based on publicly available information. &copy; 2026 Markets News Today</p>
+<footer class="footer"><div class="footer-top"><div class="container"><div class="footer-grid">
+  <div class="footer-brand">
+    <div class="footer-logo">Markets <span class="accent">News</span> Today</div>
+    <p>Your trusted source for breaking news and in-depth analysis on business, finance and world affairs.</p>
   </div>
+  <div class="footer-col"><h4>Business</h4>
+    <a href="../category-business.html">Business</a>
+    <a href="../category-finance.html">Finance</a>
+    <a href="../category-technology.html">Technology</a>
+    <a href="index.html">Net Worth</a></div>
+  <div class="footer-col"><h4>World</h4>
+    <a href="../category-world.html">World</a>
+    <a href="../category-politics.html">Politics</a>
+    <a href="../category-sports.html">Sports</a>
+    <a href="../category-entertainment.html">Entertainment</a></div>
+  <div class="footer-col"><h4>More</h4>
+    <a href="../category-health.html">Health</a>
+    <a href="../category-science.html">Science</a>
+    <a href="../category-travel.html">Travel</a>
+    <a href="../sitemap.xml">Sitemap</a></div>
+</div></div></div>
+<div class="footer-btm"><div class="container">&copy; 2026 Markets News Today. All rights reserved.</div></div>
 </footer>
 
 <script>
