@@ -390,5 +390,15 @@
     "age": "33 (Born February 7, 1990)",
     "image_url": "https://picsum.photos/seed/889/400/400",
     "meta_description": "Jacksepticeye net worth estimated at $25 million. Irish YouTuber famous for gaming videos, comedic commentary, and charitable work."
+  },
+  {
+    "name": "Veritasium",
+    "slug": "veritasium",
+    "category": "YouTuber",
+    "estimated_net_worth": "$25-30 Million",
+    "nationality": "Australian",
+    "age": "36 years old",
+    "image_url": "https://picsum.photos/seed/702/400/400",
+    "meta_description": "Veritasium (Derek Muller) net worth estimated at $25-30 million. Science educator and YouTuber with 20M+ subscribers earning from ads, sponsorships, and merchandise."
   }
 ]
