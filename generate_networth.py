@@ -5651,21 +5651,6 @@ def main():
     rebuild_networth_index(profiles)
     save_profiles_index(profiles)
     save_done(done)
-
-    # SAFETY CHECK: verify index.html is NOT a profile page
-    index_file = NETWORTH_DIR / "index.html"
-    if index_file.exists():
-        content = index_file.read_text()
-        if "nw-grid" not in content or "nw-card" not in content:
-            print("⚠️  index.html looks wrong! Regenerating...")
-            rebuild_networth_index(profiles)
-            content2 = index_file.read_text()
-            if "nw-grid" in content2:
-                print("✅ index.html fixed!")
-            else:
-                print("❌ index.html still wrong - manual fix needed")
-        else:
-            print("✅ index.html verified - cards page correct")
     print("🎉 Done!")
 
 
