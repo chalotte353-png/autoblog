@@ -400,5 +400,15 @@
     "age": "36 years old",
     "image_url": "https://picsum.photos/seed/702/400/400",
     "meta_description": "Veritasium (Derek Muller) net worth estimated at $25-30 million. Science educator and YouTuber with 20M+ subscribers earning from ads, sponsorships, and merchandise."
+  },
+  {
+    "name": "Shane Dawson",
+    "slug": "shane-dawson",
+    "category": "YouTuber",
+    "estimated_net_worth": "$12-16 Million",
+    "nationality": "American",
+    "age": "35 (born July 19, 1988)",
+    "image_url": "https://picsum.photos/seed/584/400/400",
+    "meta_description": "Shane Dawson net worth estimated at $12-16 million. YouTube pioneer known for documentaries, vlogs, and controversial content spanning two decades."
   }
 ]
