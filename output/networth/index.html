@@ -9,22 +9,25 @@
 <link rel="canonical" href="https://marketsnewstoday.info/networth/">
 <link rel="stylesheet" href="../style.css">
 <style>
-.nw-index-hero{background:linear-gradient(135deg,#1a1a2e,#0052cc);color:#fff;padding:48px 0;text-align:center;margin-bottom:40px}
+.nw-index-hero{background:var(--dark);color:#fff;padding:48px 0;text-align:center;margin-bottom:40px;border-bottom:3px solid var(--red)}
 .nw-index-hero h1{font-size:clamp(1.8rem,5vw,3rem);font-weight:800;margin-bottom:12px}
 .nw-index-hero p{font-size:1.1rem;opacity:.85}
 .nw-filter{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:28px;justify-content:center}
 .nw-filter-btn{padding:7px 18px;border:2px solid #e9ecef;border-radius:20px;cursor:pointer;font-size:.85rem;font-weight:600;background:#fff;color:#555;transition:all .2s}
-.nw-filter-btn.active,.nw-filter-btn:hover{background:#0052cc;color:#fff;border-color:#0052cc}
+.nw-filter-btn.active,.nw-filter-btn:hover{background:var(--red);color:#fff;border-color:var(--red)}
 .nw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}
-.nw-card{background:#fff;border:1px solid #e9ecef;border-radius:10px;padding:0;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06);transition:transform .2s,box-shadow .2s}
+.nw-card{background:#fff;border:1px solid var(--border);border-radius:0;padding:0;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06);transition:transform .2s,box-shadow .2s}
 .nw-card-img{width:100%;aspect-ratio:1/1;object-fit:cover;object-position:top center;display:block}
 .nw-card-inner{padding:16px}
 .nw-card a{text-decoration:none;display:flex;flex-direction:column}
-.nw-card:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,0,0,.1)}
-.nw-card-name{font-size:1.1rem;font-weight:700;color:#1a1a2e;margin-bottom:4px}
-.nw-card-worth{font-size:1.3rem;font-weight:800;color:#0052cc;margin:8px 0}
-.nw-card a:hover .nw-card-name{color:#0052cc}
-.nw-count{text-align:center;color:#888;font-size:.9rem;margin-bottom:20px}
+.nw-card-name{font-size:1rem;font-weight:700;color:var(--dark);margin-bottom:4px;font-family:var(--serif)}
+.nw-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.12)}
+
+.nw-card-worth{font-size:1.3rem;font-weight:800;color:var(--red);margin:8px 0}
+.nw-card a{text-decoration:none}
+.nw-card a:hover .nw-card-name{color:var(--red)}
+.nw-count{text-align:center;color:var(--muted);font-size:.9rem;margin-bottom:20px}
+.nw-card .category{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--red);display:block;margin-bottom:4px}
 </style>
 </head>
 <body>
