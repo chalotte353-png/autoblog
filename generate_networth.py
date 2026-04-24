@@ -5073,6 +5073,10 @@ def load_profiles_index() -> list:
 
 
 def save_profiles_index(profiles: list):
+    # Ensure image_url exists for all profiles
+    for profile in profiles:
+        if "image_url" not in profile or not profile["image_url"]:
+            profile["image_url"] = f"/celeb-images/{profile['slug']}.jpg"
     p = OUTPUT_DIR / "networth_index.json"
     p.write_text(json.dumps(profiles, indent=2))
 
@@ -5542,6 +5546,7 @@ def get_celeb_image(name, slug):
     return f"https://picsum.photos/seed/{seed}/400/400"
 
 def build_profile_html(data: dict, all_profiles: list = None) -> str:
+    NETWORTH_DIR.mkdir(parents=True, exist_ok=True)
     now = datetime.now(timezone.utc)
     tpl = Template(PROFILE_TEMPLATE)
     # Get similar profiles (same category, exclude self)
@@ -5556,6 +5561,7 @@ def build_profile_html(data: dict, all_profiles: list = None) -> str:
 
 
 def rebuild_networth_index(profiles: list):
+    NETWORTH_DIR.mkdir(parents=True, exist_ok=True)
     now = datetime.now()
     categories = sorted(set(p["category"] for p in profiles))
     tpl = Template(NETWORTH_INDEX_TEMPLATE)
