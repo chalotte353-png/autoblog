@@ -119,15 +119,32 @@ def fetch_news(count):
         print(f"NewsAPI: {e}")
         return []
 
+def is_duplicate(title_slug, published):
+    """Check if a topic is already published - compare first 50 chars and key words"""
+    short = title_slug[:50]
+    # Check exact match first
+    if title_slug in published:
+        return True
+    # Check if first 50 chars match any published slug
+    pub_shorts = {s[:50] for s in published}
+    if short in pub_shorts:
+        return True
+    # Check if main keywords overlap (first 3 words of slug)
+    words = title_slug.split("-")[:5]
+    key = "-".join(words)
+    for p in published:
+        if key in p:
+            return True
+    return False
+
 def build_topics(count, published):
     news = fetch_news(count * 2)
-    pub_short = {s[:40] for s in published}
-    fresh = [t for t in news if slugify(t["title"])[:40] not in pub_short]
+    fresh = [t for t in news if not is_duplicate(slugify(t["title"]), published)]
     pool = WIKI_TOPICS.copy()
     random.shuffle(pool)
     while len(fresh) < count and pool:
         t = pool.pop()
-        if slugify(t)[:40] not in pub_short:
+        if not is_duplicate(slugify(t), published):
             fresh.append({"title": t, "hint": ""})
     return fresh[:count]
 
@@ -559,6 +576,10 @@ def main():
         if not article:
             continue
         article["slug"] = slugify(article["title"])
+        # Double check new slug not already published
+        if is_duplicate(article["slug"], published):
+            print(f"  Skipping duplicate: {article['slug']}")
+            continue
         category = article.get("category", "World")
         author = get_author(category)
         img_kw = article.get("image_keyword") or " ".join(article["title"].split()[:4])
