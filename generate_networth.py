@@ -5166,7 +5166,7 @@ PROFILE_TEMPLATE = """<!DOCTYPE html>
 <link rel="canonical" href="{{ site_url }}/networth/{{ slug }}.html">
 <meta property="og:title" content="{{ name }} Net Worth {{ year }}">
 <meta property="og:description" content="{{ meta_description }}">
-<meta property="og:image" content="{{ image_url }}">
+<meta property="og:image" content="{{ site_url }}/celeb-images/{{ slug }}.jpg">
 <meta property="og:type" content="profile">
 <script type="application/ld+json">
 {
@@ -5175,255 +5175,148 @@ PROFILE_TEMPLATE = """<!DOCTYPE html>
   "name": "{{ name }}",
   "description": "{{ meta_description }}",
   "url": "{{ site_url }}/networth/{{ slug }}.html",
-  "image": "{{ image_url }}"
+  "image": "{{ site_url }}/celeb-images/{{ slug }}.jpg"
 }
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="../style.css">
 <style>
-.nw-profile-hero {
-  position: relative;
-  background: var(--dark);
-  color: #fff;
-  overflow: hidden;
-  margin-bottom: 0;
-}
-.nw-profile-hero-bg {
-  position: absolute;
-  inset: 0;
-  background-size: cover;
-  background-position: center top;
-  filter: blur(8px) brightness(0.25);
-  transform: scale(1.1);
-}
-.nw-profile-hero-inner {
-  position: relative;
-  z-index: 2;
-  display: grid;
-  grid-template-columns: 200px 1fr;
-  gap: 32px;
-  align-items: center;
-  padding: 48px 0;
-  width: 94%;
-  max-width: 1280px;
-  margin: 0 auto;
-}
-.nw-profile-img {
-  width: 180px;
-  height: 180px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 4px solid rgba(255,255,255,0.2);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-  flex-shrink: 0;
-}
-.nw-profile-info h1 {
-  font-family: var(--serif);
-  font-size: clamp(28px, 4vw, 44px);
-  font-weight: 900;
-  line-height: 1.1;
-  margin-bottom: 6px;
-}
-.nw-profile-realname {
-  font-size: 14px;
-  color: rgba(255,255,255,0.6);
-  margin-bottom: 14px;
-}
-.nw-profile-cat {
-  display: inline-block;
-  background: var(--red);
-  color: #fff;
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  padding: 4px 12px;
-  margin-bottom: 20px;
-}
-.nw-worth-badge {
-  display: inline-flex;
-  flex-direction: column;
-  background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.2);
-  padding: 14px 22px;
-  border-radius: 4px;
-  backdrop-filter: blur(10px);
-}
-.nw-worth-label {
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  color: rgba(255,255,255,0.6);
-  margin-bottom: 4px;
-}
-.nw-worth-value {
-  font-family: var(--serif);
-  font-size: 28px;
-  font-weight: 900;
-  color: #fff;
-  line-height: 1;
-}
-.nw-body { padding: 40px 0 60px; }
-.nw-layout {
-  display: grid;
-  grid-template-columns: 1fr 340px;
-  gap: 40px;
-  width: 94%;
-  max-width: 1280px;
-  margin: 0 auto;
-}
-.nw-stats-bar {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 12px;
-  margin-bottom: 32px;
-  width: 94%;
-  max-width: 1280px;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 20px 0;
-  border-bottom: 1px solid var(--border);
-}
-.nw-stat {
-  text-align: center;
-  padding: 14px;
-  border: 1px solid var(--border);
-  background: var(--gray);
-}
-.nw-stat-label {
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--muted);
-  margin-bottom: 6px;
-}
-.nw-stat-value {
-  font-family: var(--serif);
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--dark);
-}
-.nw-section { margin-bottom: 28px; }
-.nw-section-title {
-  font-family: var(--serif);
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--dark);
-  border-left: 4px solid var(--red);
-  padding-left: 12px;
-  margin-bottom: 16px;
-}
-.nw-list { list-style: none; padding: 0; }
-.nw-list li {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--border);
-  font-size: 14px;
-  color: var(--text);
-  line-height: 1.5;
-}
-.nw-list li:last-child { border-bottom: none; }
-.nw-list li::before {
-  content: "✓";
-  color: var(--red);
-  font-weight: 700;
-  flex-shrink: 0;
-  margin-top: 1px;
-}
-.nw-sidebar-card {
-  background: var(--gray);
-  border: 1px solid var(--border);
-  padding: 20px;
-  margin-bottom: 20px;
-}
-.nw-sidebar-card-title {
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  color: var(--dark);
-  border-bottom: 2px solid var(--dark);
-  padding-bottom: 8px;
-  margin-bottom: 14px;
-}
-.nw-bio { font-size: 16px; line-height: 1.85; color: #222; }
-.nw-bio h2 { font-family: var(--serif); font-size: 22px; font-weight: 700; margin: 2rem 0 0.8rem; }
-.nw-bio h3 { font-family: var(--serif); font-size: 18px; font-weight: 700; margin: 1.5rem 0 0.6rem; }
-.nw-bio p { margin-bottom: 1.1rem; }
-.nw-bio ul { padding-left: 1.5rem; margin-bottom: 1rem; }
-.nw-bio li { margin-bottom: 0.4rem; }
-@media (max-width: 1024px) {
-  .nw-layout { grid-template-columns: 1fr; }
-  .nw-profile-hero-inner { grid-template-columns: 140px 1fr; gap: 20px; }
-  .nw-profile-img { width: 130px; height: 130px; }
-}
-@media (max-width: 640px) {
-  .nw-profile-hero-inner { grid-template-columns: 1fr; text-align: center; }
-  .nw-profile-img { width: 120px; height: 120px; margin: 0 auto; }
-  .nw-stats-bar { grid-template-columns: 1fr 1fr; }
+.nw-profile-hero{position:relative;background:var(--dark);color:#fff;padding:48px 0;overflow:hidden;border-bottom:3px solid var(--red)}
+.nw-hero-bg{position:absolute;inset:0;background-image:url('/celeb-images/{{ slug }}.jpg');background-size:cover;background-position:top center;filter:blur(12px) brightness(0.18);transform:scale(1.1)}
+.nw-hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:180px 1fr;gap:32px;align-items:center}
+.nw-hero-photo{width:180px;height:180px;border-radius:50%;object-fit:cover;object-position:top center;border:4px solid rgba(255,255,255,0.2);box-shadow:0 8px 32px rgba(0,0,0,0.5);display:block}
+.nw-hero-name{font-family:var(--serif);font-size:clamp(2rem,5vw,3rem);font-weight:900;line-height:1.1;margin-bottom:4px}
+.nw-hero-real{font-size:14px;color:rgba(255,255,255,0.5);margin-bottom:12px}
+.nw-hero-cat{display:inline-block;background:var(--red);color:#fff;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;padding:4px 12px;margin-bottom:20px}
+.nw-hero-worth{display:inline-flex;flex-direction:column;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);padding:14px 24px;backdrop-filter:blur(10px)}
+.nw-hero-worth-label{font-size:9px;text-transform:uppercase;letter-spacing:2px;color:rgba(255,255,255,0.5);margin-bottom:4px}
+.nw-hero-worth-val{font-family:var(--serif);font-size:2rem;font-weight:900;color:#fff;line-height:1}
+.nw-stats-bar{background:var(--gray);border-bottom:1px solid var(--border);padding:20px 0}
+.nw-stats-inner{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px}
+.nw-stat-item{text-align:center}
+.nw-stat-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:4px}
+.nw-stat-value{font-family:var(--serif);font-size:15px;font-weight:700;color:var(--dark)}
+.nw-body{padding:40px 0 60px}
+.nw-layout{display:grid;grid-template-columns:1fr 300px;gap:40px}
+.nw-section{margin-bottom:32px}
+.nw-section-title{font-family:var(--serif);font-size:18px;font-weight:700;color:var(--dark);border-left:4px solid var(--red);padding-left:12px;margin-bottom:16px}
+.nw-list{list-style:none;padding:0}
+.nw-list li{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:14px;color:var(--text);line-height:1.5}
+.nw-list li:last-child{border-bottom:none}
+.nw-list li::before{content:"✓";color:var(--red);font-weight:700;flex-shrink:0}
+.nw-bio{font-size:15px;line-height:1.85;color:#222}
+.nw-bio p{margin-bottom:1rem}
+.nw-sidebar-card{background:var(--gray);border:1px solid var(--border);border-top:3px solid var(--dark);padding:20px;margin-bottom:20px}
+.nw-sidebar-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--dark);margin-bottom:14px}
+.nw-similar{margin-top:40px;padding-top:32px;border-top:2px solid var(--border)}
+.nw-similar-title{font-family:var(--serif);font-size:22px;font-weight:700;color:var(--dark);margin-bottom:20px}
+.nw-similar-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px}
+.nw-similar-card{border:1px solid var(--border);overflow:hidden;text-decoration:none;color:inherit;transition:transform 0.2s,box-shadow 0.2s;display:block;background:#fff}
+.nw-similar-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.1)}
+.nw-similar-img{width:100%;aspect-ratio:1/1;object-fit:cover;object-position:top center;display:block;background:var(--dark)}
+.nw-similar-body{padding:12px}
+.nw-similar-name{font-weight:700;font-size:14px;color:var(--dark);margin-bottom:4px}
+.nw-similar-worth{font-size:13px;color:var(--red);font-weight:700}
+@media(max-width:768px){
+  .nw-hero-inner{grid-template-columns:1fr;text-align:center}
+  .nw-hero-photo{margin:0 auto;width:140px;height:140px}
+  .nw-layout{grid-template-columns:1fr}
+  .nw-similar-grid{grid-template-columns:repeat(2,1fr)}
 }
 </style>
 </head>
 <body>
 {{ nav_html }}
+
 <div class="nw-profile-hero">
-  <div class="nw-profile-hero-bg" style="background-image:url('{{ image_url }}')"></div>
-  <div class="nw-profile-hero-inner">
-    <img src="{{ image_url }}" alt="{{ name }}" class="nw-profile-img" onerror="this.src='https://ui-avatars.com/api/?name={{ name|urlencode }}&size=200&background=1a1a1a&color=fff&bold=true'">
-    <div class="nw-profile-info">
-      <h1>{{ name }}</h1>
-      <div class="nw-profile-realname">{{ real_name }}</div>
-      <div class="nw-profile-cat">{{ category }}</div>
-      <div class="nw-worth-badge">
-        <span class="nw-worth-label">Est. Net Worth {{ year }}</span>
-        <span class="nw-worth-value">{{ estimated_net_worth }}</span>
+  <div class="nw-hero-bg"></div>
+  <div class="container">
+    <div class="nw-hero-inner">
+      <img src="/celeb-images/{{ slug }}.jpg" alt="{{ name }}" class="nw-hero-photo" onerror="this.style.display='none'">
+      <div>
+        <div class="nw-hero-name">{{ name }}</div>
+        <div class="nw-hero-real">{{ real_name }}</div>
+        <div class="nw-hero-cat">{{ category }}</div>
+        <div class="nw-hero-worth">
+          <span class="nw-hero-worth-label">Est. Net Worth {{ year }}</span>
+          <span class="nw-hero-worth-val">{{ estimated_net_worth }}</span>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
 <div class="nw-stats-bar">
-  <div class="nw-stat"><div class="nw-stat-label">Nationality</div><div class="nw-stat-value">{{ nationality }}</div></div>
-  <div class="nw-stat"><div class="nw-stat-label">Age</div><div class="nw-stat-value">{{ age }}</div></div>
-  <div class="nw-stat"><div class="nw-stat-label">Social Following</div><div class="nw-stat-value">{{ social_following }}</div></div>
-  <div class="nw-stat"><div class="nw-stat-label">Ranking</div><div class="nw-stat-value">{{ net_worth_rank }}</div></div>
-  <div class="nw-stat"><div class="nw-stat-label">Known For</div><div class="nw-stat-value">{{ known_for[:40] }}</div></div>
+  <div class="container">
+    <div class="nw-stats-inner">
+      <div class="nw-stat-item"><div class="nw-stat-label">Nationality</div><div class="nw-stat-value">{{ nationality }}</div></div>
+      <div class="nw-stat-item"><div class="nw-stat-label">Age</div><div class="nw-stat-value">{{ age }}</div></div>
+      <div class="nw-stat-item"><div class="nw-stat-label">Social Following</div><div class="nw-stat-value">{{ social_following }}</div></div>
+      <div class="nw-stat-item"><div class="nw-stat-label">Ranking</div><div class="nw-stat-value">{{ net_worth_rank }}</div></div>
+    </div>
+  </div>
 </div>
 
 <div class="nw-body">
-  <div class="nw-layout">
-    <main>
-      <div class="nw-section">
-        <div class="nw-section-title">Biography</div>
-        <div class="nw-bio">{{ biography_html }}</div>
-      </div>
-    </main>
-    <aside>
-      <div class="nw-sidebar-card">
-        <div class="nw-sidebar-card-title">Income Sources</div>
-        <ul class="nw-list">{% for s in income_sources %}<li>{{ s }}</li>{% endfor %}</ul>
-      </div>
-      <div class="nw-sidebar-card">
-        <div class="nw-sidebar-card-title">Career Highlights</div>
-        <ul class="nw-list">{% for h in career_highlights %}<li>{{ h }}</li>{% endfor %}</ul>
-      </div>
-      <div class="nw-sidebar-card">
-        <div class="nw-sidebar-card-title">Brand Deals</div>
-        <ul class="nw-list">{% for b in brand_deals %}<li>{{ b }}</li>{% endfor %}</ul>
-      </div>
-      <div class="post-tags" style="margin-top:8px">
-        {% for tag in tags %}<span class="tag">{{ tag }}</span>{% endfor %}
-      </div>
-    </aside>
+  <div class="container">
+    <div class="nw-layout">
+      <main>
+        <div class="nw-section">
+          <div class="nw-section-title">About {{ name }}</div>
+          <div class="nw-bio">{{ biography_html }}</div>
+        </div>
+        <div class="nw-section">
+          <div class="nw-section-title">Income Sources</div>
+          <ul class="nw-list">{% for s in income_sources %}<li>{{ s }}</li>{% endfor %}</ul>
+        </div>
+        <div class="nw-section">
+          <div class="nw-section-title">Career Highlights</div>
+          <ul class="nw-list">{% for h in career_highlights %}<li>{{ h }}</li>{% endfor %}</ul>
+        </div>
+        {% if similar_profiles %}
+        <div class="nw-similar">
+          <div class="nw-similar-title">Similar Profiles</div>
+          <div class="nw-similar-grid">
+            {% for p in similar_profiles %}
+            <a href="{{ p.slug }}.html" class="nw-similar-card">
+              <img src="/celeb-images/{{ p.slug }}.jpg" alt="{{ p.name }}" class="nw-similar-img" onerror="this.style.display='none'">
+              <div class="nw-similar-body">
+                <div class="nw-similar-name">{{ p.name }}</div>
+                <div class="nw-similar-worth">{{ p.estimated_net_worth }}</div>
+              </div>
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+      </main>
+      <aside>
+        <div class="nw-sidebar-card">
+          <div class="nw-sidebar-title">Quick Facts</div>
+          <ul class="nw-list">
+            <li>Net Worth: {{ estimated_net_worth }}</li>
+            <li>Category: {{ category }}</li>
+            <li>Nationality: {{ nationality }}</li>
+            <li>{{ age }}</li>
+            <li>Following: {{ social_following }}</li>
+          </ul>
+        </div>
+        <div class="nw-sidebar-card">
+          <div class="nw-sidebar-title">Brand Deals</div>
+          <ul class="nw-list">{% for b in brand_deals %}<li>{{ b }}</li>{% endfor %}</ul>
+        </div>
+        <div class="post-tags" style="margin-top:8px">
+          {% for tag in tags %}<span class="tag">{{ tag }}</span>{% endfor %}
+        </div>
+      </aside>
+    </div>
   </div>
 </div>
 {{ foot_html }}
 </body>
 </html>"""
+
 
 NETWORTH_INDEX_TEMPLATE = """<!DOCTYPE html>
 <html lang="en">
@@ -5491,6 +5384,13 @@ NETWORTH_INDEX_TEMPLATE = """<!DOCTYPE html>
   text-decoration: none;
   color: inherit;
 }
+.nw-card-img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+}
 .nw-card:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.1); transform: translateY(-2px); }
 .nw-card-img {
   width: 100%;
@@ -5552,8 +5452,7 @@ NETWORTH_INDEX_TEMPLATE = """<!DOCTYPE html>
     <div class="nw-grid" id="grid">
       {% for p in profiles %}
       <a href="{{ p.slug }}.html" class="nw-card" data-cat="{{ p.category|lower|replace(' ','-') }}">
-        <img src="{{ p.image_url }}" alt="{{ p.name }}" class="nw-card-img" loading="lazy"
-             onerror="this.src='https://ui-avatars.com/api/?name={{ p.name|urlencode }}&size=300&background=1a1a1a&color=fff&bold=true'">
+        <img src="/celeb-images/{{ p.slug }}.jpg" class="nw-card-img" onerror="this.style.display='none'">
         <div class="nw-card-body">
           <div class="nw-card-cat">{{ p.category }}</div>
           <div class="nw-card-name">{{ p.name }}</div>
@@ -5627,58 +5526,8 @@ def get_nw_footer(year):
 <div class="footer-btm"><div class="container">&copy; {year} Markets News Today. All rights reserved.</div></div>
 </footer>"""
 
-# ── Celebrity image map (Wikipedia Commons CDN — no API key needed) ─────────
-CELEB_IMAGE_MAP = {
-    "mrbeast":           "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/MrBeast_2023.jpg/400px-MrBeast_2023.jpg",
-    "logan-paul":        "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Logan_Paul_%28cropped%29.jpg/400px-Logan_Paul_%28cropped%29.jpg",
-    "jake-paul":         "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Jake_Paul_2022_%28cropped%29.jpg/400px-Jake_Paul_2022_%28cropped%29.jpg",
-    "pewdiepie":         "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/PewDiePie_2019_by_Gage_Skidmore.jpg/400px-PewDiePie_2019_by_Gage_Skidmore.jpg",
-    "markiplier":        "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Markiplier_2019_%28cropped%29.jpg/400px-Markiplier_2019_%28cropped%29.jpg",
-    "ninja":             "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Ninja_at_the_2019_E3_show_%28cropped%29.jpg/400px-Ninja_at_the_2019_E3_show_%28cropped%29.jpg",
-    "emma-chamberlain":  "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Emma_Chamberlain_2019_%28cropped%29.jpg/400px-Emma_Chamberlain_2019_%28cropped%29.jpg",
-    "james-charles":     "https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/James_Charles_%282019%29_%28cropped%29.jpg/400px-James_Charles_%282019%29_%28cropped%29.jpg",
-    "jeffree-star":      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Jeffree_Star_%282018%29.jpg/400px-Jeffree_Star_%282018%29.jpg",
-    "pokimane":          "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Pokimane_at_TwitchCon_2019_%28cropped%29.jpg/400px-Pokimane_at_TwitchCon_2019_%28cropped%29.jpg",
-    "valkyrae":          "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Valkyrae_at_VidCon_2022_%28cropped%29.jpg/400px-Valkyrae_at_VidCon_2022_%28cropped%29.jpg",
-    "lilly-singh":       "https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Lilly_Singh_2019_%28cropped%29.jpg/400px-Lilly_Singh_2019_%28cropped%29.jpg",
-    "casey-neistat":     "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Casey_Neistat_%28cropped%29.jpg/400px-Casey_Neistat_%28cropped%29.jpg",
-    "mkbhd":             "https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Marques_Brownlee_%28MKBHD%29_%28cropped%29.jpg/400px-Marques_Brownlee_%28MKBHD%29_%28cropped%29.jpg",
-    "mark-rober":        "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Mark_Rober_2019.jpg/400px-Mark_Rober_2019.jpg",
-    "david-dobrik":      "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/David_Dobrik_2018_%28cropped%29.jpg/400px-David_Dobrik_2018_%28cropped%29.jpg",
-    "dude-perfect":      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Dude_Perfect_2017.jpg/400px-Dude_Perfect_2017.jpg",
-    "rhett-and-link":    "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Rhett_%26_Link_2017_%28cropped%29.jpg/400px-Rhett_%26_Link_2017_%28cropped%29.jpg",
-    "vsauce":            "https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Michael_Stevens_of_Vsauce.jpg/400px-Michael_Stevens_of_Vsauce.jpg",
-    "kurzgesagt":        "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Kurzgesagt_%E2%80%93_In_a_Nutshell_Logo.svg/400px-Kurzgesagt_%E2%80%93_In_a_Nutshell_Logo.svg.png",
-    "linus-tech-tips":   "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/LinusTechTips_%28Linus_Sebastian%29_%28cropped%29.jpg/400px-LinusTechTips_%28Linus_Sebastian%29_%28cropped%29.jpg",
-    "unbox-therapy":     "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Lewis_George_Hilsenteger.jpg/400px-Lewis_George_Hilsenteger.jpg",
-    "tana-mongeau":      "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Tana_Mongeau_%28cropped%29.jpg/400px-Tana_Mongeau_%28cropped%29.jpg",
-    "trisha-paytas":     "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Trisha_Paytas_%28cropped%29.jpg/400px-Trisha_Paytas_%28cropped%29.jpg",
-    "phillip-defranco":  "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Philip_DeFranco_%28cropped%29.jpg/400px-Philip_DeFranco_%28cropped%29.jpg",
-    "zoella":            "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Zoella_2013.jpg/400px-Zoella_2013.jpg",
-    "alfie-deyes":       "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Alfie_Deyes_%282015%29.jpg/400px-Alfie_Deyes_%282015%29.jpg",
-    "jim-chapman":       "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Jim_Chapman_2015.jpg/400px-Jim_Chapman_2015.jpg",
-    "ijustine":          "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/IJustine_2018_%28cropped%29.jpg/400px-IJustine_2018_%28cropped%29.jpg",
-    "grace-helbig":      "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Grace_Helbig_2014_%28cropped%29.jpg/400px-Grace_Helbig_2014_%28cropped%29.jpg",
-    "tyler-oakley":      "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Tyler_Oakley_%28cropped%29.jpg/400px-Tyler_Oakley_%28cropped%29.jpg",
-    "connor-franta":     "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Connor_Franta_2015_%28cropped%29.jpg/400px-Connor_Franta_%28cropped%29.jpg",
-    "smosh":             "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Smosh_2014_%28cropped%29.jpg/400px-Smosh_2014_%28cropped%29.jpg",
-    "jacksfilms":        "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/JacksFilms_%28cropped%29.jpg/400px-JacksFilms_%28cropped%29.jpg",
-    "w2s":               "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Harry_Lewis_W2S_%28cropped%29.jpg/400px-Harry_Lewis_W2S_%28cropped%29.jpg",
-    "miniminter":        "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Simon_Minter_Miniminter_%28cropped%29.jpg/400px-Simon_Minter_Miniminter_%28cropped%29.jpg",
-    "vikkstar123":       "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Vikkstar123_%28cropped%29.jpg/400px-Vikkstar123_%28cropped%29.jpg",
-    "behzinga":          "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Behzinga_%28cropped%29.jpg/400px-Behzinga_%28cropped%29.jpg",
-    "zerkaa":            "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Josh_Bradley_Zerkaa.jpg/400px-Josh_Bradley_Zerkaa.jpg",
-    "tobi-brown":        "https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Tobi_Brown_%28cropped%29.jpg/400px-Tobi_Brown_%28cropped%29.jpg",
-    "calfreezy":         "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Calfreezy_%28cropped%29.jpg/400px-Calfreezy_%28cropped%29.jpg",
-    "sprinkleofglitter": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Zoella_2013.jpg/400px-Zoella_2013.jpg",
-}
-
 def get_celeb_image(name, slug):
-    """Get celebrity image — Wikipedia CDN first, then Unsplash, then avatar fallback"""
-    # 1. Static Wikipedia map (no API key needed)
-    if slug in CELEB_IMAGE_MAP:
-        return CELEB_IMAGE_MAP[slug]
-    # 2. Try Unsplash if key available
+    """Get celebrity image from Unsplash or fallback to avatar"""
     unsplash_key = os.environ.get("UNSPLASH_KEY", "")
     if unsplash_key:
         try:
@@ -5689,27 +5538,21 @@ def get_celeb_image(name, slug):
                 return r.json()["urls"]["regular"]
         except Exception:
             pass
-    # 3. Try Wikipedia REST API (with user-agent)
-    try:
-        ua = "MarketNewsBot/1.0 (https://marketsnewstoday.info)"
-        r = requests.get(
-            f"https://en.wikipedia.org/api/rest_v1/page/summary/{name.replace(' ', '_')}",
-            headers={"User-Agent": ua}, timeout=8)
-        if r.status_code == 200:
-            data = r.json()
-            if "thumbnail" in data:
-                return data["thumbnail"]["source"]
-    except Exception:
-        pass
-    # 4. ui-avatars fallback (rendered in browser)
-    nm = name.replace(" ", "+")
-    return f"https://ui-avatars.com/api/?name={nm}&size=400&background=cc0000&color=fff&bold=true&font-size=0.35"
+    seed = abs(hash(slug)) % 1000
+    return f"https://picsum.photos/seed/{seed}/400/400"
 
-def build_profile_html(data: dict) -> str:
+def build_profile_html(data: dict, all_profiles: list = None) -> str:
     now = datetime.now(timezone.utc)
     tpl = Template(PROFILE_TEMPLATE)
+    # Get similar profiles (same category, exclude self)
+    similar = []
+    if all_profiles:
+        cat = data.get("category", "")
+        slug = data.get("slug", "")
+        similar = [p for p in all_profiles if p.get("category") == cat and p.get("slug") != slug][:4]
     return tpl.render(**data, site_name=SITE_NAME, site_url=SITE_URL, year=now.year,
-                      nav_html=get_nw_nav(), foot_html=get_nw_footer(now.year))
+                      nav_html=get_nw_nav(), foot_html=get_nw_footer(now.year),
+                      similar_profiles=similar)
 
 
 def rebuild_networth_index(profiles: list):
@@ -5761,7 +5604,7 @@ def main():
         profile["image_url"] = image_url
 
         # Save profile HTML
-        html = build_profile_html(profile)
+        html = build_profile_html(profile, profiles)
         (NETWORTH_DIR / f"{slug}.html").write_text(html)
 
         # Update index
