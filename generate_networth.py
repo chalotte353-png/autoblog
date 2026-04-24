@@ -5623,6 +5623,24 @@ def main():
         time.sleep(1.5)
 
     print(f"\n✅ Generated {new_count} new profiles")
+
+    # Rebuild existing profiles that use old template
+    print("🔄 Rebuilding existing profiles with new template...")
+    rebuilt = 0
+    for p in profiles:
+        slug = p["slug"]
+        html_file = NETWORTH_DIR / f"{slug}.html"
+        if html_file.exists():
+            try:
+                existing = html_file.read_text()
+                if "nw-profile-hero" not in existing:
+                    html = build_profile_html(p, profiles)
+                    html_file.write_text(html)
+                    rebuilt += 1
+            except Exception as e:
+                print(f"  Error: {slug}: {e}")
+    print(f"  Rebuilt {rebuilt} profiles")
+
     print("📋 Rebuilding net worth index page...")
     rebuild_networth_index(profiles)
     save_profiles_index(profiles)
