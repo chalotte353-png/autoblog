@@ -5627,8 +5627,58 @@ def get_nw_footer(year):
 <div class="footer-btm"><div class="container">&copy; {year} Markets News Today. All rights reserved.</div></div>
 </footer>"""
 
+# ── Celebrity image map (Wikipedia Commons CDN — no API key needed) ─────────
+CELEB_IMAGE_MAP = {
+    "mrbeast":           "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/MrBeast_2023.jpg/400px-MrBeast_2023.jpg",
+    "logan-paul":        "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Logan_Paul_%28cropped%29.jpg/400px-Logan_Paul_%28cropped%29.jpg",
+    "jake-paul":         "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Jake_Paul_2022_%28cropped%29.jpg/400px-Jake_Paul_2022_%28cropped%29.jpg",
+    "pewdiepie":         "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/PewDiePie_2019_by_Gage_Skidmore.jpg/400px-PewDiePie_2019_by_Gage_Skidmore.jpg",
+    "markiplier":        "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Markiplier_2019_%28cropped%29.jpg/400px-Markiplier_2019_%28cropped%29.jpg",
+    "ninja":             "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Ninja_at_the_2019_E3_show_%28cropped%29.jpg/400px-Ninja_at_the_2019_E3_show_%28cropped%29.jpg",
+    "emma-chamberlain":  "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Emma_Chamberlain_2019_%28cropped%29.jpg/400px-Emma_Chamberlain_2019_%28cropped%29.jpg",
+    "james-charles":     "https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/James_Charles_%282019%29_%28cropped%29.jpg/400px-James_Charles_%282019%29_%28cropped%29.jpg",
+    "jeffree-star":      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Jeffree_Star_%282018%29.jpg/400px-Jeffree_Star_%282018%29.jpg",
+    "pokimane":          "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Pokimane_at_TwitchCon_2019_%28cropped%29.jpg/400px-Pokimane_at_TwitchCon_2019_%28cropped%29.jpg",
+    "valkyrae":          "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Valkyrae_at_VidCon_2022_%28cropped%29.jpg/400px-Valkyrae_at_VidCon_2022_%28cropped%29.jpg",
+    "lilly-singh":       "https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Lilly_Singh_2019_%28cropped%29.jpg/400px-Lilly_Singh_2019_%28cropped%29.jpg",
+    "casey-neistat":     "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Casey_Neistat_%28cropped%29.jpg/400px-Casey_Neistat_%28cropped%29.jpg",
+    "mkbhd":             "https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Marques_Brownlee_%28MKBHD%29_%28cropped%29.jpg/400px-Marques_Brownlee_%28MKBHD%29_%28cropped%29.jpg",
+    "mark-rober":        "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Mark_Rober_2019.jpg/400px-Mark_Rober_2019.jpg",
+    "david-dobrik":      "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/David_Dobrik_2018_%28cropped%29.jpg/400px-David_Dobrik_2018_%28cropped%29.jpg",
+    "dude-perfect":      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Dude_Perfect_2017.jpg/400px-Dude_Perfect_2017.jpg",
+    "rhett-and-link":    "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Rhett_%26_Link_2017_%28cropped%29.jpg/400px-Rhett_%26_Link_2017_%28cropped%29.jpg",
+    "vsauce":            "https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Michael_Stevens_of_Vsauce.jpg/400px-Michael_Stevens_of_Vsauce.jpg",
+    "kurzgesagt":        "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Kurzgesagt_%E2%80%93_In_a_Nutshell_Logo.svg/400px-Kurzgesagt_%E2%80%93_In_a_Nutshell_Logo.svg.png",
+    "linus-tech-tips":   "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/LinusTechTips_%28Linus_Sebastian%29_%28cropped%29.jpg/400px-LinusTechTips_%28Linus_Sebastian%29_%28cropped%29.jpg",
+    "unbox-therapy":     "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Lewis_George_Hilsenteger.jpg/400px-Lewis_George_Hilsenteger.jpg",
+    "tana-mongeau":      "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Tana_Mongeau_%28cropped%29.jpg/400px-Tana_Mongeau_%28cropped%29.jpg",
+    "trisha-paytas":     "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Trisha_Paytas_%28cropped%29.jpg/400px-Trisha_Paytas_%28cropped%29.jpg",
+    "phillip-defranco":  "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Philip_DeFranco_%28cropped%29.jpg/400px-Philip_DeFranco_%28cropped%29.jpg",
+    "zoella":            "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Zoella_2013.jpg/400px-Zoella_2013.jpg",
+    "alfie-deyes":       "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Alfie_Deyes_%282015%29.jpg/400px-Alfie_Deyes_%282015%29.jpg",
+    "jim-chapman":       "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Jim_Chapman_2015.jpg/400px-Jim_Chapman_2015.jpg",
+    "ijustine":          "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/IJustine_2018_%28cropped%29.jpg/400px-IJustine_2018_%28cropped%29.jpg",
+    "grace-helbig":      "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Grace_Helbig_2014_%28cropped%29.jpg/400px-Grace_Helbig_2014_%28cropped%29.jpg",
+    "tyler-oakley":      "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Tyler_Oakley_%28cropped%29.jpg/400px-Tyler_Oakley_%28cropped%29.jpg",
+    "connor-franta":     "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Connor_Franta_2015_%28cropped%29.jpg/400px-Connor_Franta_%28cropped%29.jpg",
+    "smosh":             "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Smosh_2014_%28cropped%29.jpg/400px-Smosh_2014_%28cropped%29.jpg",
+    "jacksfilms":        "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/JacksFilms_%28cropped%29.jpg/400px-JacksFilms_%28cropped%29.jpg",
+    "w2s":               "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Harry_Lewis_W2S_%28cropped%29.jpg/400px-Harry_Lewis_W2S_%28cropped%29.jpg",
+    "miniminter":        "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Simon_Minter_Miniminter_%28cropped%29.jpg/400px-Simon_Minter_Miniminter_%28cropped%29.jpg",
+    "vikkstar123":       "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Vikkstar123_%28cropped%29.jpg/400px-Vikkstar123_%28cropped%29.jpg",
+    "behzinga":          "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Behzinga_%28cropped%29.jpg/400px-Behzinga_%28cropped%29.jpg",
+    "zerkaa":            "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Josh_Bradley_Zerkaa.jpg/400px-Josh_Bradley_Zerkaa.jpg",
+    "tobi-brown":        "https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Tobi_Brown_%28cropped%29.jpg/400px-Tobi_Brown_%28cropped%29.jpg",
+    "calfreezy":         "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Calfreezy_%28cropped%29.jpg/400px-Calfreezy_%28cropped%29.jpg",
+    "sprinkleofglitter": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Zoella_2013.jpg/400px-Zoella_2013.jpg",
+}
+
 def get_celeb_image(name, slug):
-    """Get celebrity image from Unsplash or fallback to avatar"""
+    """Get celebrity image — Wikipedia CDN first, then Unsplash, then avatar fallback"""
+    # 1. Static Wikipedia map (no API key needed)
+    if slug in CELEB_IMAGE_MAP:
+        return CELEB_IMAGE_MAP[slug]
+    # 2. Try Unsplash if key available
     unsplash_key = os.environ.get("UNSPLASH_KEY", "")
     if unsplash_key:
         try:
@@ -5639,8 +5689,21 @@ def get_celeb_image(name, slug):
                 return r.json()["urls"]["regular"]
         except Exception:
             pass
-    seed = abs(hash(slug)) % 1000
-    return f"https://picsum.photos/seed/{seed}/400/400"
+    # 3. Try Wikipedia REST API (with user-agent)
+    try:
+        ua = "MarketNewsBot/1.0 (https://marketsnewstoday.info)"
+        r = requests.get(
+            f"https://en.wikipedia.org/api/rest_v1/page/summary/{name.replace(' ', '_')}",
+            headers={"User-Agent": ua}, timeout=8)
+        if r.status_code == 200:
+            data = r.json()
+            if "thumbnail" in data:
+                return data["thumbnail"]["source"]
+    except Exception:
+        pass
+    # 4. ui-avatars fallback (rendered in browser)
+    nm = name.replace(" ", "+")
+    return f"https://ui-avatars.com/api/?name={nm}&size=400&background=cc0000&color=fff&bold=true&font-size=0.35"
 
 def build_profile_html(data: dict) -> str:
     now = datetime.now(timezone.utc)
