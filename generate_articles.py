@@ -75,7 +75,12 @@ def get_image(keyword, slug):
                 params={"query": keyword, "orientation": "landscape"},
                 headers={"Authorization": "Client-ID " + UNSPLASH_KEY}, timeout=8)
             if r.status_code == 200:
-                return r.json()["urls"]["regular"]
+                url = r.json()["urls"]["regular"]
+                # Convert to WebP — smaller file, faster load, better Core Web Vitals
+                url = re.sub(r'fm=jpg', 'fm=webp', url)
+                if 'fm=' not in url:
+                    url += '&fm=webp'
+                return url
         except Exception:
             pass
     seed = abs(hash(slug)) % 1000
@@ -98,7 +103,25 @@ def load_index():
 def save_index(posts):
     (OUTPUT_DIR / "posts_index.json").write_text(json.dumps(posts, indent=2))
 
-# ── BUILD ROBOTS.TXT ────────────────────────────────────────────────
+# ── CONVERT EXISTING IMAGES TO WEBP ─────────────────────────────────
+def convert_existing_to_webp():
+    """Convert all fm=jpg Unsplash URLs to fm=webp in existing HTML files."""
+    converted = 0
+    for html_file in OUTPUT_DIR.rglob("*.html"):
+        try:
+            content = html_file.read_text(encoding="utf-8")
+            if "fm=jpg" in content:
+                updated = re.sub(
+                    r'(https://images\.unsplash\.com[^\s"\']*?)fm=jpg',
+                    r'\1fm=webp',
+                    content
+                )
+                html_file.write_text(updated, encoding="utf-8")
+                converted += content.count("fm=jpg")
+        except Exception:
+            pass
+    if converted:
+        print(f"  Converted {converted} images to WebP")
 def build_robots():
     """Generate robots.txt with correct SITE_URL — never use placeholder."""
     content = f"""User-agent: *
@@ -334,6 +357,14 @@ def head_html(title, desc, canonical, image="", prefix="", og_type="article"):
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="{prefix}style.css">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-YC4REN62D0"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){{dataLayer.push(arguments);}}
+  gtag('js', new Date());
+  gtag('config', 'G-YC4REN62D0');
+</script>
 </head><body>"""
 
 def byline_html(p, prefix=""):
@@ -771,6 +802,7 @@ def main():
     build_sitemap(posts_index)
     build_robots()
     build_rss(posts_index)
+    convert_existing_to_webp()
     save_published(published)
     save_index(posts_index)
     print("Done!")
