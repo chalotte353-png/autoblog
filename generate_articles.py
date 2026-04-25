@@ -399,8 +399,8 @@ def build_post(data, author, all_posts, now):
     # Sidebar trending
     sidebar_items = "".join(
         f'''<a href="{SITE_URL}/posts/{p["slug"]}.html" class="sw-item">
-          <div class="sw-item-img"><img src="{p["image_url"]}" alt="{esc(p["title"][:40])}" loading="lazy"></div>
-          <div><h4>{esc(p["title"][:52])}{"..." if len(p["title"])>52 else ""}</h4>
+          <div class="sw-item-img"><img src="{p["image_url"]}" alt="{esc(p["title"])}" loading="lazy"></div>
+          <div><h4>{esc(p["title"][:80])}{"..." if len(p["title"])>80 else ""}</h4>
           <div class="sw-item-date">{p.get("date_human","")}</div></div></a>'''
         for p in [x for x in all_posts if x["slug"] != slug][:6]
     )
@@ -541,8 +541,8 @@ def build_homepage(posts):
     # Sidebar
     sw_items = "".join(
         f"""<a href="posts/{p["slug"]}.html" class="sw-item">
-          <div class="sw-item-img"><img src="{p["image_url"]}" alt="{esc(p["title"][:40])}" loading="lazy"></div>
-          <div><h4>{esc(p["title"][:52])}{"..." if len(p["title"])>52 else ""}</h4>
+          <div class="sw-item-img"><img src="{p["image_url"]}" alt="{esc(p["title"])}" loading="lazy"></div>
+          <div><h4>{esc(p["title"][:80])}{"..." if len(p["title"])>80 else ""}</h4>
           <div class="sw-item-date">{p.get("date_human","")}</div></div></a>"""
         for p in sp[:7]
     )
