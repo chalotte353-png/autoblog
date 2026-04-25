@@ -86,7 +86,14 @@ def get_image(keyword, slug):
     seed = abs(hash(slug)) % 1000
     return f"https://picsum.photos/seed/{seed}/1200/630"
 
-def get_author(category):
+def get_thumbnail_url(image_url):
+    """Return smaller version of image for sidebars/thumbnails — saves ~70% bandwidth."""
+    if 'unsplash.com' in image_url:
+        url = re.sub(r'w=\d+', 'w=400', image_url)
+        if 'w=' not in url:
+            url += '&w=400'
+        return url
+    return image_url
     return random.choice(AUTHORS.get(category, AUTHORS["World"]))
 
 def load_published():
@@ -370,6 +377,8 @@ def head_html(title, desc, canonical, image="", prefix="", og_type="article"):
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="{prefix}style.css">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap"></noscript>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-YC4REN62D0"></script>
 <script>
@@ -488,7 +497,7 @@ def build_post(data, author, all_posts, now):
     # Sidebar trending
     sidebar_items = "".join(
         f'''<a href="{SITE_URL}/posts/{p["slug"]}.html" class="sw-item">
-          <div class="sw-item-img"><img src="{p["image_url"]}" alt="{esc(p["title"])}" loading="lazy"></div>
+          <div class="sw-item-img"><img src="{get_thumbnail_url(p["image_url"])}" alt="{esc(p["title"])}" loading="lazy"></div>
           <div><h4>{esc(p["title"][:80])}{"..." if len(p["title"])>80 else ""}</h4>
           <div class="sw-item-date">{p.get("date_human","")}</div></div></a>'''
         for p in [x for x in all_posts if x["slug"] != slug][:6]
@@ -537,7 +546,7 @@ def build_post(data, author, all_posts, now):
       <span class="read">{data.get("read_time","5 min read")}</span>
     </div>
   </div>
-  <div class="post-hero"><img src="{data["image_url"]}" alt="{esc(data["title"])}" loading="eager"></div>
+  <div class="post-hero"><img src="{data["image_url"]}" alt="{esc(data["title"])}" loading="eager" fetchpriority="high"></div>
     # Inject internal links — safe post-processing, no content change
     linked_html = inject_internal_links(data["article_html"], slug, all_posts)
 
@@ -583,7 +592,7 @@ def build_homepage(posts):
         hero_html = f"""<section class="hero"><div class="container">
 <div class="hero-grid">
   <a href="posts/{h["slug"]}.html" class="hero-main">
-    <div class="hero-main-img"><img src="{h["image_url"]}" alt="{esc(h["title"])}" loading="eager"></div>
+    <div class="hero-main-img"><img src="{h["image_url"]}" alt="{esc(h["title"])}" loading="eager" fetchpriority="high"></div>
     <div class="hero-main-body">
       <div class="label">{h["category"]}</div>
       <h1>{esc(h["title"])}</h1>
@@ -633,7 +642,7 @@ def build_homepage(posts):
     # Sidebar
     sw_items = "".join(
         f"""<a href="posts/{p["slug"]}.html" class="sw-item">
-          <div class="sw-item-img"><img src="{p["image_url"]}" alt="{esc(p["title"])}" loading="lazy"></div>
+          <div class="sw-item-img"><img src="{get_thumbnail_url(p["image_url"])}" alt="{esc(p["title"])}" loading="lazy"></div>
           <div><h4>{esc(p["title"][:80])}{"..." if len(p["title"])>80 else ""}</h4>
           <div class="sw-item-date">{p.get("date_human","")}</div></div></a>"""
         for p in sp[:7]
