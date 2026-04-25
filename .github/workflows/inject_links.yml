@@ -1,46 +1,32 @@
 name: Inject Internal Links (One-Time)
 
 on:
-  workflow_dispatch:  # Manual trigger only
+  workflow_dispatch:
 
 jobs:
   inject:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install requests beautifulsoup4
-
-      - name: Download current site files
-        env:
-          SSH_HOST: ${{ secrets.SSH_HOST }}
-          SSH_USER: ${{ secrets.SSH_USER }}
-          SSH_PASS: ${{ secrets.SSH_PASS }}
-          SSH_PORT: ${{ secrets.SSH_PORT }}
-        run: |
-          sudo apt-get install -y sshpass
-          mkdir -p output/posts
-          sshpass -e scp -P $SSH_PORT -o StrictHostKeyChecking=no \
-            -r $SSH_USER@$SSH_HOST:~/marketsnewstoday.info/posts/ output/
-          sshpass -e scp -P $SSH_PORT -o StrictHostKeyChecking=no \
-            $SSH_USER@$SSH_HOST:~/marketsnewstoday.info/posts_index.json output/
+        run: pip install beautifulsoup4
 
       - name: Run inject script
         run: python inject_links_old_posts.py
 
-      - name: Upload updated posts to server
-        env:
-          SSH_HOST: ${{ secrets.SSH_HOST }}
-          SSH_USER: ${{ secrets.SSH_USER }}
-          SSH_PASS: ${{ secrets.SSH_PASS }}
-          SSH_PORT: ${{ secrets.SSH_PORT }}
+      - name: Commit and push updated posts
         run: |
-          sshpass -e scp -P $SSH_PORT -o StrictHostKeyChecking=no \
-            output/posts/*.html $SSH_USER@$SSH_HOST:~/marketsnewstoday.info/posts/
-          echo "✅ Done! Internal links injected in all old posts."
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add output/posts/
+          git diff --staged --quiet || git commit -m "SEO: inject internal links in all posts"
+          git push
