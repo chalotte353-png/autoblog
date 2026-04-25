@@ -94,6 +94,8 @@ def get_thumbnail_url(image_url):
             url += '&w=400'
         return url
     return image_url
+
+def get_author(category):
     return random.choice(AUTHORS.get(category, AUTHORS["World"]))
 
 def load_published():
