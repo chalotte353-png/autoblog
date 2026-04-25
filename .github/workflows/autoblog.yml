@@ -63,7 +63,6 @@ jobs:
       - name: Copy static assets
         run: |
           cp style.css output/style.css
-          cp robots.txt output/robots.txt
 
       - name: Commit and push output
         run: |
