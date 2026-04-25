@@ -330,6 +330,10 @@ def foot_html(prefix=""):
     <a href="{prefix}category-science.html">Science</a>
     <a href="{prefix}category-travel.html">Travel</a>
     <a href="{prefix}sitemap.xml">Sitemap</a></div>
+  <div class="footer-col"><h4>Company</h4>
+    <a href="{prefix}about.html">About Us</a>
+    <a href="{prefix}contact.html">Contact</a>
+    <a href="{prefix}privacy-policy.html">Privacy Policy</a></div>
 </div></div></div>
 <div class="footer-btm"><div class="container">&copy; {y} Markets News Today. All rights reserved.</div></div>
 </footer>"""
