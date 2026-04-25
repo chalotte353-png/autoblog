@@ -20,6 +20,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="../style.css">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap"></noscript>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-YC4REN62D0"></script>
 <script>
@@ -63,11 +65,10 @@
       <span class="read">7 min read</span>
     </div>
   </div>
-  <div class="post-hero"><img src="https://images.unsplash.com/photo-1676638516847-e630aee7a870?crop=entropy&cs=tinysrgb&fit=max&fm=webp&ixid=M3w5MzA5MzN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NzY3NzA1NTd8&ixlib=rb-4.1.0&q=80&w=1080" alt="HEVC Licensing Fees Explained: Why Vendors Drop Support" loading="eager"></div>
+  <div class="post-hero"><img src="https://images.unsplash.com/photo-1676638516847-e630aee7a870?crop=entropy&cs=tinysrgb&fit=max&fm=webp&ixid=M3w5MzA5MzN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NzY3NzA1NTd8&ixlib=rb-4.1.0&q=80&w=1080" alt="HEVC Licensing Fees Explained: Why Vendors Drop Support" loading="eager" fetchpriority="high"></div>
   <div class="post-body"><h2>The Promise That Became a Patent Nightmare</h2>
 <p>High Efficiency Video Coding, better known as HEVC or H.265, was supposed to revolutionize digital video. Standardized in 2013 by the Joint Collaborative Team on Video Coding, the codec offered a dramatic leap in compression efficiency compared to its predecessor H.264, theoretically allowing broadcasters, streaming services, and device manufacturers to deliver the same visual quality at roughly half the data rate. For an industry increasingly obsessed with 4K and 8K content delivery, the promise was enormous.</p>
 <p>More than a decade later, that promise remains frustratingly unfulfilled for much of the technology ecosystem. The reason is not technical. HEVC performs exactly as advertised. The reason is legal, financial, and deeply structural: a patent licensing situation so complicated and so costly that it has driven major platform vendors to either abandon HEVC entirely or limit its use in ways that confuse and frustrate developers and end users alike.</p>
-
 <h2>Understanding the Patent Pool Problem</h2>
 <p>Unlike H.264, which was covered by a single patent pool administered by MPEG LA, HEVC fragmented into multiple competing patent pools almost immediately after standardization. Today, there are three major entities asserting patent rights over HEVC implementations.</p>
 <ul>
@@ -76,31 +77,25 @@
 <li><strong>Velos Media:</strong> A third entity that emerged to represent additional patent holders and add yet another layer of licensing complexity to the equation.</li>
 </ul>
 <p>The critical problem is that implementing HEVC in a product may require licenses from all three pools simultaneously, and the terms of each pool are negotiated separately. A company building a streaming device, a software media player, or even a camera cannot simply write a single check and be done. They must engage with multiple patent licensing organizations, each with its own fee structures, audit rights, and legal terms.</p>
-
 <h2>How the Royalty Math Actually Works</h2>
 <p>The royalty structure for HEVC has historically been among the most aggressive in the codec space. HEVC Advance, in particular, attracted significant controversy at launch for demanding royalties not just on devices and software, but on content itself, meaning streaming services could theoretically owe royalties based on the revenue generated from video delivered using the codec.</p>
 <p>After public backlash, HEVC Advance modified its content royalty approach, but the damage to industry confidence had already been done. The remaining fee structures, even after various adjustments over the years, still present a meaningful cost burden.</p>
 <p>For device manufacturers, the combined royalty exposure from all three pools can reach between <strong>0.40 and 1.20 US dollars per unit</strong> depending on the product category, volume tiers, and specific patents implicated. For a manufacturer shipping tens of millions of smartphones or smart televisions annually, this represents a substantial line item that must be weighed against the benefits of including HEVC support.</p>
 <p>Software vendors face a different calculation. Standalone media player applications that ship with HEVC decoding built in must pay per-unit or per-download royalties, while web browsers face particularly awkward exposure because bundling a patented codec into freely distributed software creates complex licensing obligations that most open source projects cannot legally or financially accommodate.</p>
-
 <h2>Why Major Vendors Have Walked Away</h2>
 <p>The licensing complexity explains a pattern that has puzzled many consumers: why do some platforms support HEVC natively while others require separate codec purchases, and why have some vendors actively removed HEVC support from products that previously included it?</p>
 <p>Microsoft made headlines when it moved HEVC support out of Windows and into a paid extension available through its app store. This was not a technical regression. It was a deliberate business decision to shift the royalty obligation from the operating system itself onto individual users who choose to purchase the extension, effectively allowing Microsoft to avoid blanket licensing costs across its entire Windows install base.</p>
 <p>Google has taken a different approach by championing AV1, the royalty-free codec developed by the Alliance for Open Media, as an alternative to HEVC. Chrome and Android have received aggressive AV1 support investment precisely because it sidesteps the patent thicket entirely. YouTube has been one of the most aggressive adopters of AV1 for exactly this reason.</p>
 <blockquote>The fragmentation of HEVC patent rights created a situation where the cost of compliance became higher than the cost of engineering an alternative. That calculus drove enormous investment into AV1 and, eventually, VVC development, but it left years of consumer confusion in its wake.</blockquote>
-
 <h2>The Hardware Decoder Exception</h2>
 <p>One area where HEVC has maintained strong footing is in dedicated hardware decoders. Virtually every modern system on chip from major silicon vendors including Apple, Qualcomm, MediaTek, and Samsung includes hardware accelerated HEVC decoding capability. This is because chipmakers can negotiate licenses at the silicon level, and the per-unit royalty cost is absorbed into the overall chip economics.</p>
 <p>This creates an interesting asymmetry in the market. A device may have a hardware decoder capable of processing HEVC streams efficiently, but the operating system or application layer may deliberately avoid using it to sidestep separate software licensing obligations. The result is that HEVC content may technically be playable on a device, but only through specific applications that have paid the appropriate licenses, while the default platform player refuses to touch the format.</p>
-
 <h3>Streaming Services and the Codec Decision</h3>
 <p>Major streaming platforms have navigated the HEVC question with varying degrees of commitment. Apple TV Plus and iTunes have leaned into HEVC heavily, leveraging Apple's ecosystem control to ensure licensed decoding is present across supported devices. Netflix has used HEVC for some delivery paths, particularly for 4K HDR content, but has simultaneously invested heavily in AV1 encoding for efficiency at scale.</p>
 <p>The practical reality for streaming services is that HEVC offers real bandwidth savings on delivery, and those savings translate directly to reduced content delivery network costs. For a service delivering billions of hours of video annually, even a modest reduction in average bitrate has significant economic value. This creates ongoing tension between the cost of HEVC licensing and the operational savings from its superior compression.</p>
-
 <h2>The Current State of HEVC in 2026</h2>
 <p>As of 2026, the HEVC landscape has reached an uncomfortable equilibrium. The codec is widely supported in hardware across the device ecosystem, but software and platform support remains fragmented and often requires deliberate user action or additional purchases. AV1 has emerged as the preferred royalty-free alternative for web and streaming applications, with VVC positioned as the next generation option for scenarios where compression efficiency is paramount.</p>
 <p>HEVC is not dead. It remains the dominant codec for broadcast delivery, professional production workflows, physical media formats, and a significant portion of 4K streaming. But its role as a universal consumer codec was effectively strangled by the patent pool fragmentation that occurred in the years following its standardization.</p>
-
 <h3>What Developers and Buyers Should Know</h3>
 <p>For developers building applications that handle video, the practical guidance in 2026 is straightforward. If you need HEVC support in software you distribute, you must either obtain licenses from the relevant patent pools, direct users to purchase platform extensions where available, or engineer around HEVC by targeting AV1 and H.264 for broad compatibility.</p>
 <p>For consumers purchasing devices, the presence of hardware HEVC decoding capability in a chip does not guarantee that all applications on the device will use it. Checking whether specific media applications have acquired appropriate licenses, or whether the platform operating system natively supports HEVC playback without additional steps, remains necessary homework before assuming a device will handle HEVC content seamlessly.</p>
@@ -110,7 +105,6 @@
 <li><strong>Consider container formats:</strong> HEVC video delivered in certain container formats may trigger different licensing considerations depending on the patent pools involved.</li>
 <li><strong>Evaluate AV1 alternatives:</strong> For new encoding workflows, AV1 increasingly offers comparable quality with none of the patent overhead.</li>
 </ul>
-
 <h2>Looking Ahead</h2>
 <p>The HEVC saga offers an important lesson for the codec industry as newer formats like VVC and EVC enter the market. Both were designed with patent pool fragmentation in mind as a risk to manage, though whether the licensing bodies governing those formats have learned sufficiently from the HEVC experience remains to be seen.</p>
 <p>The fundamental tension between rewarding the significant engineering investment that goes into codec development and ensuring broad adoption of resulting standards is one the technology industry has never fully resolved. HEVC represents the most dramatic recent example of that tension producing outcomes that ultimately served neither patent holders nor the industry they hoped to profit from, as the market responded by routing around the licensing complexity wherever it could.</p>
@@ -128,7 +122,7 @@
 </article>
 <aside class="sidebar">
   <div class="sw"><div class="sw-title">Trending Now</div><a href="https://marketsnewstoday.info/posts/dow-futures-plunge-350-points-as-iran-war-tensions-surge.html" class="sw-item">
-          <div class="sw-item-img"><img src="https://images.unsplash.com/photo-1612010167108-3e6b327405f0?crop=entropy&cs=tinysrgb&fit=max&fm=webp&ixid=M3w5MzA5MzN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NzY3NTkxNjB8&ixlib=rb-4.1.0&q=80&w=1080" alt="Dow Futures Plunge 350 Points as Iran War Tensions Surge" loading="lazy"></div>
+          <div class="sw-item-img"><img src="https://images.unsplash.com/photo-1612010167108-3e6b327405f0?crop=entropy&cs=tinysrgb&fit=max&fm=webp&ixid=M3w5MzA5MzN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NzY3NTkxNjB8&ixlib=rb-4.1.0&q=80&w=400" alt="Dow Futures Plunge 350 Points as Iran War Tensions Surge" loading="lazy"></div>
           <div><h4>Dow Futures Plunge 350 Points as Iran War Tensions Surge</h4>
           <div class="sw-item-date">April 21, 2026</div></div></a><a href="https://marketsnewstoday.info/posts/louisiana-father-kills-8-children-in-shreveport-mass-shooting.html" class="sw-item">
           <div class="sw-item-img"><img src="https://picsum.photos/seed/119/1200/630" alt="Louisiana Father Kills 8 Children in Shreveport Mass Shooting" loading="lazy"></div>
@@ -137,13 +131,13 @@
           <div class="sw-item-img"><img src="https://picsum.photos/seed/114/1200/630" alt="Sabres Stun Bruins 4-3 in Game 1 Playoff Thriller" loading="lazy"></div>
           <div><h4>Sabres Stun Bruins 4-3 in Game 1 Playoff Thriller</h4>
           <div class="sw-item-date">April 21, 2026</div></div></a><a href="https://marketsnewstoday.info/posts/oil-prices-jump-after-strait-of-hormuz-setbacks.html" class="sw-item">
-          <div class="sw-item-img"><img src="https://images.unsplash.com/photo-1614555283386-f86c91585523?crop=entropy&cs=tinysrgb&fit=max&fm=webp&ixid=M3w5MzA5MzN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NzY3NTkzMDB8&ixlib=rb-4.1.0&q=80&w=1080" alt="Oil Prices Jump After Strait of Hormuz Setbacks" loading="lazy"></div>
+          <div class="sw-item-img"><img src="https://images.unsplash.com/photo-1614555283386-f86c91585523?crop=entropy&cs=tinysrgb&fit=max&fm=webp&ixid=M3w5MzA5MzN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NzY3NTkzMDB8&ixlib=rb-4.1.0&q=80&w=400" alt="Oil Prices Jump After Strait of Hormuz Setbacks" loading="lazy"></div>
           <div><h4>Oil Prices Jump After Strait of Hormuz Setbacks</h4>
           <div class="sw-item-date">April 21, 2026</div></div></a><a href="https://marketsnewstoday.info/posts/iran-vows-retaliation-after-us-navy-strikes-cargo-ship.html" class="sw-item">
-          <div class="sw-item-img"><img src="https://images.unsplash.com/photo-1772303142584-08e3eaf63dfd?crop=entropy&cs=tinysrgb&fit=max&fm=webp&ixid=M3w5MzA5MzN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NzY3NTkzNTB8&ixlib=rb-4.1.0&q=80&w=1080" alt="Iran Vows Retaliation After US Navy Strikes Cargo Ship" loading="lazy"></div>
+          <div class="sw-item-img"><img src="https://images.unsplash.com/photo-1772303142584-08e3eaf63dfd?crop=entropy&cs=tinysrgb&fit=max&fm=webp&ixid=M3w5MzA5MzN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NzY3NTkzNTB8&ixlib=rb-4.1.0&q=80&w=400" alt="Iran Vows Retaliation After US Navy Strikes Cargo Ship" loading="lazy"></div>
           <div><h4>Iran Vows Retaliation After US Navy Strikes Cargo Ship</h4>
           <div class="sw-item-date">April 21, 2026</div></div></a><a href="https://marketsnewstoday.info/posts/nba-playoffs-2026-key-takeaways-from-sundays-game-1s.html" class="sw-item">
-          <div class="sw-item-img"><img src="https://images.unsplash.com/photo-1583040989829-f668e2495ae1?crop=entropy&cs=tinysrgb&fit=max&fm=webp&ixid=M3w5MzA5MzN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NzY3NTk0MDV8&ixlib=rb-4.1.0&q=80&w=1080" alt="NBA Playoffs 2026: Key Takeaways From Sunday's Game 1s" loading="lazy"></div>
+          <div class="sw-item-img"><img src="https://images.unsplash.com/photo-1583040989829-f668e2495ae1?crop=entropy&cs=tinysrgb&fit=max&fm=webp&ixid=M3w5MzA5MzN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NzY3NTk0MDV8&ixlib=rb-4.1.0&q=80&w=400" alt="NBA Playoffs 2026: Key Takeaways From Sunday's Game 1s" loading="lazy"></div>
           <div><h4>NBA Playoffs 2026: Key Takeaways From Sunday's Game 1s</h4>
           <div class="sw-item-date">April 21, 2026</div></div></a></div>
 </aside>
