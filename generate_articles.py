@@ -230,11 +230,19 @@ def build_topics(count, published):
     return fresh[:count]
 
 # ── WRITE ARTICLE ────────────────────────────────────────────────────
-def write_article(topic, hint):
+def write_article(topic, hint, related_posts=None):
     now = datetime.now()
+    related_context = ""
+    if related_posts:
+        related_context = "\n\nINTERNAL LINKS — You MUST naturally link to these related articles within the article body using HTML anchor tags. Insert them where contextually relevant (not all in one place):\n"
+        for p in related_posts[:4]:
+            related_context += f'- <a href="{SITE_URL}/posts/{p["slug"]}.html">{p["title"]}</a>\n'
+        related_context += "Use the exact HTML anchor tags above — insert them naturally into sentences within the article content.\n"
+
     prompt = (
         f"Write a professional news article dated {now.strftime('%B %d, %Y')} about: {topic}\n"
-        f"Background: {hint}\n\n"
+        f"Background: {hint}\n"
+        f"{related_context}\n"
         "Respond with ONLY this XML format — no extra text:\n"
         "<article>\n"
         "<title>Compelling headline 55-70 chars</title>\n"
@@ -247,9 +255,10 @@ def write_article(topic, hint):
         "<excerpt>2-3 compelling sentences</excerpt>\n"
         "<tags>tag1,tag2,tag3,tag4</tags>\n"
         "<content>\n"
-        "Write minimum 900 words. Use h2, h3, p, ul, li, strong, blockquote tags only. "
+        "Write minimum 900 words. Use h2, h3, p, ul, li, strong, blockquote, a tags only. "
         "No hr tags. No dashes (-- or —). Do NOT mention any news outlet by name. "
-        "Write complete professional article with proper paragraphs.\n"
+        "Write complete professional article with proper paragraphs. "
+        "Include the internal links naturally within the article body where contextually relevant.\n"
         "</content>\n"
         "</article>"
     )
@@ -381,6 +390,82 @@ def byline_html(p, prefix=""):
   <span>{p.get('read_time','5 min read')}</span>
 </div>"""
 
+# ── INTERNAL LINK INJECTION ──────────────────────────────────────────
+def inject_internal_links(article_html, current_slug, all_posts):
+    """
+    Inject internal links into article body WITHOUT changing any sentences.
+    Finds keyword phrases from related post titles inside existing text,
+    wraps FIRST occurrence only with <a href>.
+    - Max 3 links per article
+    - Never links same post twice
+    - Never links to itself
+    - Content/sentences never modified — only existing words wrapped
+    """
+    from bs4 import BeautifulSoup
+
+    MAX_LINKS = 3
+    STOP = {"a","an","the","in","on","at","of","and","for","to","is","are","was",
+            "were","it","its","as","by","with","from","that","this","has","have",
+            "after","over","into","about","up","out","than","but","be","been",
+            "their","his","her","our","us","new","says","will","can","could",
+            "would","should","may","might","also","just","more","most","one",
+            "two","or","not","all","who","which","what","when","where","how","said"}
+
+    soup = BeautifulSoup(article_html, 'html.parser')
+    body_text = soup.get_text().lower()
+
+    # Get candidate posts — same category first
+    current_cat = next((p.get("category","") for p in all_posts if p["slug"] == current_slug), "")
+    candidates = [p for p in all_posts if p["slug"] != current_slug]
+    candidates = sorted(candidates, key=lambda p: (0 if p.get("category") == current_cat else 1))
+
+    # Pre-screen: only keep posts whose title has at least one phrase in body
+    viable = []
+    for post in candidates:
+        title_words = [w for w in re.sub(r'[^a-zA-Z0-9 ]', '', post["title"]).split()
+                      if w.lower() not in STOP and len(w) > 4]
+        best_phrase = None
+        for i in range(len(title_words) - 1):
+            phrase = title_words[i] + " " + title_words[i+1]
+            if phrase.lower() in body_text:
+                best_phrase = phrase
+                break
+        if best_phrase:
+            viable.append((post, best_phrase))
+        if len(viable) >= MAX_LINKS * 2:
+            break
+
+    injected = 0
+    used_slugs = set()
+
+    for post, phrase in viable:
+        if injected >= MAX_LINKS:
+            break
+        if post["slug"] in used_slugs:
+            continue
+
+        link_url = f"{SITE_URL}/posts/{post['slug']}.html"
+
+        for tag in soup.find_all(['p', 'h2', 'h3']):
+            # Skip tags that already have a link
+            if tag.find('a'):
+                continue
+            tag_text = tag.get_text()
+            if re.search(re.escape(phrase), tag_text, re.IGNORECASE):
+                tag_html = str(tag)
+                new_html = re.sub(
+                    re.escape(phrase),
+                    f'<a href="{link_url}" title="{esc(post["title"])}">{phrase}</a>',
+                    tag_html, count=1, flags=re.IGNORECASE
+                )
+                if new_html != tag_html:
+                    tag.replace_with(BeautifulSoup(new_html, 'html.parser'))
+                    injected += 1
+                    used_slugs.add(post["slug"])
+                    break
+
+    return str(soup)
+
 # ── BUILD POST ───────────────────────────────────────────────────────
 def build_post(data, author, all_posts, now):
     slug = data["slug"]
@@ -453,7 +538,10 @@ def build_post(data, author, all_posts, now):
     </div>
   </div>
   <div class="post-hero"><img src="{data["image_url"]}" alt="{esc(data["title"])}" loading="eager"></div>
-  <div class="post-body">{data["article_html"]}</div>
+    # Inject internal links — safe post-processing, no content change
+    linked_html = inject_internal_links(data["article_html"], slug, all_posts)
+
+  <div class="post-body">{linked_html}</div>
   {related_html}
   <div class="post-tags">{tags_html}</div>
   <div class="author-box">
@@ -740,7 +828,12 @@ def main():
         if slug in published:
             continue
         print(f"  Writing [{i+1}/{len(topics)}] {title}")
-        article = write_article(title, t.get("hint", ""))
+        # Find related posts from same category for internal linking
+        cat_guess = t.get("category", "")
+        related = [p for p in posts_index if p.get("category","") == cat_guess][:4] if cat_guess else posts_index[:4]
+        if not related:
+            related = posts_index[:4]
+        article = write_article(title, t.get("hint", ""), related_posts=related)
         if not article:
             continue
         article["slug"] = slugify(article["title"])
