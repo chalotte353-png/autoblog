@@ -98,6 +98,50 @@ def load_index():
 def save_index(posts):
     (OUTPUT_DIR / "posts_index.json").write_text(json.dumps(posts, indent=2))
 
+# ── BUILD ROBOTS.TXT ────────────────────────────────────────────────
+def build_robots():
+    """Generate robots.txt with correct SITE_URL — never use placeholder."""
+    content = f"""User-agent: *
+Allow: /
+Disallow: /cgi-bin/
+
+Sitemap: {SITE_URL}/sitemap.xml
+"""
+    (OUTPUT_DIR / "robots.txt").write_text(content)
+
+# ── BUILD RSS FEED ───────────────────────────────────────────────────
+def build_rss(posts):
+    """Generate RSS 2.0 feed for Google News and aggregators."""
+    sp = sorted(posts, key=lambda x: x["date_iso"], reverse=True)[:50]
+    now_rfc = datetime.now(timezone.utc).strftime("%a, %d %b %Y %H:%M:%S +0000")
+    items = ""
+    for p in sp:
+        try:
+            pub = datetime.fromisoformat(p["date_iso"]).strftime("%a, %d %b %Y %H:%M:%S +0000")
+        except Exception:
+            pub = now_rfc
+        items += f"""  <item>
+    <title>{esc(p["title"])}</title>
+    <link>{SITE_URL}/posts/{p["slug"]}.html</link>
+    <description>{esc(p.get("excerpt", p.get("meta_description", "")))}</description>
+    <pubDate>{pub}</pubDate>
+    <guid isPermaLink="true">{SITE_URL}/posts/{p["slug"]}.html</guid>
+    <category>{esc(p.get("category","World"))}</category>
+  </item>
+"""
+    rss = f"""<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+  <title>{SITE_NAME}</title>
+  <link>{SITE_URL}/</link>
+  <description>Breaking news and expert analysis on business, finance, technology and world affairs.</description>
+  <language>en-us</language>
+  <lastBuildDate>{now_rfc}</lastBuildDate>
+  <atom:link href="{SITE_URL}/feed.xml" rel="self" type="application/rss+xml"/>
+{items}</channel>
+</rss>"""
+    (OUTPUT_DIR / "feed.xml").write_text(rss)
+
 # ── TOPICS ──────────────────────────────────────────────────────────
 def fetch_news(count):
     if not NEWS_API_KEY:
@@ -120,20 +164,25 @@ def fetch_news(count):
         return []
 
 def is_duplicate(title_slug, published):
-    """Check if a topic is already published - compare first 50 chars and key words"""
-    short = title_slug[:50]
-    # Check exact match first
+    """Check if a topic is already published using keyword overlap scoring.
+    Catches near-duplicates like 'father-kills-8-children' vs 'louisiana-father-kills-8-children'.
+    """
+    # Exact match
     if title_slug in published:
         return True
-    # Check if first 50 chars match any published slug
-    pub_shorts = {s[:50] for s in published}
-    if short in pub_shorts:
-        return True
-    # Check if main keywords overlap (first 3 words of slug)
-    words = title_slug.split("-")[:5]
-    key = "-".join(words)
+    # Stopwords to ignore when comparing
+    STOP = {"a","an","the","in","on","at","of","and","for","to","is","are","was","were",
+            "it","its","as","by","with","from","that","this","has","have","after","over",
+            "into","about","up","out","than","but","be","been","their","his","her","our"}
+    words = set(title_slug.split("-")) - STOP
+    if not words:
+        return False
     for p in published:
-        if key in p:
+        p_words = set(p.split("-")) - STOP
+        if not p_words:
+            continue
+        overlap = len(words & p_words) / max(len(words), len(p_words))
+        if overlap >= 0.6:   # 60%+ same keywords = duplicate story
             return True
     return False
 
@@ -253,17 +302,26 @@ def foot_html(prefix=""):
 <div class="footer-btm"><div class="container">&copy; {y} Markets News Today. All rights reserved.</div></div>
 </footer>"""
 
-def head_html(title, desc, canonical, image="", prefix=""):
+def head_html(title, desc, canonical, image="", prefix="", og_type="article"):
     return f"""<!DOCTYPE html><html lang="en"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{esc(title)}</title>
 <meta name="description" content="{esc(desc)}">
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="{canonical}">
+<link rel="icon" href="{prefix}favicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" href="{prefix}favicon.png">
 <meta property="og:title" content="{esc(title)}">
 <meta property="og:description" content="{esc(desc)}">
 <meta property="og:image" content="{image}">
-<meta property="og:type" content="article">
+<meta property="og:url" content="{canonical}">
+<meta property="og:type" content="{og_type}">
+<meta property="og:site_name" content="{SITE_NAME}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{esc(title)}">
+<meta name="twitter:description" content="{esc(desc)}">
+<meta name="twitter:image" content="{image}">
+<link rel="alternate" type="application/rss+xml" title="{SITE_NAME}" href="{SITE_URL}/feed.xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="{prefix}style.css">
@@ -308,16 +366,31 @@ def build_post(data, author, all_posts, now):
     )
     
     schema = json.dumps({
-        "@context": "https://schema.org", "@type": "Article",
+        "@context": "https://schema.org", "@type": "NewsArticle",
         "headline": data["title"], "image": data["image_url"],
         "datePublished": now.isoformat(),
+        "dateModified": now.isoformat(),
+        "articleSection": cat,
+        "wordCount": len(re.sub(r'<[^>]+>', '', data.get("article_html","")).split()),
+        "keywords": ", ".join(data.get("tags", [])),
         "author": {"@type": "Person", "name": author["name"], "url": f"{SITE_URL}/authors/{author['id']}.html"},
-        "publisher": {"@type": "Organization", "name": SITE_NAME, "url": SITE_URL}
+        "publisher": {"@type": "NewsMediaOrganization", "name": SITE_NAME, "url": SITE_URL}
+    })
+
+    breadcrumb = json.dumps({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "Home", "item": SITE_URL + "/"},
+            {"@type": "ListItem", "position": 2, "name": cat, "item": f"{SITE_URL}/category-{cat.lower()}.html"},
+            {"@type": "ListItem", "position": 3, "name": data["title"]}
+        ]
     })
     
     return f"""{head_html(data["title"] + " | " + SITE_NAME, data["meta_description"],
         SITE_URL + "/posts/" + slug + ".html", data["image_url"], "../")}
 <script type="application/ld+json">{schema}</script>
+<script type="application/ld+json">{breadcrumb}</script>
 {nav_html("../")}
 <div class="post-wrap"><div class="container post-grid">
 <article>
@@ -438,9 +511,30 @@ def build_homepage(posts):
         for c in CATEGORIES
     )
 
+    site_schema = json.dumps({
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": SITE_NAME,
+        "url": SITE_URL,
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": {"@type": "EntryPoint", "urlTemplate": f"{SITE_URL}/search?q={{search_term_string}}"},
+            "query-input": "required name=search_term_string"
+        }
+    })
+    org_schema = json.dumps({
+        "@context": "https://schema.org",
+        "@type": "NewsMediaOrganization",
+        "name": SITE_NAME,
+        "url": SITE_URL,
+        "logo": {"@type": "ImageObject", "url": f"{SITE_URL}/favicon.png"}
+    })
+
     html = f"""{head_html(SITE_NAME + " — Business, Finance & World News",
         "Breaking news and expert analysis on business, finance, technology and world affairs.",
-        SITE_URL + "/", sp[0]["image_url"] if sp else "", "")}
+        SITE_URL + "/", sp[0]["image_url"] if sp else "", "", "website")}
+<script type="application/ld+json">{site_schema}</script>
+<script type="application/ld+json">{org_schema}</script>
 {nav_html()}
 {hero_html}
 <div class="container"><div class="main-wrap">
@@ -543,12 +637,31 @@ def build_authors(posts):
 
 # ── BUILD SITEMAP ─────────────────────────────────────────────────────
 def build_sitemap(posts):
+    seen_slugs = set()
     lines = ['<?xml version="1.0" encoding="UTF-8"?>',
              '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
              f'  <url><loc>{SITE_URL}/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>']
     for cat in CATEGORIES:
         lines.append(f'  <url><loc>{SITE_URL}/category-{cat.lower()}.html</loc><changefreq>daily</changefreq><priority>0.9</priority></url>')
+    # Networth section
+    lines.append(f'  <url><loc>{SITE_URL}/networth/</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>')
+    nw_index = OUTPUT_DIR / "networth_index.json"
+    if nw_index.exists():
+        try:
+            for profile in json.loads(nw_index.read_text()):
+                nw_slug = profile.get("slug", "")
+                if nw_slug and nw_slug not in seen_slugs:
+                    seen_slugs.add(nw_slug)
+                    lines.append(f'  <url><loc>{SITE_URL}/networth/{nw_slug}.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>')
+        except Exception:
+            pass
+    seen_slugs.clear()
+    # Posts — deduplicated
     for p in posts:
+        if p["slug"] in seen_slugs:
+            print(f"  Sitemap: skipping duplicate slug {p['slug']}")
+            continue
+        seen_slugs.add(p["slug"])
         lines.append(f'  <url><loc>{SITE_URL}/posts/{p["slug"]}.html</loc><lastmod>{p["date_iso"][:10]}</lastmod><priority>0.8</priority></url>')
     lines.append("</urlset>")
     (OUTPUT_DIR / "sitemap.xml").write_text("\n".join(lines))
@@ -561,6 +674,17 @@ def main():
 
     published = load_published()
     posts_index = load_index()
+
+    # Deduplicate posts_index — remove any duplicate slugs that crept in previously
+    seen = set()
+    deduped = []
+    for p in posts_index:
+        if p["slug"] not in seen:
+            seen.add(p["slug"])
+            deduped.append(p)
+        else:
+            print(f"  Removing duplicate from index: {p['slug']}")
+    posts_index = deduped
 
     print(f"Getting {ARTICLES_PER_RUN} topics...")
     topics = build_topics(ARTICLES_PER_RUN, published)
@@ -636,6 +760,8 @@ def main():
     build_categories(posts_index)
     build_authors(posts_index)
     build_sitemap(posts_index)
+    build_robots()
+    build_rss(posts_index)
     save_published(published)
     save_index(posts_index)
     print("Done!")
