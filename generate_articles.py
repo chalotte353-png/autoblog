@@ -527,6 +527,9 @@ def build_post(data, author, all_posts, now):
         ]
     })
     
+    # Inject internal links — before f-string
+    linked_html = inject_internal_links(data["article_html"], slug, all_posts)
+
     return f"""{head_html(data["title"] + " | " + SITE_NAME, data["meta_description"],
         SITE_URL + "/posts/" + slug + ".html", data["image_url"], "../")}
 <script type="application/ld+json">{schema}</script>
@@ -549,9 +552,6 @@ def build_post(data, author, all_posts, now):
     </div>
   </div>
   <div class="post-hero"><img src="{data["image_url"]}" alt="{esc(data["title"])}" loading="eager" fetchpriority="high"></div>
-    # Inject internal links — safe post-processing, no content change
-    linked_html = inject_internal_links(data["article_html"], slug, all_posts)
-
   <div class="post-body">{linked_html}</div>
   {related_html}
   <div class="post-tags">{tags_html}</div>
