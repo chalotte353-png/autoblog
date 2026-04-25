@@ -110,6 +110,15 @@ Sitemap: {SITE_URL}/sitemap.xml
     (OUTPUT_DIR / "robots.txt").write_text(content)
 
 # ── BUILD RSS FEED ───────────────────────────────────────────────────
+def xml_esc(s):
+    """Full XML escape — required for RSS feed. Handles &, <, >, ', " all."""
+    return (str(s)
+        .replace("&", "&amp;")   # must be first!
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace('"', "&quot;")
+        .replace("'", "&apos;"))
+
 def build_rss(posts):
     """Generate RSS 2.0 feed for Google News and aggregators."""
     sp = sorted(posts, key=lambda x: x["date_iso"], reverse=True)[:50]
@@ -121,12 +130,12 @@ def build_rss(posts):
         except Exception:
             pub = now_rfc
         items += f"""  <item>
-    <title>{esc(p["title"])}</title>
+    <title>{xml_esc(p["title"])}</title>
     <link>{SITE_URL}/posts/{p["slug"]}.html</link>
-    <description>{esc(p.get("excerpt", p.get("meta_description", "")))}</description>
+    <description>{xml_esc(p.get("excerpt", p.get("meta_description", "")))}</description>
     <pubDate>{pub}</pubDate>
     <guid isPermaLink="true">{SITE_URL}/posts/{p["slug"]}.html</guid>
-    <category>{esc(p.get("category","World"))}</category>
+    <category>{xml_esc(p.get("category","World"))}</category>
   </item>
 """
     rss = f"""<?xml version="1.0" encoding="UTF-8"?>
