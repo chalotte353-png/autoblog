@@ -508,5 +508,15 @@
     "age": "21 (Born May 1, 2004)",
     "image_url": "/celeb-images/charli-damelio.webp",
     "meta_description": "Charli D'Amelio net worth estimated at $20 million."
+  },
+  {
+    "name": "Dixie D'Amelio",
+    "slug": "dixie-damelio",
+    "category": "TikToker",
+    "estimated_net_worth": "$10-15 Million",
+    "nationality": "American",
+    "age": "23 (Born July 1, 2001)",
+    "image_url": "https://picsum.photos/seed/234/400/400",
+    "meta_description": "Dixie D'Amelio net worth estimated at $10-15 million. One of TikTok's biggest stars with 150M+ followers earning from content creation, brand deals, and music."
   }
 ]
