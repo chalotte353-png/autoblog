@@ -518,5 +518,15 @@
     "age": "23 (Born July 1, 2001)",
     "image_url": "https://picsum.photos/seed/234/400/400",
     "meta_description": "Dixie D'Amelio net worth estimated at $10-15 million. One of TikTok's biggest stars with 150M+ followers earning from content creation, brand deals, and music."
+  },
+  {
+    "name": "Addison Rae",
+    "slug": "addison-rae",
+    "category": "TikToker",
+    "estimated_net_worth": "$15-20 Million",
+    "nationality": "United States",
+    "age": "Born November 6, 2000 (23 years old)",
+    "image_url": "https://picsum.photos/seed/254/400/400",
+    "meta_description": "Addison Rae net worth estimated at $15-20 million. TikTok star, dancer, actress, and entrepreneur with massive social media influence."
   }
 ]
