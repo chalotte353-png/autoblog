@@ -518,5 +518,15 @@
     "age": "34 (Born July 19, 1988)",
     "image_url": "https://picsum.photos/seed/860/400/400",
     "meta_description": "Shane Dawson net worth estimated at $12-16 million. Explore the wealth of YouTube's controversial creator behind viral documentaries and series."
+  },
+  {
+    "name": "Joey Graceffa",
+    "slug": "joey-graceffa",
+    "category": "YouTuber",
+    "estimated_net_worth": "$3-5 Million",
+    "nationality": "American",
+    "age": "32 (born December 16, 1991)",
+    "image_url": "https://picsum.photos/seed/323/400/400",
+    "meta_description": "Joey Graceffa net worth estimated at $3-5 million. YouTuber famous for horror web series, vlogs, and documentary content."
   }
 ]
