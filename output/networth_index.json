@@ -498,5 +498,15 @@
     "age": "32 (born December 16, 1991)",
     "image_url": "https://picsum.photos/seed/323/400/400",
     "meta_description": "Joey Graceffa net worth estimated at $3-5 million. YouTuber famous for horror web series, vlogs, and documentary content."
+  },
+  {
+    "name": "Charli D'Amelio",
+    "slug": "charli-damelio",
+    "category": "TikToker",
+    "estimated_net_worth": "$20 Million",
+    "nationality": "American",
+    "age": "21 (Born May 1, 2004)",
+    "image_url": "https://picsum.photos/seed/842/400/400",
+    "meta_description": "Charli D'Amelio net worth estimated at $20 million. Most-followed TikToker with 150M+ followers and major brand partnerships."
   }
 ]
