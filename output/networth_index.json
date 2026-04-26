@@ -488,5 +488,15 @@
     "age": "29 (born June 5, 1995)",
     "image_url": "https://picsum.photos/seed/839/400/400",
     "meta_description": "Troye Sivan net worth: $4-6 Million. Australian singer, songwriter, and YouTuber known for viral videos and successful music career."
+  },
+  {
+    "name": "Jacksepticeye",
+    "slug": "jacksepticeye",
+    "category": "YouTuber",
+    "estimated_net_worth": "$25 Million",
+    "nationality": "Irish",
+    "age": "32 (Born February 7, 1990)",
+    "image_url": "https://picsum.photos/seed/397/400/400",
+    "meta_description": "Jacksepticeye (Sean McLoughlin) net worth estimated at $25 million. Irish YouTuber famous for gaming videos and philanthropy."
   }
 ]
