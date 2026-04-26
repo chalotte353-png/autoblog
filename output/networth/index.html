@@ -149,7 +149,7 @@
 <button class="nw-filter-btn" onclick="filter('youtuber',this)">YouTuber</button>
 <button class="nw-filter-btn" onclick="filter('youtuber/boxer',this)">YouTuber/Boxer</button>
 </div>
-<div class="nw-count" id="count">Showing 50 profiles</div>
+<div class="nw-count" id="count">Showing <span id="showing-count">50</span> profiles</div>
 <div class="nw-grid" id="grid">
 <a class="nw-card" data-cat="youtuber" href="mrbeast.html">
 <img class="nw-card-img" onerror="this.onerror=null;this.src='/celeb-images/mrbeast.jpg';this.onerror=function(){this.style.display='none'};" src="/celeb-images/mrbeast.webp"/>
@@ -540,6 +540,22 @@ function filter(cat, btn) {
   });
   document.getElementById('count').textContent = 'Showing ' + v + ' profiles';
 }
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var allCards = document.querySelectorAll('.nw-card');
+    var countEl = document.getElementById('showing-count');
+    var filterBtns = document.querySelectorAll('.nw-filter-btn');
+    filterBtns.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            setTimeout(function() {
+                var visible = document.querySelectorAll('.nw-card:not([style*="none"])').length;
+                if(countEl) countEl.textContent = visible;
+            }, 50);
+        });
+    });
+});
 </script>
 </body>
 </html>
