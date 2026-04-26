@@ -5076,7 +5076,7 @@ def save_profiles_index(profiles: list):
     # Ensure image_url exists for all profiles
     for profile in profiles:
         if "image_url" not in profile or not profile["image_url"]:
-            profile["image_url"] = f"/celeb-images/{profile['slug']}.jpg"
+            profile["image_url"] = f"/celeb-images/{profile['slug']}.webp"
     p = OUTPUT_DIR / "networth_index.json"
     p.write_text(json.dumps(profiles, indent=2))
 
@@ -5170,7 +5170,7 @@ PROFILE_TEMPLATE = """<!DOCTYPE html>
 <link rel="canonical" href="{{ site_url }}/networth/{{ slug }}.html">
 <meta property="og:title" content="{{ name }} Net Worth {{ year }}">
 <meta property="og:description" content="{{ meta_description }}">
-<meta property="og:image" content="{{ site_url }}/celeb-images/{{ slug }}.jpg">
+<meta property="og:image" content="{{ site_url }}/celeb-images/{{ slug }}.webp">
 <meta property="og:type" content="profile">
 <script type="application/ld+json">
 {
@@ -5179,7 +5179,7 @@ PROFILE_TEMPLATE = """<!DOCTYPE html>
   "name": "{{ name }}",
   "description": "{{ meta_description }}",
   "url": "{{ site_url }}/networth/{{ slug }}.html",
-  "image": "{{ site_url }}/celeb-images/{{ slug }}.jpg"
+  "image": "{{ site_url }}/celeb-images/{{ slug }}.webp"
 }
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -5187,7 +5187,7 @@ PROFILE_TEMPLATE = """<!DOCTYPE html>
 <link rel="stylesheet" href="../style.css">
 <style>
 .nw-profile-hero{position:relative;background:var(--dark);color:#fff;padding:48px 0;overflow:hidden;border-bottom:3px solid var(--red)}
-.nw-hero-bg{position:absolute;inset:0;background-image:url('/celeb-images/{{ slug }}.jpg');background-size:cover;background-position:top center;filter:blur(12px) brightness(0.18);transform:scale(1.1)}
+.nw-hero-bg{position:absolute;inset:0;background-image:url('/celeb-images/{{ slug }}.webp');background-size:cover;background-position:top center;filter:blur(12px) brightness(0.18);transform:scale(1.1)}
 .nw-hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:180px 1fr;gap:32px;align-items:center}
 .nw-hero-photo{width:180px;height:180px;border-radius:50%;object-fit:cover;object-position:top center;border:4px solid rgba(255,255,255,0.2);box-shadow:0 8px 32px rgba(0,0,0,0.5);display:block}
 .nw-hero-name{font-family:var(--serif);font-size:clamp(2rem,5vw,3rem);font-weight:900;line-height:1.1;margin-bottom:4px}
@@ -5237,7 +5237,7 @@ PROFILE_TEMPLATE = """<!DOCTYPE html>
   <div class="nw-hero-bg"></div>
   <div class="container">
     <div class="nw-hero-inner">
-      <img src="/celeb-images/{{ slug }}.jpg" alt="{{ name }}" class="nw-hero-photo" onerror="this.style.display='none'">
+      <img src="/celeb-images/{{ slug }}.webp" alt="{{ name }}" class="nw-hero-photo" onerror="this.style.display='none'">
       <div>
         <div class="nw-hero-name">{{ name }}</div>
         <div class="nw-hero-real">{{ real_name }}</div>
@@ -5284,7 +5284,7 @@ PROFILE_TEMPLATE = """<!DOCTYPE html>
           <div class="nw-similar-grid">
             {% for p in similar_profiles %}
             <a href="{{ p.slug }}.html" class="nw-similar-card">
-              <img src="/celeb-images/{{ p.slug }}.jpg" alt="{{ p.name }}" class="nw-similar-img" onerror="this.style.display='none'">
+              <img src="/celeb-images/{{ p.slug }}.webp" alt="{{ p.name }}" class="nw-similar-img" onerror="this.style.display='none'">
               <div class="nw-similar-body">
                 <div class="nw-similar-name">{{ p.name }}</div>
                 <div class="nw-similar-worth">{{ p.estimated_net_worth }}</div>
@@ -5456,7 +5456,7 @@ NETWORTH_INDEX_TEMPLATE = """<!DOCTYPE html>
     <div class="nw-grid" id="grid">
       {% for p in profiles %}
       <a href="{{ p.slug }}.html" class="nw-card" data-cat="{{ p.category|lower|replace(' ','-') }}">
-        <img src="/celeb-images/{{ p.slug }}.jpg" class="nw-card-img" onerror="this.style.display='none'">
+        <img src="/celeb-images/{{ p.slug }}.webp" class="nw-card-img" onerror="this.style.display='none'">
         <div class="nw-card-body">
           <div class="nw-card-cat">{{ p.category }}</div>
           <div class="nw-card-name">{{ p.name }}</div>
@@ -5560,13 +5560,37 @@ def build_profile_html(data: dict, all_profiles: list = None) -> str:
                       similar_profiles=similar)
 
 
+def parse_networth_value(nw_str):
+    """Parse net worth string to number for sorting — highest earner first."""
+    if not nw_str or nw_str == "N/A":
+        return 0
+    import re as _re
+    nums = _re.findall(r'[\d.]+', nw_str.replace(',', ''))
+    multiplier = 1
+    nw_lower = nw_str.lower()
+    if 'billion' in nw_lower:
+        multiplier = 1_000_000_000
+    elif 'million' in nw_lower:
+        multiplier = 1_000_000
+    elif 'thousand' in nw_lower:
+        multiplier = 1_000
+    if nums:
+        try:
+            avg = sum(float(n) for n in nums[:2]) / len(nums[:2])
+            return avg * multiplier
+        except:
+            return 0
+    return 0
+
 def rebuild_networth_index(profiles: list):
     NETWORTH_DIR.mkdir(parents=True, exist_ok=True)
     now = datetime.now()
     categories = sorted(set(p["category"] for p in profiles))
     tpl = Template(NETWORTH_INDEX_TEMPLATE)
+    # Sort by net worth descending — highest earner first
+    sorted_profiles = sorted(profiles, key=lambda x: parse_networth_value(x.get("estimated_net_worth", "0")), reverse=True)
     html = tpl.render(
-        profiles=sorted(profiles, key=lambda x: x["name"]),
+        profiles=sorted_profiles,
         categories=categories,
         total=len(profiles),
         site_name=SITE_NAME,
