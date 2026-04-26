@@ -458,5 +458,25 @@
     "age": "Founded 2013, members aged 25-32",
     "image_url": "https://picsum.photos/seed/109/400/400",
     "meta_description": "Sidemen net worth estimated at $40-60 Million. British-Irish YouTube group known for challenge videos, pranks, and entertainment content."
+  },
+  {
+    "name": "KSI",
+    "slug": "ksi",
+    "category": "YouTuber/Boxer",
+    "estimated_net_worth": "$20-25 Million",
+    "nationality": "British (Nigerian descent)",
+    "age": "31 (Born June 19, 1993)",
+    "image_url": "https://picsum.photos/seed/509/400/400",
+    "meta_description": "KSI net worth estimated at $20-25 million. British YouTuber and boxer known for boxing matches, music, and YouTube content."
+  },
+  {
+    "name": "Hannah Hart",
+    "slug": "hannah-hart",
+    "category": "YouTuber",
+    "estimated_net_worth": "$3 Million",
+    "nationality": "American",
+    "age": "37 (Born November 2, 1986)",
+    "image_url": "https://picsum.photos/seed/417/400/400",
+    "meta_description": "Hannah Hart net worth, career as pioneering YouTuber and creator of 'My Drunk Kitchen' web series and comedy content."
   }
 ]
