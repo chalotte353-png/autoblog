@@ -5187,8 +5187,8 @@ PROFILE_TEMPLATE = """<!DOCTYPE html>
 <link rel="stylesheet" href="../style.css">
 <style>
 .nw-profile-hero{position:relative;background:var(--dark);color:#fff;padding:48px 0;overflow:hidden;border-bottom:3px solid var(--red)}
-.nw-hero-bg{position:absolute;inset:0;background-image:url('/celeb-images/{{ slug }}.webp');background-size:cover;background-position:top center;filter:blur(12px) brightness(0.18);transform:scale(1.1)}
-.nw-hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:180px 1fr;gap:32px;align-items:center}
+.nw-hero-bg{position:absolute;inset:0;background-image:url('/celeb-images/{{ slug }}.webp'),url('/celeb-images/{{ slug }}.jpg');background-size:cover;background-position:top center;filter:blur(12px) brightness(0.18);transform:scale(1.1)}
+.nw-hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1fr 180px;gap:32px;align-items:center}
 .nw-hero-photo{width:180px;height:180px;border-radius:50%;object-fit:cover;object-position:top center;border:4px solid rgba(255,255,255,0.2);box-shadow:0 8px 32px rgba(0,0,0,0.5);display:block}
 .nw-hero-name{font-family:var(--serif);font-size:clamp(2rem,5vw,3rem);font-weight:900;line-height:1.1;margin-bottom:4px}
 .nw-hero-real{font-size:14px;color:rgba(255,255,255,0.5);margin-bottom:12px}
@@ -5237,7 +5237,6 @@ PROFILE_TEMPLATE = """<!DOCTYPE html>
   <div class="nw-hero-bg"></div>
   <div class="container">
     <div class="nw-hero-inner">
-      <img src="/celeb-images/{{ slug }}.webp" alt="{{ name }}" class="nw-hero-photo" onerror="this.style.display='none'">
       <div>
         <div class="nw-hero-name">{{ name }}</div>
         <div class="nw-hero-real">{{ real_name }}</div>
@@ -5247,6 +5246,7 @@ PROFILE_TEMPLATE = """<!DOCTYPE html>
           <span class="nw-hero-worth-val">{{ estimated_net_worth }}</span>
         </div>
       </div>
+      <img src="/celeb-images/{{ slug }}.webp" alt="{{ name }}" class="nw-hero-photo" onerror="this.onerror=null;this.src='/celeb-images/{{ slug }}.jpg'">
     </div>
   </div>
 </div>
@@ -5488,8 +5488,10 @@ function filter(cat, btn) {
 
 
 def get_nw_nav():
-    return """<div class="topbar"><div class="topbar-inner">
-  <span class="topbar-left"></span>
+    from datetime import datetime
+    today = datetime.now().strftime('%A, %B %d, %Y')
+    return f"""<div class="topbar"><div class="topbar-inner">
+  <span class="topbar-left">{today}</span>
   <a href="../" class="topbar-logo">Markets <span class="accent">News</span> Today</a>
   <span class="topbar-right">Business &middot; Finance &middot; Technology</span>
 </div></div>
@@ -5509,7 +5511,7 @@ def get_nw_footer(year):
     return f"""<footer class="footer"><div class="footer-top"><div class="container"><div class="footer-grid">
   <div class="footer-brand">
     <div class="footer-logo">Markets <span class="accent">News</span> Today</div>
-    <p>Your trusted source for breaking news and expert analysis.</p>
+    <p>Your trusted source for breaking news and in-depth analysis on business, finance and world affairs.</p>
   </div>
   <div class="footer-col"><h4>Business</h4>
     <a href="../category-business.html">Business</a>
@@ -5526,6 +5528,10 @@ def get_nw_footer(year):
     <a href="../category-science.html">Science</a>
     <a href="../category-travel.html">Travel</a>
     <a href="../sitemap.xml">Sitemap</a></div>
+  <div class="footer-col"><h4>Company</h4>
+    <a href="../about.html">About Us</a>
+    <a href="../contact.html">Contact</a>
+    <a href="../privacy-policy.html">Privacy Policy</a></div>
 </div></div></div>
 <div class="footer-btm"><div class="container">&copy; {year} Markets News Today. All rights reserved.</div></div>
 </footer>"""
