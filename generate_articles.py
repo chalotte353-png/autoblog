@@ -750,7 +750,7 @@ def build_markets_ticker():
       <span class="mk-tick" id="tk-eurusd">EUR/USD <span>—</span></span>
       <span class="mk-tick" id="tk-gbpusd">GBP/USD <span>—</span></span>
       <span class="mk-tick" id="tk-usdjpy">USD/JPY <span>—</span></span>
-      <span class="mk-tick" id="tk-usdpkr">USD/PKR <span>—</span></span>
+      <span class="mk-tick" id="tk-gold">Gold <span>—</span></span>
       <span class="mk-tick mk-sep-v">|</span>
       <span class="mk-tick" id="tk-fg">Fear &amp; Greed: <span>—</span></span>
       <span class="mk-tick mk-sep-v">|</span>
@@ -768,7 +768,7 @@ def build_markets_ticker():
       <span class="mk-tick">EUR/USD <span id="tk-eurusd2">—</span></span>
       <span class="mk-tick">GBP/USD <span id="tk-gbpusd2">—</span></span>
       <span class="mk-tick">USD/JPY <span id="tk-usdjpy2">—</span></span>
-      <span class="mk-tick">USD/PKR <span id="tk-usdpkr2">—</span></span>
+      <span class="mk-tick">Gold <span id="tk-gold2">—</span></span>
       <span class="mk-tick mk-sep-v">|</span>
       <span class="mk-tick">Fear &amp; Greed: <span id="tk-fg2">—</span></span>
       <span class="mk-tick mk-sep-v">|</span>
@@ -809,11 +809,21 @@ def build_markets_ticker():
       var r=await fetch('https://open.er-api.com/v6/latest/USD');
       var f=await r.json();
       if(f.rates){
-        var pairs={eurusd:(1/f.rates.EUR).toFixed(4),gbpusd:(1/f.rates.GBP).toFixed(4),usdjpy:f.rates.JPY.toFixed(2),usdpkr:f.rates.PKR.toFixed(2)};
+        var pairs={eurusd:(1/f.rates.EUR).toFixed(4),gbpusd:(1/f.rates.GBP).toFixed(4),usdjpy:f.rates.JPY.toFixed(2)};
         for(var k in pairs){
           var s=document.getElementById('tk-'+k);if(s){s.querySelector('span').textContent=pairs[k];}
           var s2=document.getElementById('tk-'+k+'2');if(s2)s2.textContent=pairs[k];
         }
+        if(fxRates.EUR)set('ov-eur-p',(1/f.rates.EUR).toFixed(4));
+      }
+    }catch(e){}
+    try{
+      var r=await fetch('https://min-api.cryptocompare.com/data/price?fsym=XAU&tsyms=USD');
+      var g=await r.json();
+      if(g.USD){
+        var goldHtml='$'+g.USD.toLocaleString('en-US',{maximumFractionDigits:2});
+        var s=document.getElementById('tk-gold');if(s){s.querySelector('span').textContent=goldHtml;}
+        var s2=document.getElementById('tk-gold2');if(s2)s2.textContent=goldHtml;
       }
     }catch(e){}
     try{
@@ -865,13 +875,13 @@ def build_markets_page():
         <div class="mkp-ov-chg" id="ov-eth-c">—</div>
       </div>
       <div class="mkp-ov-card">
-        <div class="mkp-ov-label">EUR / USD</div>
-        <div class="mkp-ov-price" id="ov-eur-p">—</div>
-        <div class="mkp-ov-chg mkp-ov-sub">Live Rate</div>
+        <div class="mkp-ov-label">Solana (SOL)</div>
+        <div class="mkp-ov-price" id="ov-sol-p">—</div>
+        <div class="mkp-ov-chg" id="ov-sol-c">—</div>
       </div>
       <div class="mkp-ov-card">
-        <div class="mkp-ov-label">USD / PKR</div>
-        <div class="mkp-ov-price" id="ov-pkr-p">—</div>
+        <div class="mkp-ov-label">EUR / USD</div>
+        <div class="mkp-ov-price" id="ov-eur-p">—</div>
         <div class="mkp-ov-chg mkp-ov-sub">Live Rate</div>
       </div>
       <div class="mkp-ov-card mkp-ov-fear" id="ov-fg-card">
@@ -1103,9 +1113,10 @@ def build_markets_page():
       set('crypto-tbody',tbody||'<tr><td colspan="7" style="text-align:center;padding:20px;color:#999">Loading...</td></tr>');
 
       // Overview cards
-      var btc=cryptoPrices['BTC'],eth=cryptoPrices['ETH'];
+      var btc=cryptoPrices['BTC'],eth=cryptoPrices['ETH'],sol=cryptoPrices['SOL'];
       if(btc){{set('ov-btc-p',fmt(btc.price));set('ov-btc-c',badge(btc.chg));}}
       if(eth){{set('ov-eth-p',fmt(eth.price));set('ov-eth-c',badge(eth.chg));}}
+      if(sol){{set('ov-sol-p',fmt(sol.price));set('ov-sol-c',badge(sol.chg));}}
 
       // Gainers & Losers
       var sorted=[...coins_data].sort(function(a,b){{return b.chg-a.chg;}});
@@ -1155,7 +1166,6 @@ def build_markets_page():
 
       // Overview
       if(fxRates.EUR)set('ov-eur-p',fmtFx(1/fxRates.EUR));
-      if(fxRates.PKR)set('ov-pkr-p',fmtFx(fxRates.PKR,2));
 
       // Major pairs
       var major=[
