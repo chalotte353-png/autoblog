@@ -11,23 +11,26 @@ SITE_NAME        = "Markets News Today"
 OUTPUT_DIR       = Path("output")
 POSTS_DIR        = OUTPUT_DIR / "posts"
 AUTHORS_DIR      = OUTPUT_DIR / "authors"
-ARTICLES_PER_RUN = int(os.environ.get("ARTICLES_PER_RUN", "5"))
+ARTICLES_PER_RUN = int(os.environ.get("ARTICLES_PER_RUN", "10"))
 
-CATEGORIES = ["Business","Technology","Finance","World","Sports","Health","Travel","Science","Entertainment","Politics"]
+CATEGORIES = ["Business","Technology","Finance","World","Sports","Health","Travel","Science","Entertainment","Politics","Crypto","Forex","Stocks"]
 
 # ── CATEGORY BALANCE ─────────────────────────────────────────────────
-# Target distribution per 10 articles (must sum to 10)
+# Target distribution per 10 articles per run
 CATEGORY_TARGETS = {
-    "Politics":      1,   # was over-represented (46 articles!)
-    "World":         2,   # was over-represented (30 articles)
-    "Entertainment": 1,   # was over-represented (30 articles)
-    "Sports":        1,   # was over-represented (24 articles)
-    "Finance":       1,
+    "World":         2,   # broad international news
+    "Crypto":        1,   # matches site focus
+    "Forex":         1,   # matches site focus
+    "Stocks":        1,   # matches site focus
+    "Politics":      1,
     "Technology":    1,
-    "Business":      1,
+    "Sports":        1,
+    "Entertainment": 1,
     "Health":        1,
-    "Science":       1,
-    "Travel":        0,   # gets 1 every ~10 runs via wiki topics
+    "Business":      0,   # covered by Finance/Stocks
+    "Finance":       0,   # covered by Stocks/Forex
+    "Science":       0,   # rotates via wiki fallback
+    "Travel":        0,   # rotates via wiki fallback
 }
 
 # Wiki topics balanced across underrepresented categories
@@ -58,6 +61,23 @@ WIKI_TOPICS_BALANCED = {
                      "Music industry trends 2026","Video game market 2026"],
     "Politics":     ["US Congress legislation 2026","Global elections 2026",
                      "Climate policy international","Trade policy tariffs 2026"],
+    "Crypto":       ["Bitcoin price analysis 2026","Ethereum network upgrade 2026",
+                     "Cryptocurrency regulation update 2026","DeFi decentralized finance trends",
+                     "Bitcoin ETF market update 2026","Altcoin season predictions 2026",
+                     "Crypto market bull run 2026","Solana ecosystem growth 2026",
+                     "XRP Ripple court case update","Blockchain technology adoption 2026",
+                     "Cryptocurrency tax rules 2026","NFT market recovery 2026"],
+    "Forex":        ["US Dollar index outlook 2026","EUR USD analysis 2026",
+                     "British Pound GBP forecast 2026","Japanese Yen intervention 2026",
+                     "Forex trading strategies 2026","Currency war global 2026",
+                     "Pakistani Rupee PKR outlook 2026","Indian Rupee INR forecast 2026",
+                     "Emerging market currencies 2026","Federal Reserve dollar impact 2026"],
+    "Stocks":       ["S&P 500 outlook 2026","NASDAQ tech stocks 2026",
+                     "Dow Jones analysis 2026","Stock market crash risk 2026",
+                     "Dividend stocks best 2026","Growth stocks to watch 2026",
+                     "Apple stock analysis 2026","Tesla stock forecast 2026",
+                     "AI stocks investment 2026","Small cap stocks 2026",
+                     "Stock market earnings season 2026","IPO market 2026"],
 }
 
 AUTHORS = {
@@ -91,6 +111,15 @@ AUTHORS = {
     "Politics":      [{"id":"andrew-collins","name":"Andrew Collins","title":"Political Editor","bio":"20 years covering Washington DC politics.","avatar":"https://i.pravatar.cc/150?img=37","twitter":"@andrewcollins_pol"},
                       {"id":"patricia-morgan","name":"Patricia Morgan","title":"Policy Correspondent","bio":"Former White House press pool journalist.","avatar":"https://i.pravatar.cc/150?img=57","twitter":"@patriciamorgan_dc"},
                       {"id":"samuel-davis","name":"Samuel Davis","title":"International Affairs","bio":"US foreign policy and geopolitics expert.","avatar":"https://i.pravatar.cc/150?img=38","twitter":"@samueldavis_intl"}],
+    "Crypto":        [{"id":"mark-thompson","name":"Mark Thompson","title":"Crypto Correspondent","bio":"Blockchain technology expert since 2013.","avatar":"https://i.pravatar.cc/150?img=17","twitter":"@markthompson_crypto"},
+                      {"id":"lisa-wong","name":"Lisa Wong","title":"Digital Assets Reporter","bio":"Covers DeFi, NFTs and cryptocurrency markets.","avatar":"https://i.pravatar.cc/150?img=49","twitter":"@lisawong_inv"},
+                      {"id":"alex-rivera","name":"Alex Rivera","title":"Blockchain Editor","bio":"Silicon Valley insider covering Web3 and crypto.","avatar":"https://i.pravatar.cc/150?img=12","twitter":"@alexrivera_tech"}],
+    "Forex":         [{"id":"david-park","name":"David Park","title":"Forex Markets Editor","bio":"CFA charterholder with global forex expertise.","avatar":"https://i.pravatar.cc/150?img=13","twitter":"@davidpark_mkt"},
+                      {"id":"sarah-chen","name":"Sarah Chen","title":"Currency Strategist","bio":"Former FX trader at Goldman Sachs.","avatar":"https://i.pravatar.cc/150?img=47","twitter":"@sarahchen_fin"},
+                      {"id":"robert-hayes","name":"Robert Hayes","title":"FX Correspondent","bio":"Oxford economics graduate, expert in currency markets.","avatar":"https://i.pravatar.cc/150?img=15","twitter":"@roberthayes_econ"}],
+    "Stocks":        [{"id":"james-mitchell","name":"James Mitchell","title":"Stocks Editor","bio":"15 years covering Wall Street and equity markets.","avatar":"https://i.pravatar.cc/150?img=11","twitter":"@jmitchell_biz"},
+                      {"id":"david-park","name":"David Park","title":"Equities Analyst","bio":"CFA charterholder, S&P 500 and NASDAQ specialist.","avatar":"https://i.pravatar.cc/150?img=13","twitter":"@davidpark_mkt"},
+                      {"id":"lisa-wong","name":"Lisa Wong","title":"Investment Reporter","bio":"Covers hedge funds, ETFs and equity markets.","avatar":"https://i.pravatar.cc/150?img=49","twitter":"@lisawong_inv"}],
 }
 
 # ── HELPERS ─────────────────────────────────────────────────────────
@@ -294,11 +323,14 @@ def build_topics(count, published, posts_index=None):
         "Sports":        ["nba","nfl","mlb","nhl","soccer","football","basketball","baseball","playoffs","draft","coach","player","game","season"],
         "Entertainment": ["movie","film","actor","actress","singer","album","tv","show","celebrity","oscar","grammy","netflix","hulu","disney","concert"],
         "Technology":    ["ai","tech","software","apple","google","microsoft","startup","robot","chip","cyber","data","app","openai","spacex"],
-        "Finance":       ["stock","market","fed","inflation","bitcoin","crypto","economy","bank","invest","wall street","gdp","rate","dow","nasdaq"],
+        "Finance":       ["economy","bank","gdp","inflation","interest rate","monetary","fiscal","hedge fund","private equity","bond","treasury"],
         "Business":      ["company","ceo","merger","acquisition","corporate","revenue","profit","layoff","worker","job","industry","deal"],
         "Health":        ["cancer","vaccine","drug","hospital","mental health","disease","fda","medical","patient","health","virus","treatment"],
         "Science":       ["climate","space","nasa","research","study","planet","ocean","fossil","physics","gene","species","earth","asteroid"],
         "Travel":        ["travel","tourism","flight","hotel","destination","tourist","visa","airport","cruise","resort"],
+        "Crypto":        ["bitcoin","ethereum","crypto","blockchain","defi","nft","altcoin","binance","coinbase","solana","ripple","xrp","web3","btc","eth"],
+        "Forex":         ["forex","currency","dollar","euro","pound","yen","usd","eur","gbp","jpy","exchange rate","fx ","rupee","pkr","inr"],
+        "Stocks":        ["stock","shares","equity","s&p","nasdaq","dow jones","wall street","earnings","ipo","dividend","portfolio","nyse","bull market","bear market"],
     }
 
     def guess_category(title):
@@ -442,6 +474,9 @@ def nav_html(prefix=""):
   <a href="{prefix}category-politics.html">Politics</a>
   <a href="{prefix}networth/index.html">Net Worth</a>
   <a href="{prefix}markets.html">Markets</a>
+  <a href="{prefix}category-crypto.html">Crypto</a>
+  <a href="{prefix}category-forex.html">Forex</a>
+  <a href="{prefix}category-stocks.html">Stocks</a>
 </div></nav>"""
 
 def foot_html(prefix=""):
@@ -456,6 +491,11 @@ def foot_html(prefix=""):
     <a href="{prefix}category-finance.html">Finance</a>
     <a href="{prefix}category-technology.html">Technology</a>
     <a href="{prefix}networth/index.html">Net Worth</a></div>
+  <div class="footer-col"><h4>Markets</h4>
+    <a href="{prefix}markets.html">Live Markets</a>
+    <a href="{prefix}category-crypto.html">Crypto</a>
+    <a href="{prefix}category-forex.html">Forex</a>
+    <a href="{prefix}category-stocks.html">Stocks</a></div>
   <div class="footer-col"><h4>World</h4>
     <a href="{prefix}category-world.html">World</a>
     <a href="{prefix}category-politics.html">Politics</a>
@@ -710,6 +750,10 @@ def build_markets_ticker():
       <span class="mk-item" id="mk-usdjpy">USD/JPY <span class="mk-val">—</span></span>
       <span class="mk-sep">|</span>
       <span class="mk-item mk-link"><a href="markets.html">Full Markets &rarr;</a></span>
+      <span class="mk-sep">|</span>
+      <span class="mk-item mk-link"><a href="category-crypto.html">Crypto</a></span>
+      <span class="mk-item mk-link"><a href="category-forex.html">Forex</a></span>
+      <span class="mk-item mk-link"><a href="category-stocks.html">Stocks</a></span>
     </div>
   </div>
 </div>
