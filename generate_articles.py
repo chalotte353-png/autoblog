@@ -11,26 +11,28 @@ SITE_NAME        = "Markets News Today"
 OUTPUT_DIR       = Path("output")
 POSTS_DIR        = OUTPUT_DIR / "posts"
 AUTHORS_DIR      = OUTPUT_DIR / "authors"
-ARTICLES_PER_RUN = int(os.environ.get("ARTICLES_PER_RUN", "10"))
+ARTICLES_PER_RUN = int(os.environ.get("ARTICLES_PER_RUN", "15"))
 
 CATEGORIES = ["Business","Technology","Finance","World","Sports","Health","Travel","Science","Entertainment","Politics","Crypto","Forex","Stocks"]
 
 # ── CATEGORY BALANCE ─────────────────────────────────────────────────
-# Target distribution per 10 articles per run
+# Target distribution per 15 articles per run (4 runs/day = ~60 articles/day)
+# All 13 categories properly covered every day
 CATEGORY_TARGETS = {
     "World":         2,   # broad international news
-    "Crypto":        1,   # matches site focus
-    "Forex":         1,   # matches site focus
-    "Stocks":        1,   # matches site focus
-    "Politics":      1,
+    "Politics":      2,   # high traffic
+    "Finance":       2,   # core site focus
+    "Crypto":        2,   # core site focus
+    "Forex":         1,   # core site focus
+    "Stocks":        1,   # core site focus
     "Technology":    1,
     "Sports":        1,
     "Entertainment": 1,
     "Health":        1,
     "Business":      1,
-    "Finance":       1,
-    "Science":       0,   # rotates via wiki fallback
-    "Travel":        0,   # rotates via wiki fallback
+    "Science":       1,   # was 0 — now properly covered every run
+    "Travel":        1,   # was 0 — now properly covered every run
+    # Total targets = 17 for 15 slots → healthy competition, balanced coverage
 }
 
 # Wiki topics balanced across underrepresented categories
@@ -407,7 +409,7 @@ def write_article(topic, hint, related_posts=None, target_category=None):
         "<slug>url-slug-from-title</slug>\n"
         "<meta_description>SEO description 150-158 chars</meta_description>\n"
         "<focus_keyword>primary keyword phrase</focus_keyword>\n"
-        "<category>Business or Technology or Finance or World or Sports or Health or Travel or Science or Entertainment or Politics</category>\n"
+        "<category>Business or Technology or Finance or World or Sports or Health or Travel or Science or Entertainment or Politics or Crypto or Forex or Stocks</category>\n"
         "<image_keyword>specific 3-4 word Unsplash search term</image_keyword>\n"
         "<read_time>X min read</read_time>\n"
         "<excerpt>2-3 compelling sentences</excerpt>\n"
