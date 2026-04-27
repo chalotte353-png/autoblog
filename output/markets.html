@@ -369,14 +369,21 @@
   var cryptoPrices = {};
 
   async function fetchCrypto(){
-
-    // Crypto data
     try{
-      var syms=COINS.map(function(c){return c.sym;}).join(',');
-      var r=await fetch('https://min-api.cryptocompare.com/data/pricemultifull?fsyms='+syms+'&tsyms=USD');
-      var res=await r.json();
-      var raw=res.RAW;
-      if(!raw)throw new Error('no data');
+      // Fetch in 2 batches to avoid rate limits
+      var batch1=['BTC','ETH','BNB','SOL','XRP','ADA','DOGE','AVAX','DOT','MATIC'];
+      var batch2=['LINK','UNI','LTC','ATOM','ETC','XLM','TRX','NEAR','ALGO','FTM'];
+
+      var r1=await fetch('https://min-api.cryptocompare.com/data/pricemultifull?fsyms='+batch1.join(',')+'&tsyms=USD');
+      var res1=await r1.json();
+      var raw1=res1.RAW||{};
+
+      var r2=await fetch('https://min-api.cryptocompare.com/data/pricemultifull?fsyms='+batch2.join(',')+'&tsyms=USD');
+      var res2=await r2.json();
+      var raw2=res2.RAW||{};
+
+      var raw=Object.assign({},raw1,raw2);
+      if(!Object.keys(raw).length)throw new Error('no data');
 
       var tbody='';
       var coins_data=[];
@@ -449,10 +456,7 @@
     }catch(e){set('crypto-tbody','<tr><td colspan="7" style="text-align:center;padding:20px;color:#999">Refreshing data...</td></tr>');}
   }
 
-  async function fetchGlobal(){});
-      }
-    }catch(e){}
-  }
+  async function fetchGlobal(){}
 
   /* ── FOREX ── */
   async function fetchForex(){
