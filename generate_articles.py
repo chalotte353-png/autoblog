@@ -741,6 +741,7 @@ def build_markets_ticker():
   <div class="markets-strip-inner container">
     <a href="markets.html" class="markets-strip-label">📈 LIVE</a>
     <div class="mk-scroll-track" id="mkTrack">
+      <div class="mk-ticker-inner" id="mkInner">
       <span class="mk-tick" id="tk-btc">BTC/USD <span>—</span></span>
       <span class="mk-tick" id="tk-eth">ETH/USD <span>—</span></span>
       <span class="mk-tick" id="tk-sol">SOL <span>—</span></span>
@@ -757,6 +758,25 @@ def build_markets_ticker():
       <span class="mk-tick mk-lnk"><a href="category-crypto.html">Crypto</a></span>
       <span class="mk-tick mk-lnk"><a href="category-forex.html">Forex</a></span>
       <span class="mk-tick mk-lnk"><a href="category-stocks.html">Stocks</a></span>
+      <span class="mk-tick mk-sep-v">&nbsp;&nbsp;&nbsp;</span>
+      <!-- Duplicate for seamless loop -->
+      <span class="mk-tick">BTC/USD <span id="tk-btc2">—</span></span>
+      <span class="mk-tick">ETH/USD <span id="tk-eth2">—</span></span>
+      <span class="mk-tick">SOL <span id="tk-sol2">—</span></span>
+      <span class="mk-tick">XRP <span id="tk-xrp2">—</span></span>
+      <span class="mk-tick mk-sep-v">|</span>
+      <span class="mk-tick">EUR/USD <span id="tk-eurusd2">—</span></span>
+      <span class="mk-tick">GBP/USD <span id="tk-gbpusd2">—</span></span>
+      <span class="mk-tick">USD/JPY <span id="tk-usdjpy2">—</span></span>
+      <span class="mk-tick">USD/PKR <span id="tk-usdpkr2">—</span></span>
+      <span class="mk-tick mk-sep-v">|</span>
+      <span class="mk-tick">Fear &amp; Greed: <span id="tk-fg2">—</span></span>
+      <span class="mk-tick mk-sep-v">|</span>
+      <span class="mk-tick mk-lnk"><a href="markets.html">Full Markets ›</a></span>
+      <span class="mk-tick mk-lnk"><a href="category-crypto.html">Crypto</a></span>
+      <span class="mk-tick mk-lnk"><a href="category-forex.html">Forex</a></span>
+      <span class="mk-tick mk-lnk"><a href="category-stocks.html">Stocks</a></span>
+      </div>
     </div>
   </div>
 </div>
@@ -765,6 +785,10 @@ def build_markets_ticker():
   function pc(v,d){return '$'+Number(v).toLocaleString('en-US',{maximumFractionDigits:d||2});}
   function ch(c){var u=c>=0;return '<em class="'+(u?'up':'dn')+'">'+(u?'▲':'▼')+Math.abs(c).toFixed(2)+'%</em>';}
   function set(id,t,c){var e=document.getElementById(id);if(!e)return;var s=e.querySelector('span');if(s){s.innerHTML=t+(c!==undefined?ch(c):'');}}
+  function setTick(id,html){
+    var e=document.getElementById(id);if(e){var sp=e.querySelector('span');if(sp)sp.innerHTML=html;}
+    var e2=document.getElementById(id+'2');if(e2){var sp2=e2.querySelector ? e2 : e2;if(e2)e2.innerHTML=html;}
+  }
   async function tick(){
     try{
       var r=await fetch('https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC,ETH,SOL,XRP&tsyms=USD');
@@ -778,22 +802,28 @@ def build_markets_ticker():
         var u=chg>=0;
         var html='$'+price.toLocaleString('en-US',{maximumFractionDigits:price<1?4:2})+'<em class="'+(u?'up':'dn')+'">'+(u?'▲':'▼')+Math.abs(chg).toFixed(2)+'%</em>';
         var s=document.getElementById(map[sym]);if(s){var sp=s.querySelector('span');if(sp)sp.innerHTML=html;}
+        var s2=document.getElementById(map[sym]+'2');if(s2)s2.innerHTML=html;
       }
     }catch(e){}
     try{
       var r=await fetch('https://open.er-api.com/v6/latest/USD');
       var f=await r.json();
       if(f.rates){
-        var s=document.getElementById('tk-eurusd');if(s){s.querySelector('span').textContent=(1/f.rates.EUR).toFixed(4);}
-        var s=document.getElementById('tk-gbpusd');if(s){s.querySelector('span').textContent=(1/f.rates.GBP).toFixed(4);}
-        var s=document.getElementById('tk-usdjpy');if(s){s.querySelector('span').textContent=f.rates.JPY.toFixed(2);}
-        var s=document.getElementById('tk-usdpkr');if(s){s.querySelector('span').textContent=f.rates.PKR.toFixed(2);}
+        var pairs={eurusd:(1/f.rates.EUR).toFixed(4),gbpusd:(1/f.rates.GBP).toFixed(4),usdjpy:f.rates.JPY.toFixed(2),usdpkr:f.rates.PKR.toFixed(2)};
+        for(var k in pairs){
+          var s=document.getElementById('tk-'+k);if(s){s.querySelector('span').textContent=pairs[k];}
+          var s2=document.getElementById('tk-'+k+'2');if(s2)s2.textContent=pairs[k];
+        }
       }
     }catch(e){}
     try{
       var r=await fetch('https://api.alternative.me/fng/');
       var g=await r.json();
-      if(g.data){var s=document.getElementById('tk-fg');if(s){s.querySelector('span').textContent=g.data[0].value+' ('+g.data[0].value_classification+')';}}
+      if(g.data){
+        var val=g.data[0].value+' ('+g.data[0].value_classification+')';
+        var s=document.getElementById('tk-fg');if(s){s.querySelector('span').textContent=val;}
+        var s2=document.getElementById('tk-fg2');if(s2)s2.textContent=val;
+      }
     }catch(e){}
   }
   tick();setInterval(tick,60000);
