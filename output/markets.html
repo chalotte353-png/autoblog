@@ -472,24 +472,32 @@
       });
       set('trending-list',tHtml);
 
-      // Global stats from BTC data
-      var btcD=raw['BTC']&&raw['BTC'].USD;
-      if(btcD){
-        var totalMcap=coins_data.reduce(function(s,c){return s+(c.mcap||0);},0);
-        set('ov-mcap',fmt(totalMcap*1.3));
-        set('idx-total-mcap',fmt(totalMcap*1.3));
-        var btcMcap=btcD.MKTCAP||0;
-        set('idx-btc-dom',(btcMcap/(totalMcap*1.3)*100).toFixed(1)+'%');
-        set('idx-volume',fmt(coins_data.reduce(function(s,c){return s+(c.vol||0);},0)));
-        setText('idx-active','20,000+');
-      }
+      // Global stats
+      var totalMcap=coins_data.reduce(function(s,c){return s+(c.mcap||0);},0)*1.3;
+      var totalVol=coins_data.reduce(function(s,c){return s+(c.vol||0);},0);
+      var btcMcapVal=cryptoPrices['BTC']?cryptoPrices['BTC'].price*19800000:0;
+      var btcDomVal=totalMcap?(btcMcapVal/totalMcap*100).toFixed(1)+'%':'—';
+      set('ov-mcap',fmt(totalMcap));set('ov-mcap2',fmt(totalMcap));
+      set('ov-vol',fmt(totalVol));set('ov-vol2',fmt(totalVol));
+      set('ov-btc-dom2',btcDomVal);set('ov-btc-dom3',btcDomVal);
+      set('idx-total-mcap',fmt(totalMcap));set('idx-btc-dom',btcDomVal);set('idx-volume',fmt(totalVol));
+      setText('idx-active','20,000+');
 
-    }catch(e){set('crypto-tbody','<tr><td colspan="7" style="text-align:center;padding:20px;color:#999">Data loading... please refresh</td></tr>');}
+    }catch(e){set('crypto-tbody','<tr><td colspan="7" style="text-align:center;padding:20px;color:#999">Data loading... please wait</td></tr>');}
   }
 
-  /* ── GLOBAL — merged into fetchCrypto above ── */
+  /* ── GLOBAL — Gold via ExchangeRate API ── */
   async function fetchGlobal(){
-    // Data handled in fetchCrypto via CryptoCompare
+    try{
+      var rg=await fetch('https://open.er-api.com/v6/latest/XAU');
+      var fg=await rg.json();
+      if(fg.rates&&fg.rates.USD){
+        var goldHtml='$'+fg.rates.USD.toLocaleString('en-US',{maximumFractionDigits:2});
+        set('ov-gold-p',goldHtml);set('ov-gold-p2',goldHtml);set('ov-gold-p3',goldHtml);
+        var tg=document.getElementById('tk-gold');if(tg){var sp=tg.querySelector('span');if(sp)sp.textContent=goldHtml;}
+        var tg2=document.getElementById('tk-gold2');if(tg2)tg2.textContent=goldHtml;
+      }
+    }catch(e){}
   }
 
   /* ── FOREX ── */
