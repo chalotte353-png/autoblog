@@ -5535,6 +5535,11 @@ def get_nw_footer(year):
     <a href="../category-finance.html">Finance</a>
     <a href="../category-technology.html">Technology</a>
     <a href="index.html">Net Worth</a></div>
+  <div class="footer-col"><h4>Markets</h4>
+    <a href="../markets.html">Live Markets</a>
+    <a href="../category-crypto.html">Crypto</a>
+    <a href="../category-forex.html">Forex</a>
+    <a href="../category-stocks.html">Stocks</a></div>
   <div class="footer-col"><h4>World</h4>
     <a href="../category-world.html">World</a>
     <a href="../category-politics.html">Politics</a>
