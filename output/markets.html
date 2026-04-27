@@ -79,13 +79,13 @@
         <div class="mkp-ov-chg" id="ov-eth-c">—</div>
       </div>
       <div class="mkp-ov-card">
-        <div class="mkp-ov-label">EUR / USD</div>
-        <div class="mkp-ov-price" id="ov-eur-p">—</div>
-        <div class="mkp-ov-chg mkp-ov-sub">Live Rate</div>
+        <div class="mkp-ov-label">Solana (SOL)</div>
+        <div class="mkp-ov-price" id="ov-sol-p">—</div>
+        <div class="mkp-ov-chg" id="ov-sol-c">—</div>
       </div>
       <div class="mkp-ov-card">
-        <div class="mkp-ov-label">USD / PKR</div>
-        <div class="mkp-ov-price" id="ov-pkr-p">—</div>
+        <div class="mkp-ov-label">EUR / USD</div>
+        <div class="mkp-ov-price" id="ov-eur-p">—</div>
         <div class="mkp-ov-chg mkp-ov-sub">Live Rate</div>
       </div>
       <div class="mkp-ov-card mkp-ov-fear" id="ov-fg-card">
@@ -317,9 +317,10 @@
       set('crypto-tbody',tbody||'<tr><td colspan="7" style="text-align:center;padding:20px;color:#999">Loading...</td></tr>');
 
       // Overview cards
-      var btc=cryptoPrices['BTC'],eth=cryptoPrices['ETH'];
+      var btc=cryptoPrices['BTC'],eth=cryptoPrices['ETH'],sol=cryptoPrices['SOL'];
       if(btc){set('ov-btc-p',fmt(btc.price));set('ov-btc-c',badge(btc.chg));}
       if(eth){set('ov-eth-p',fmt(eth.price));set('ov-eth-c',badge(eth.chg));}
+      if(sol){set('ov-sol-p',fmt(sol.price));set('ov-sol-c',badge(sol.chg));}
 
       // Gainers & Losers
       var sorted=[...coins_data].sort(function(a,b){return b.chg-a.chg;});
@@ -369,7 +370,6 @@
 
       // Overview
       if(fxRates.EUR)set('ov-eur-p',fmtFx(1/fxRates.EUR));
-      if(fxRates.PKR)set('ov-pkr-p',fmtFx(fxRates.PKR,2));
 
       // Major pairs
       var major=[

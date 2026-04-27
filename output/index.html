@@ -103,7 +103,7 @@
       <span class="mk-tick" id="tk-eurusd">EUR/USD <span>—</span></span>
       <span class="mk-tick" id="tk-gbpusd">GBP/USD <span>—</span></span>
       <span class="mk-tick" id="tk-usdjpy">USD/JPY <span>—</span></span>
-      <span class="mk-tick" id="tk-usdpkr">USD/PKR <span>—</span></span>
+      <span class="mk-tick" id="tk-gold">Gold <span>—</span></span>
       <span class="mk-tick mk-sep-v">|</span>
       <span class="mk-tick" id="tk-fg">Fear &amp; Greed: <span>—</span></span>
       <span class="mk-tick mk-sep-v">|</span>
@@ -121,7 +121,7 @@
       <span class="mk-tick">EUR/USD <span id="tk-eurusd2">—</span></span>
       <span class="mk-tick">GBP/USD <span id="tk-gbpusd2">—</span></span>
       <span class="mk-tick">USD/JPY <span id="tk-usdjpy2">—</span></span>
-      <span class="mk-tick">USD/PKR <span id="tk-usdpkr2">—</span></span>
+      <span class="mk-tick">Gold <span id="tk-gold2">—</span></span>
       <span class="mk-tick mk-sep-v">|</span>
       <span class="mk-tick">Fear &amp; Greed: <span id="tk-fg2">—</span></span>
       <span class="mk-tick mk-sep-v">|</span>
@@ -162,11 +162,21 @@
       var r=await fetch('https://open.er-api.com/v6/latest/USD');
       var f=await r.json();
       if(f.rates){
-        var pairs={eurusd:(1/f.rates.EUR).toFixed(4),gbpusd:(1/f.rates.GBP).toFixed(4),usdjpy:f.rates.JPY.toFixed(2),usdpkr:f.rates.PKR.toFixed(2)};
+        var pairs={eurusd:(1/f.rates.EUR).toFixed(4),gbpusd:(1/f.rates.GBP).toFixed(4),usdjpy:f.rates.JPY.toFixed(2)};
         for(var k in pairs){
           var s=document.getElementById('tk-'+k);if(s){s.querySelector('span').textContent=pairs[k];}
           var s2=document.getElementById('tk-'+k+'2');if(s2)s2.textContent=pairs[k];
         }
+        if(fxRates.EUR)set('ov-eur-p',(1/f.rates.EUR).toFixed(4));
+      }
+    }catch(e){}
+    try{
+      var r=await fetch('https://min-api.cryptocompare.com/data/price?fsym=XAU&tsyms=USD');
+      var g=await r.json();
+      if(g.USD){
+        var goldHtml='$'+g.USD.toLocaleString('en-US',{maximumFractionDigits:2});
+        var s=document.getElementById('tk-gold');if(s){s.querySelector('span').textContent=goldHtml;}
+        var s2=document.getElementById('tk-gold2');if(s2)s2.textContent=goldHtml;
       }
     }catch(e){}
     try{
