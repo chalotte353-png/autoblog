@@ -135,11 +135,7 @@
         <div class="mkp-ov-price" id="ov-chf-p">—</div>
         <div class="mkp-ov-chg mkp-ov-sub">Swiss Franc</div>
       </div>
-      <div class="mkp-ov-card">
-        <div class="mkp-ov-label">Gold (XAU/USD)</div>
-        <div class="mkp-ov-price" id="ov-gold-p">—</div>
-        <div class="mkp-ov-chg mkp-ov-sub">Per Troy Oz</div>
-      </div>
+
       <div class="mkp-ov-card">
         <div class="mkp-ov-label">USD Index (DXY)</div>
         <div class="mkp-ov-price" id="ov-dxy-p">—</div>
@@ -169,11 +165,7 @@
         <div class="mkp-ov-price" id="ov-vol2">—</div>
         <div class="mkp-ov-chg mkp-ov-sub">Total crypto</div>
       </div>
-      <div class="mkp-ov-card">
-        <div class="mkp-ov-label">Gold (XAU/USD)</div>
-        <div class="mkp-ov-price" id="ov-gold-p2">—</div>
-        <div class="mkp-ov-chg mkp-ov-sub">Per Troy Oz</div>
-      </div>
+
       <div class="mkp-ov-card">
         <div class="mkp-ov-label">Active Cryptos</div>
         <div class="mkp-ov-price">20,000+</div>
@@ -271,10 +263,7 @@
             <div class="mkp-fg-mini-label">24h Volume</div>
             <div class="mkp-fg-mini-val" id="idx-volume">—</div>
           </div>
-          <div class="mkp-fg-mini-card">
-            <div class="mkp-fg-mini-label">Gold (XAU/USD)</div>
-            <div class="mkp-fg-mini-val" id="ov-gold-p3">—</div>
-          </div>
+
           <div class="mkp-fg-mini-card">
             <div class="mkp-fg-mini-label">Active Cryptos</div>
             <div class="mkp-fg-mini-val" id="idx-active">20,000+</div>
@@ -380,17 +369,6 @@
   var cryptoPrices = {};
 
   async function fetchCrypto(){
-    // Gold via ExchangeRate API (reliable)
-    try{
-      var rg=await fetch('https://open.er-api.com/v6/latest/XAU');
-      var fg=await rg.json();
-      if(fg.rates&&fg.rates.USD){
-        var goldHtml='$'+fg.rates.USD.toLocaleString('en-US',{maximumFractionDigits:2});
-        set('ov-gold-p',goldHtml);set('ov-gold-p2',goldHtml);set('ov-gold-p3',goldHtml);
-        var tg=document.getElementById('tk-gold');if(tg){var sp=tg.querySelector('span');if(sp)sp.textContent=goldHtml;}
-        var tg2=document.getElementById('tk-gold2');if(tg2)tg2.textContent=goldHtml;
-      }
-    }catch(e){}
 
     // Crypto data
     try{
@@ -471,16 +449,7 @@
     }catch(e){set('crypto-tbody','<tr><td colspan="7" style="text-align:center;padding:20px;color:#999">Refreshing data...</td></tr>');}
   }
 
-  /* ── GLOBAL — Gold via ExchangeRate API ── */
-  async function fetchGlobal(){
-    try{
-      var rg=await fetch('https://open.er-api.com/v6/latest/XAU');
-      var fg=await rg.json();
-      if(fg.rates&&fg.rates.USD){
-        var goldHtml='$'+fg.rates.USD.toLocaleString('en-US',{maximumFractionDigits:2});
-        set('ov-gold-p',goldHtml);set('ov-gold-p2',goldHtml);set('ov-gold-p3',goldHtml);
-        var tg=document.getElementById('tk-gold');if(tg){var sp=tg.querySelector('span');if(sp)sp.textContent=goldHtml;}
-        var tg2=document.getElementById('tk-gold2');if(tg2)tg2.textContent=goldHtml;
+  async function fetchGlobal(){});
       }
     }catch(e){}
   }
