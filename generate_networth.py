@@ -5150,7 +5150,20 @@ Rules:
         raw = r.json()["content"][0]["text"].strip()
         raw = re.sub(r"^```json\s*", "", raw)
         raw = re.sub(r"\s*```$", "", raw)
-        return json.loads(raw)
+        # Fix common JSON issues — unterminated strings, bad apostrophes
+        raw = raw.replace("\\'", "'")          # escaped apostrophes → plain
+        raw = re.sub(r'[\x00-\x1f\x7f]', ' ', raw)  # remove control chars
+        try:
+            return json.loads(raw)
+        except Exception:
+            # Try to extract just the JSON object
+            m = re.search(r'\{.*\}', raw, re.DOTALL)
+            if m:
+                try:
+                    return json.loads(m.group(0))
+                except Exception:
+                    pass
+            raise
     except Exception as e:
         print(f"  ✗ Claude error for {name}: {e}")
         return None
