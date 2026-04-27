@@ -27,8 +27,8 @@ CATEGORY_TARGETS = {
     "Sports":        1,
     "Entertainment": 1,
     "Health":        1,
-    "Business":      0,   # covered by Finance/Stocks
-    "Finance":       0,   # covered by Stocks/Forex
+    "Business":      1,
+    "Finance":       1,
     "Science":       0,   # rotates via wiki fallback
     "Travel":        0,   # rotates via wiki fallback
 }
@@ -304,7 +304,7 @@ def pick_needed_category(posts_index, run_used_cats):
         target_ratio = target / 10.0
         actual_ratio = existing_counts.get(cat, 0) / total
         # Penalize categories already used this run
-        run_penalty = 0.15 * run_used_cats.get(cat, 0)
+        run_penalty = 0.5 * run_used_cats.get(cat, 0)
         scores[cat] = target_ratio - actual_ratio - run_penalty
     return max(scores, key=scores.get)
 
