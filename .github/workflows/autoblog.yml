@@ -48,7 +48,7 @@ jobs:
           UNSPLASH_KEY:     ${{ secrets.UNSPLASH_KEY }}
           SITE_URL:         ${{ secrets.SITE_URL }}
           SITE_NAME:        ${{ secrets.SITE_NAME }}
-          ARTICLES_PER_RUN: ${{ github.event.inputs.articles_count || secrets.ARTICLES_PER_RUN || '5' }}
+          ARTICLES_PER_RUN: ${{ github.event.inputs.articles_count || secrets.ARTICLES_PER_RUN || '10' }}
         run: python generate_articles.py
 
       - name: Generate net worth profiles
