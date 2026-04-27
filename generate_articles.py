@@ -258,6 +258,7 @@ def build_robots():
     content = f"""User-agent: *
 Allow: /
 Disallow: /cgi-bin/
+Disallow: /*.json$
 
 Sitemap: {SITE_URL}/sitemap.xml
 """
@@ -1169,7 +1170,7 @@ def build_markets_page():
   </aside>
 </div>
 </div>
-<p class="mkp-disclaimer container">Data sourced from CoinGecko &amp; ExchangeRate-API. Prices are indicative and may be delayed. Not financial advice.</p>
+<p class="mkp-disclaimer container">Data sourced from CryptoCompare &amp; ExchangeRate-API. Prices are indicative and may be delayed. Not financial advice.</p>
 
 <script>
 (function(){{
@@ -1639,13 +1640,14 @@ def build_authors(posts):
 # ── BUILD SITEMAP ─────────────────────────────────────────────────────
 def build_sitemap(posts):
     seen_slugs = set()
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     lines = ['<?xml version="1.0" encoding="UTF-8"?>',
              '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-             f'  <url><loc>{SITE_URL}/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>']
+             f'  <url><loc>{SITE_URL}/</loc><lastmod>{today}</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>']
     for cat in CATEGORIES:
-        lines.append(f'  <url><loc>{SITE_URL}/category-{cat.lower()}.html</loc><changefreq>daily</changefreq><priority>0.9</priority></url>')
+        lines.append(f'  <url><loc>{SITE_URL}/category-{cat.lower()}.html</loc><lastmod>{today}</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>')
     # Networth section
-    lines.append(f'  <url><loc>{SITE_URL}/networth/</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>')
+    lines.append(f'  <url><loc>{SITE_URL}/networth/</loc><lastmod>{today}</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>')
     nw_index = OUTPUT_DIR / "networth_index.json"
     if nw_index.exists():
         try:
@@ -1653,17 +1655,18 @@ def build_sitemap(posts):
                 nw_slug = profile.get("slug", "")
                 if nw_slug and nw_slug not in seen_slugs:
                     seen_slugs.add(nw_slug)
-                    lines.append(f'  <url><loc>{SITE_URL}/networth/{nw_slug}.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>')
+                    lines.append(f'  <url><loc>{SITE_URL}/networth/{nw_slug}.html</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>')
         except Exception:
             pass
     seen_slugs.clear()
-    # Posts — deduplicated
+    # Posts — deduplicated, with lastmod + changefreq
     for p in posts:
         if p["slug"] in seen_slugs:
             print(f"  Sitemap: skipping duplicate slug {p['slug']}")
             continue
         seen_slugs.add(p["slug"])
-        lines.append(f'  <url><loc>{SITE_URL}/posts/{p["slug"]}.html</loc><lastmod>{p["date_iso"][:10]}</lastmod><priority>0.8</priority></url>')
+        post_date = p["date_iso"][:10]
+        lines.append(f'  <url><loc>{SITE_URL}/posts/{p["slug"]}.html</loc><lastmod>{post_date}</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>')
     lines.append("</urlset>")
     (OUTPUT_DIR / "sitemap.xml").write_text("\n".join(lines))
 
