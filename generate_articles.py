@@ -1175,31 +1175,25 @@ def build_markets_page():
   var cryptoPrices = {{}};
 
   async function fetchCrypto(){{
-    try{{
-      var syms=COINS.map(function(c){{return c.sym;}}).join(',');
-      var r=await fetch('https://min-api.cryptocompare.com/data/pricemultifull?fsyms='+syms+'&tsyms=USD');
-      var res=await r.json();
-      var raw=res.RAW;
-      if(!raw)throw new Error('no data');
-      // Gold from same call
-      if(raw.XAU&&raw.XAU.USD){{
-        var gp=raw.XAU.USD.PRICE;
-        var goldHtml='$'+gp.toLocaleString('en-US',{{maximumFractionDigits:2}});
-        set('ov-gold-p',goldHtml);set('ov-gold-p2',goldHtml);set('ov-gold-p3',goldHtml);
-      }}
-    }}catch(e){{}}
-    // Gold via ExchangeRate API fallback
+    // Gold via ExchangeRate API (reliable)
     try{{
       var rg=await fetch('https://open.er-api.com/v6/latest/XAU');
       var fg=await rg.json();
       if(fg.rates&&fg.rates.USD){{
         var goldHtml='$'+fg.rates.USD.toLocaleString('en-US',{{maximumFractionDigits:2}});
         set('ov-gold-p',goldHtml);set('ov-gold-p2',goldHtml);set('ov-gold-p3',goldHtml);
-        // Also update ticker
         var tg=document.getElementById('tk-gold');if(tg){{var sp=tg.querySelector('span');if(sp)sp.textContent=goldHtml;}}
         var tg2=document.getElementById('tk-gold2');if(tg2)tg2.textContent=goldHtml;
       }}
     }}catch(e){{}}
+
+    // Crypto data
+    try{{
+      var syms=COINS.map(function(c){{return c.sym;}}).join(',');
+      var r=await fetch('https://min-api.cryptocompare.com/data/pricemultifull?fsyms='+syms+'&tsyms=USD');
+      var res=await r.json();
+      var raw=res.RAW;
+      if(!raw)throw new Error('no data');
 
       var tbody='';
       var coins_data=[];
@@ -1224,7 +1218,7 @@ def build_markets_page():
       }});
       set('crypto-tbody',tbody||'<tr><td colspan="7" style="text-align:center;padding:20px;color:#999">Loading...</td></tr>');
 
-      // Coin switcher card
+      // Coin switcher
       window.updatePickedCoin=function(){{
         var sym=document.getElementById('ov-coin-sel').value;
         var d=cryptoPrices[sym];
@@ -1233,15 +1227,17 @@ def build_markets_page():
         document.getElementById('ov-picked-c').innerHTML=badge(d.chg);
       }};
       updatePickedCoin();
-      // Update crypto overview cards
+
+      // Overview cards
       var btc=cryptoPrices['BTC'],eth=cryptoPrices['ETH'];
       if(btc){{set('ov-btc-p',fmt(btc.price));set('ov-btc-c',badge(btc.chg));}}
       if(eth){{set('ov-eth-p',fmt(eth.price));set('ov-eth-c',badge(eth.chg));}}
+
       // Global stats
       var totalMcap=coins_data.reduce(function(s,c){{return s+(c.mcap||0);}},0)*1.3;
       var totalVol=coins_data.reduce(function(s,c){{return s+(c.vol||0);}},0);
-      var btcMcap=btc?cryptoPrices['BTC'].price*19800000:0;
-      var btcDom=btcMcap?((btcMcap/totalMcap)*100).toFixed(1)+'%':'—';
+      var btcMcap=btc?btc.price*19800000:0;
+      var btcDom=totalMcap?(btcMcap/totalMcap*100).toFixed(1)+'%':'—';
       set('ov-mcap',fmt(totalMcap));set('ov-mcap2',fmt(totalMcap));
       set('ov-vol',fmt(totalVol));set('ov-vol2',fmt(totalVol));
       set('ov-btc-dom2',btcDom);set('ov-btc-dom3',btcDom);
@@ -1259,7 +1255,7 @@ def build_markets_page():
       }});
       set('gainers-list',gHtml);set('losers-list',lHtml);
 
-      // Trending — biggest movers
+      // Trending
       var trending=[...coins_data].sort(function(a,b){{return Math.abs(b.chg)-Math.abs(a.chg);}}).slice(0,7);
       var tHtml='';
       trending.forEach(function(c,i){{
@@ -1267,18 +1263,7 @@ def build_markets_page():
       }});
       set('trending-list',tHtml);
 
-      // Global stats
-      var totalMcap=coins_data.reduce(function(s,c){{return s+(c.mcap||0);}},0)*1.3;
-      var totalVol=coins_data.reduce(function(s,c){{return s+(c.vol||0);}},0);
-      var btcMcapVal=cryptoPrices['BTC']?cryptoPrices['BTC'].price*19800000:0;
-      var btcDomVal=totalMcap?(btcMcapVal/totalMcap*100).toFixed(1)+'%':'—';
-      set('ov-mcap',fmt(totalMcap));set('ov-mcap2',fmt(totalMcap));
-      set('ov-vol',fmt(totalVol));set('ov-vol2',fmt(totalVol));
-      set('ov-btc-dom2',btcDomVal);set('ov-btc-dom3',btcDomVal);
-      set('idx-total-mcap',fmt(totalMcap));set('idx-btc-dom',btcDomVal);set('idx-volume',fmt(totalVol));
-      setText('idx-active','20,000+');
-
-    }}catch(e){{set('crypto-tbody','<tr><td colspan="7" style="text-align:center;padding:20px;color:#999">Data loading... please wait</td></tr>');}}
+    }}catch(e){{set('crypto-tbody','<tr><td colspan="7" style="text-align:center;padding:20px;color:#999">Refreshing data...</td></tr>');}}
   }}
 
   /* ── GLOBAL — Gold via ExchangeRate API ── */
