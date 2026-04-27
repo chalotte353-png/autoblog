@@ -750,7 +750,7 @@ def build_markets_ticker():
       <span class="mk-tick" id="tk-eurusd">EUR/USD <span>—</span></span>
       <span class="mk-tick" id="tk-gbpusd">GBP/USD <span>—</span></span>
       <span class="mk-tick" id="tk-usdjpy">USD/JPY <span>—</span></span>
-      <span class="mk-tick" id="tk-gold">Gold <span>—</span></span>
+
       <span class="mk-tick mk-sep-v">|</span>
       <span class="mk-tick" id="tk-fg">Fear &amp; Greed: <span>—</span></span>
       <span class="mk-tick mk-sep-v">|</span>
@@ -768,7 +768,7 @@ def build_markets_ticker():
       <span class="mk-tick">EUR/USD <span id="tk-eurusd2">—</span></span>
       <span class="mk-tick">GBP/USD <span id="tk-gbpusd2">—</span></span>
       <span class="mk-tick">USD/JPY <span id="tk-usdjpy2">—</span></span>
-      <span class="mk-tick">Gold <span id="tk-gold2">—</span></span>
+
       <span class="mk-tick mk-sep-v">|</span>
       <span class="mk-tick">Fear &amp; Greed: <span id="tk-fg2">—</span></span>
       <span class="mk-tick mk-sep-v">|</span>
@@ -804,27 +804,8 @@ def build_markets_ticker():
         var s=document.getElementById(map[sym]);if(s){var sp=s.querySelector('span');if(sp)sp.innerHTML=html;}
         var s2=document.getElementById(map[sym]+'2');if(s2)s2.innerHTML=html;
       }
-      // Gold from same call
-      if(d.XAU&&d.XAU.USD){
-        var gp=d.XAU.USD.PRICE;
-        var goldHtml='$'+gp.toLocaleString('en-US',{maximumFractionDigits:2});
-        var s=document.getElementById('tk-gold');if(s){s.querySelector('span').textContent=goldHtml;}
-        var s2=document.getElementById('tk-gold2');if(s2)s2.textContent=goldHtml;
-        set('ov-gold-p',goldHtml);set('ov-gold-p2',goldHtml);set('ov-gold-p3',goldHtml);
-      }
     }catch(e){}
-    // Gold via ExchangeRate API (XAU available there too)
-    try{
-      var rg=await fetch('https://open.er-api.com/v6/latest/XAU');
-      var fg=await rg.json();
-      if(fg.rates&&fg.rates.USD){
-        var goldPrice=fg.rates.USD;
-        var goldHtml='$'+goldPrice.toLocaleString('en-US',{maximumFractionDigits:2});
-        var s=document.getElementById('tk-gold');if(s){s.querySelector('span').textContent=goldHtml;}
-        var s2=document.getElementById('tk-gold2');if(s2)s2.textContent=goldHtml;
-        set('ov-gold-p',goldHtml);set('ov-gold-p2',goldHtml);set('ov-gold-p3',goldHtml);
-      }
-    }catch(e){}
+
     try{
       var r=await fetch('https://api.alternative.me/fng/');
       var g=await r.json();
@@ -930,11 +911,7 @@ def build_markets_page():
         <div class="mkp-ov-price" id="ov-chf-p">—</div>
         <div class="mkp-ov-chg mkp-ov-sub">Swiss Franc</div>
       </div>
-      <div class="mkp-ov-card">
-        <div class="mkp-ov-label">Gold (XAU/USD)</div>
-        <div class="mkp-ov-price" id="ov-gold-p">—</div>
-        <div class="mkp-ov-chg mkp-ov-sub">Per Troy Oz</div>
-      </div>
+
       <div class="mkp-ov-card">
         <div class="mkp-ov-label">USD Index (DXY)</div>
         <div class="mkp-ov-price" id="ov-dxy-p">—</div>
@@ -964,11 +941,7 @@ def build_markets_page():
         <div class="mkp-ov-price" id="ov-vol2">—</div>
         <div class="mkp-ov-chg mkp-ov-sub">Total crypto</div>
       </div>
-      <div class="mkp-ov-card">
-        <div class="mkp-ov-label">Gold (XAU/USD)</div>
-        <div class="mkp-ov-price" id="ov-gold-p2">—</div>
-        <div class="mkp-ov-chg mkp-ov-sub">Per Troy Oz</div>
-      </div>
+
       <div class="mkp-ov-card">
         <div class="mkp-ov-label">Active Cryptos</div>
         <div class="mkp-ov-price">20,000+</div>
@@ -1066,10 +1039,7 @@ def build_markets_page():
             <div class="mkp-fg-mini-label">24h Volume</div>
             <div class="mkp-fg-mini-val" id="idx-volume">—</div>
           </div>
-          <div class="mkp-fg-mini-card">
-            <div class="mkp-fg-mini-label">Gold (XAU/USD)</div>
-            <div class="mkp-fg-mini-val" id="ov-gold-p3">—</div>
-          </div>
+
           <div class="mkp-fg-mini-card">
             <div class="mkp-fg-mini-label">Active Cryptos</div>
             <div class="mkp-fg-mini-val" id="idx-active">20,000+</div>
@@ -1175,17 +1145,6 @@ def build_markets_page():
   var cryptoPrices = {{}};
 
   async function fetchCrypto(){{
-    // Gold via ExchangeRate API (reliable)
-    try{{
-      var rg=await fetch('https://open.er-api.com/v6/latest/XAU');
-      var fg=await rg.json();
-      if(fg.rates&&fg.rates.USD){{
-        var goldHtml='$'+fg.rates.USD.toLocaleString('en-US',{{maximumFractionDigits:2}});
-        set('ov-gold-p',goldHtml);set('ov-gold-p2',goldHtml);set('ov-gold-p3',goldHtml);
-        var tg=document.getElementById('tk-gold');if(tg){{var sp=tg.querySelector('span');if(sp)sp.textContent=goldHtml;}}
-        var tg2=document.getElementById('tk-gold2');if(tg2)tg2.textContent=goldHtml;
-      }}
-    }}catch(e){{}}
 
     // Crypto data
     try{{
@@ -1266,16 +1225,7 @@ def build_markets_page():
     }}catch(e){{set('crypto-tbody','<tr><td colspan="7" style="text-align:center;padding:20px;color:#999">Refreshing data...</td></tr>');}}
   }}
 
-  /* ── GLOBAL — Gold via ExchangeRate API ── */
-  async function fetchGlobal(){{
-    try{{
-      var rg=await fetch('https://open.er-api.com/v6/latest/XAU');
-      var fg=await rg.json();
-      if(fg.rates&&fg.rates.USD){{
-        var goldHtml='$'+fg.rates.USD.toLocaleString('en-US',{{maximumFractionDigits:2}});
-        set('ov-gold-p',goldHtml);set('ov-gold-p2',goldHtml);set('ov-gold-p3',goldHtml);
-        var tg=document.getElementById('tk-gold');if(tg){{var sp=tg.querySelector('span');if(sp)sp.textContent=goldHtml;}}
-        var tg2=document.getElementById('tk-gold2');if(tg2)tg2.textContent=goldHtml;
+  async function fetchGlobal(){{}});
       }}
     }}catch(e){{}}
   }}
