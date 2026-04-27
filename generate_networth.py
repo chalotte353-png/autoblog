@@ -5518,6 +5518,10 @@ def get_nw_nav():
   <a href="../category-health.html">Health</a>
   <a href="../category-politics.html">Politics</a>
   <a href="index.html">Net Worth</a>
+  <a href="../markets.html">Markets</a>
+  <a href="../category-crypto.html">Crypto</a>
+  <a href="../category-forex.html">Forex</a>
+  <a href="../category-stocks.html">Stocks</a>
 </div></nav>"""
 
 def get_nw_footer(year):
