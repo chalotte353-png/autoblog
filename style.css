@@ -568,7 +568,10 @@ a { color: inherit; text-decoration: none; }
 .markets-strip{background:#0d0d0d;border-bottom:2px solid #d0021b;padding:0;overflow:hidden}
 .markets-strip-inner{display:flex;align-items:center;gap:12px;height:40px}
 .markets-strip-label{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#d0021b;white-space:nowrap;flex-shrink:0;padding:3px 8px;border:1px solid #d0021b;border-radius:3px}
-.mk-scroll-track{display:flex;align-items:center;gap:16px;overflow:hidden;flex:1}
+.mk-scroll-track{display:flex;align-items:center;gap:16px;overflow:hidden;flex:1;white-space:nowrap}
+.mk-ticker-inner{display:inline-flex;align-items:center;gap:28px;animation:ticker-scroll 40s linear infinite;white-space:nowrap}
+.mk-ticker-inner:hover{animation-play-state:paused}
+@keyframes ticker-scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 .mk-tick{font-size:11.5px;color:#bbb;white-space:nowrap;font-weight:500}
 .mk-tick span{color:#fff;font-weight:700;margin-left:3px}
 .mk-tick em{font-style:normal;font-size:10px;margin-left:2px}
