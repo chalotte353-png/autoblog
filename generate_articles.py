@@ -178,6 +178,62 @@ def load_index():
 def save_index(posts):
     (OUTPUT_DIR / "posts_index.json").write_text(json.dumps(posts, indent=2))
 
+# ── MANUAL RUN ROTATION STATE ────────────────────────────────────────
+# Tracks which category comes next in manual runs, so each manual run
+# cycles through all categories in order — no repeats until full cycle.
+ROTATION_FILE = OUTPUT_DIR / "rotation_state.json"
+ROTATION_ORDER = [
+    "Crypto", "Forex", "Stocks", "Finance", "World", "Politics",
+    "Technology", "Sports", "Business", "Health", "Entertainment",
+    "Science", "Travel"
+]
+
+def load_rotation_state():
+    if ROTATION_FILE.exists():
+        try:
+            return json.loads(ROTATION_FILE.read_text())
+        except Exception:
+            pass
+    return {"index": 0, "used_this_cycle": []}
+
+def save_rotation_state(state):
+    ROTATION_FILE.write_text(json.dumps(state, indent=2))
+
+def get_next_rotation_categories(count):
+    """
+    Returns a list of `count` categories in rotation order.
+    - Single run (count=1): returns next category in cycle
+    - Bulk run (count>1): distributes evenly across all categories
+    - After full cycle completes, resets and starts again
+    """
+    state = load_rotation_state()
+    idx = state.get("index", 0)
+    used = state.get("used_this_cycle", [])
+    n = len(ROTATION_ORDER)
+
+    if count == 1:
+        # Single article: just pick next in rotation
+        cat = ROTATION_ORDER[idx % n]
+        new_idx = (idx + 1) % n
+        new_used = used + [cat]
+        # Reset cycle when complete
+        if new_idx == 0:
+            new_used = []
+        save_rotation_state({"index": new_idx, "used_this_cycle": new_used})
+        return [cat]
+    else:
+        # Bulk run: distribute count articles evenly across all categories
+        # e.g. count=13 → 1 each; count=15 → some get 2, rest get 1
+        result = []
+        per_cat = count // n
+        extras = count % n
+        for i, cat in enumerate(ROTATION_ORDER):
+            times = per_cat + (1 if i < extras else 0)
+            result.extend([cat] * times)
+        # Reset rotation to beginning after bulk run
+        save_rotation_state({"index": 0, "used_this_cycle": []})
+        return result
+
 # ── CONVERT EXISTING IMAGES TO WEBP ─────────────────────────────────
 def convert_existing_to_webp():
     """Convert all fm=jpg Unsplash URLs to fm=webp in existing HTML files."""
@@ -311,10 +367,18 @@ def pick_needed_category(posts_index, run_used_cats):
     return max(scores, key=scores.get)
 
 def build_topics(count, published, posts_index=None):
-    """Build topic list with category balance enforcement."""
+    """Build topic list with category balance enforcement.
+
+    - Scheduled (auto) runs: use pick_needed_category (ratio-based balancing)
+    - Manual runs: use get_next_rotation_categories (round-robin rotation)
+      so every single manual trigger cycles through all 13 categories in order.
+    """
     from collections import defaultdict, Counter
     if posts_index is None:
         posts_index = []
+
+    # Detect if this is a manual/forced rotation run
+    IS_MANUAL = os.environ.get("MANUAL_ROTATION", "false").lower() == "true"
 
     news = fetch_news(count * 3)
 
@@ -361,9 +425,24 @@ def build_topics(count, published, posts_index=None):
     run_used_cats = Counter()
     attempts = 0
 
+    # For manual runs: get a pre-set rotation list of categories
+    # For auto runs: pick_needed_category dynamically as before
+    if IS_MANUAL:
+        rotation_cats = get_next_rotation_categories(count)
+        rotation_queue = list(rotation_cats)  # consume in order
+        print(f"  Manual rotation mode: {rotation_queue}")
+    else:
+        rotation_queue = None
+
     while len(selected) < count and attempts < count * 5:
         attempts += 1
-        cat = pick_needed_category(posts_index, run_used_cats)
+
+        if rotation_queue:
+            # Manual mode: take next category from rotation queue
+            cat = rotation_queue.pop(0) if rotation_queue else pick_needed_category(posts_index, run_used_cats)
+        else:
+            # Auto mode: ratio-based balancing
+            cat = pick_needed_category(posts_index, run_used_cats)
 
         # Try news first, then wiki
         topic = None
