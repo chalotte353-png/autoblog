@@ -15,6 +15,51 @@ ARTICLES_PER_RUN = int(os.environ.get("ARTICLES_PER_RUN", "10"))
 
 CATEGORIES = ["Business","Technology","Finance","World","Sports","Health","Travel","Science","Entertainment","Politics"]
 
+# ── CATEGORY BALANCE ─────────────────────────────────────────────────
+# Target distribution per 10 articles (must sum to 10)
+CATEGORY_TARGETS = {
+    "Politics":      1,   # was over-represented (46 articles!)
+    "World":         2,   # was over-represented (30 articles)
+    "Entertainment": 1,   # was over-represented (30 articles)
+    "Sports":        1,   # was over-represented (24 articles)
+    "Finance":       1,
+    "Technology":    1,
+    "Business":      1,
+    "Health":        1,
+    "Science":       1,
+    "Travel":        0,   # gets 1 every ~10 runs via wiki topics
+}
+
+# Wiki topics balanced across underrepresented categories
+WIKI_TOPICS_BALANCED = {
+    "Business":     ["Global mergers and acquisitions 2026","Small business growth strategies 2026",
+                     "Corporate sustainability ESG 2026","Supply chain resilience business",
+                     "Remote work business productivity 2026","Private equity market trends 2026"],
+    "Technology":   ["Artificial intelligence enterprise 2026","Quantum computing breakthrough 2026",
+                     "Semiconductor chip shortage update","Cybersecurity threats 2026",
+                     "Electric vehicle technology update","5G network expansion 2026"],
+    "Finance":      ["Federal Reserve interest rate 2026","Bitcoin cryptocurrency outlook 2026",
+                     "Stock market outlook 2026","US housing market trends 2026",
+                     "Global debt crisis 2026","Hedge fund performance 2026"],
+    "Health":       ["Mental health workplace 2026","Cancer treatment breakthrough 2026",
+                     "Healthcare innovation 2026","Obesity drug research update",
+                     "Antibiotic resistance global","Longevity science 2026"],
+    "Science":      ["SpaceX mission update 2026","Climate change research 2026",
+                     "CRISPR gene editing breakthrough","Ocean plastic pollution science",
+                     "Dark matter discovery 2026","Renewable energy innovation 2026"],
+    "Travel":       ["Best travel destinations 2026","Luxury travel trends 2026",
+                     "Sustainable eco-tourism 2026","Budget travel tips 2026",
+                     "Digital nomad hotspots 2026","Air travel recovery 2026"],
+    "World":        ["India economy growth 2026","China trade policy 2026",
+                     "European Union politics 2026","Africa development 2026"],
+    "Sports":       ["NBA season highlights 2026","Premier League football 2026",
+                     "Olympic sports update 2026","Formula 1 season 2026"],
+    "Entertainment":["Hollywood box office 2026","Streaming wars update 2026",
+                     "Music industry trends 2026","Video game market 2026"],
+    "Politics":     ["US Congress legislation 2026","Global elections 2026",
+                     "Climate policy international","Trade policy tariffs 2026"],
+}
+
 AUTHORS = {
     "Business":      [{"id":"james-mitchell","name":"James Mitchell","title":"Business Editor","bio":"15 years covering global markets and corporate strategy.","avatar":"https://i.pravatar.cc/150?img=11","twitter":"@jmitchell_biz"},
                       {"id":"sarah-chen","name":"Sarah Chen","title":"Finance Reporter","bio":"Former Wall Street analyst turned journalist.","avatar":"https://i.pravatar.cc/150?img=47","twitter":"@sarahchen_fin"},
@@ -47,16 +92,6 @@ AUTHORS = {
                       {"id":"patricia-morgan","name":"Patricia Morgan","title":"Policy Correspondent","bio":"Former White House press pool journalist.","avatar":"https://i.pravatar.cc/150?img=57","twitter":"@patriciamorgan_dc"},
                       {"id":"samuel-davis","name":"Samuel Davis","title":"International Affairs","bio":"US foreign policy and geopolitics expert.","avatar":"https://i.pravatar.cc/150?img=38","twitter":"@samueldavis_intl"}],
 }
-
-WIKI_TOPICS = [
-    "Stock market outlook 2026","AI revolution in business 2026","Bitcoin price analysis 2026",
-    "Tesla quarterly earnings report","Federal Reserve rate decision","Climate change business impact",
-    "Electric vehicle market growth","US housing market trends","Global trade policy update",
-    "Tech startup funding landscape","Cybersecurity threats enterprise","Mental health workplace 2026",
-    "Renewable energy investment boom","China economy latest data","India GDP growth 2026",
-    "SpaceX mission update","Apple product launch 2026","Amazon business strategy",
-    "Healthcare innovation breakthroughs","Supply chain global update",
-]
 
 # ── HELPERS ─────────────────────────────────────────────────────────
 def slugify(text):
@@ -207,6 +242,7 @@ def fetch_news(count):
 def is_duplicate(title_slug, published):
     """Check if a topic is already published using keyword overlap scoring.
     Catches near-duplicates like 'father-kills-8-children' vs 'louisiana-father-kills-8-children'.
+    Threshold raised to 70% to block slight headline variations on same story.
     """
     # Exact match
     if title_slug in published:
@@ -214,7 +250,8 @@ def is_duplicate(title_slug, published):
     # Stopwords to ignore when comparing
     STOP = {"a","an","the","in","on","at","of","and","for","to","is","are","was","were",
             "it","its","as","by","with","from","that","this","has","have","after","over",
-            "into","about","up","out","than","but","be","been","their","his","her","our"}
+            "into","about","up","out","than","but","be","been","their","his","her","our",
+            "us","new","says","say","after","amid","over","set","get","gets","make"}
     words = set(title_slug.split("-")) - STOP
     if not words:
         return False
@@ -223,28 +260,115 @@ def is_duplicate(title_slug, published):
         if not p_words:
             continue
         overlap = len(words & p_words) / max(len(words), len(p_words))
-        if overlap >= 0.6:   # 60%+ same keywords = duplicate story
+        if overlap >= 0.70:   # 70%+ same keywords = duplicate story (raised from 60%)
             return True
     return False
 
-def build_topics(count, published):
-    news = fetch_news(count * 2)
-    fresh = [t for t in news if not is_duplicate(slugify(t["title"]), published)]
-    pool = WIKI_TOPICS.copy()
-    random.shuffle(pool)
-    while len(fresh) < count and pool:
-        t = pool.pop()
-        if not is_duplicate(slugify(t), published):
-            fresh.append({"title": t, "hint": ""})
-    return fresh[:count]
+def pick_needed_category(posts_index, run_used_cats):
+    """Pick which category needs an article most, based on current imbalance vs targets."""
+    from collections import Counter
+    existing_counts = Counter(p.get("category","World") for p in posts_index)
+    total = max(sum(existing_counts.values()), 1)
+    # Calculate how far each category is from its target ratio
+    scores = {}
+    for cat, target in CATEGORY_TARGETS.items():
+        target_ratio = target / 10.0
+        actual_ratio = existing_counts.get(cat, 0) / total
+        # Penalize categories already used this run
+        run_penalty = 0.15 * run_used_cats.get(cat, 0)
+        scores[cat] = target_ratio - actual_ratio - run_penalty
+    return max(scores, key=scores.get)
+
+def build_topics(count, published, posts_index=None):
+    """Build topic list with category balance enforcement."""
+    from collections import defaultdict, Counter
+    if posts_index is None:
+        posts_index = []
+
+    news = fetch_news(count * 3)
+
+    # Group news topics by likely category (rough keyword match)
+    CAT_KEYWORDS = {
+        "Politics":      ["trump","congress","senate","republican","democrat","election","vote","law","bill","white house","president","governor","policy"],
+        "World":         ["iran","china","russia","ukraine","europe","africa","india","pakistan","israel","war","ceasefire","nato","un ","global"],
+        "Sports":        ["nba","nfl","mlb","nhl","soccer","football","basketball","baseball","playoffs","draft","coach","player","game","season"],
+        "Entertainment": ["movie","film","actor","actress","singer","album","tv","show","celebrity","oscar","grammy","netflix","hulu","disney","concert"],
+        "Technology":    ["ai","tech","software","apple","google","microsoft","startup","robot","chip","cyber","data","app","openai","spacex"],
+        "Finance":       ["stock","market","fed","inflation","bitcoin","crypto","economy","bank","invest","wall street","gdp","rate","dow","nasdaq"],
+        "Business":      ["company","ceo","merger","acquisition","corporate","revenue","profit","layoff","worker","job","industry","deal"],
+        "Health":        ["cancer","vaccine","drug","hospital","mental health","disease","fda","medical","patient","health","virus","treatment"],
+        "Science":       ["climate","space","nasa","research","study","planet","ocean","fossil","physics","gene","species","earth","asteroid"],
+        "Travel":        ["travel","tourism","flight","hotel","destination","tourist","visa","airport","cruise","resort"],
+    }
+
+    def guess_category(title):
+        tl = title.lower()
+        scores = {cat: sum(1 for kw in kws if kw in tl) for cat, kws in CAT_KEYWORDS.items()}
+        best = max(scores, key=scores.get)
+        return best if scores[best] > 0 else "World"
+
+    # Bucket news by category
+    news_by_cat = defaultdict(list)
+    for t in news:
+        cat = guess_category(t["title"])
+        slug = slugify(t["title"])
+        if not is_duplicate(slug, published):
+            news_by_cat[cat].append(t)
+
+    # Build wiki pool by category
+    wiki_by_cat = {}
+    for cat, topics in WIKI_TOPICS_BALANCED.items():
+        random.shuffle(topics)
+        wiki_by_cat[cat] = [{"title": t, "hint": ""} for t in topics
+                            if not is_duplicate(slugify(t), published)]
+
+    # Select topics with category balance
+    selected = []
+    run_used_cats = Counter()
+    attempts = 0
+
+    while len(selected) < count and attempts < count * 5:
+        attempts += 1
+        cat = pick_needed_category(posts_index, run_used_cats)
+
+        # Try news first, then wiki
+        topic = None
+        if news_by_cat.get(cat):
+            topic = news_by_cat[cat].pop(0)
+        elif wiki_by_cat.get(cat):
+            topic = wiki_by_cat[cat].pop(0)
+        else:
+            # fallback: any available news
+            for c in random.sample(list(CAT_KEYWORDS.keys()), len(CAT_KEYWORDS)):
+                if news_by_cat.get(c):
+                    topic = news_by_cat[c].pop(0)
+                    cat = c
+                    break
+            if not topic:
+                break
+
+        slug = slugify(topic["title"])
+        # Final duplicate check including already selected this run
+        selected_slugs = {slugify(s["title"]) for s in selected}
+        if not is_duplicate(slug, published | selected_slugs):
+            topic["_target_category"] = cat
+            selected.append(topic)
+            run_used_cats[cat] += 1
+
+    print(f"  Category distribution this run: {dict(run_used_cats)}")
+    return selected
 
 # ── WRITE ARTICLE ────────────────────────────────────────────────────
-def write_article(topic, hint, related_posts=None):
+def write_article(topic, hint, related_posts=None, target_category=None):
     now = datetime.now()
+
+    cat_hint = (f"IMPORTANT: This article MUST be categorized as '{target_category}'. "
+                if target_category else "")
 
     prompt = (
         f"Write a professional news article dated {now.strftime('%B %d, %Y')} about: {topic}\n"
         f"Background: {hint}\n"
+        f"{cat_hint}"
         "Respond with ONLY this XML format — no extra text:\n"
         "<article>\n"
         "<title>Compelling headline 55-70 chars</title>\n"
@@ -828,8 +952,8 @@ def main():
             print(f"  Removing duplicate from index: {p['slug']}")
     posts_index = deduped
 
-    print(f"Getting {ARTICLES_PER_RUN} topics...")
-    topics = build_topics(ARTICLES_PER_RUN, published)
+    print(f"Getting {ARTICLES_PER_RUN} topics (with category balancing)...")
+    topics = build_topics(ARTICLES_PER_RUN, published, posts_index)
 
     new_count = 0
     for i, t in enumerate(topics):
@@ -837,8 +961,9 @@ def main():
         slug = slugify(title)
         if slug in published:
             continue
-        print(f"  Writing [{i+1}/{len(topics)}] {title}")
-        article = write_article(title, t.get("hint", ""))
+        target_cat = t.get("_target_category")
+        print(f"  Writing [{i+1}/{len(topics)}] [{target_cat or '?'}] {title}")
+        article = write_article(title, t.get("hint", ""), target_category=target_cat)
         if not article:
             continue
         article["slug"] = slugify(article["title"])
@@ -846,7 +971,10 @@ def main():
         if is_duplicate(article["slug"], published):
             print(f"  Skipping duplicate: {article['slug']}")
             continue
+        # Use target_category as fallback if Claude picked wrong one
         category = article.get("category", "World")
+        if target_cat and target_cat in CATEGORIES and category not in CATEGORIES:
+            category = target_cat
         author = get_author(category)
         img_kw = article.get("image_keyword") or " ".join(article["title"].split()[:4])
         image = get_image(img_kw, article["slug"])
