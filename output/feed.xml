@@ -5,8 +5,16 @@
   <link>https://marketsnewstoday.info/</link>
   <description>Breaking news and expert analysis on business, finance, technology and world affairs.</description>
   <language>en-us</language>
-  <lastBuildDate>Mon, 27 Apr 2026 07:22:24 +0000</lastBuildDate>
+  <lastBuildDate>Mon, 27 Apr 2026 07:30:32 +0000</lastBuildDate>
   <atom:link href="https://marketsnewstoday.info/feed.xml" rel="self" type="application/rss+xml"/>
+  <item>
+    <title>DeFi Hits New Heights as Decentralized Finance Reshapes 2026</title>
+    <link>https://marketsnewstoday.info/posts/defi-hits-new-heights-as-decentralized-finance-reshapes-2026.html</link>
+    <description>Decentralized finance has entered a new era of maturity in 2026, with total value locked surpassing historic benchmarks and institutional players embracing DeFi protocols at unprecedented rates. Cross-chain interoperability, AI-driven yield optimization, and regulatory clarity are converging to reshape how the world interacts with financial infrastructure. The landscape looks dramatically different from the volatile experiments of just a few years ago.</description>
+    <pubDate>Mon, 27 Apr 2026 07:30:29 +0000</pubDate>
+    <guid isPermaLink="true">https://marketsnewstoday.info/posts/defi-hits-new-heights-as-decentralized-finance-reshapes-2026.html</guid>
+    <category>Finance</category>
+  </item>
   <item>
     <title>Bitcoin ETF Market Surges in 2026: What Investors Need to Know</title>
     <link>https://marketsnewstoday.info/posts/bitcoin-etf-market-surges-in-2026-what-investors-need-to-know.html</link>
@@ -398,14 +406,6 @@
     <pubDate>Sat, 25 Apr 2026 15:29:15 +0000</pubDate>
     <guid isPermaLink="true">https://marketsnewstoday.info/posts/hpv-vaccine-for-men-why-it-matters-more-than-you-think.html</guid>
     <category>Health</category>
-  </item>
-  <item>
-    <title>Iranian FM Araghchi Visits Pakistan Amid US Nuclear Talks</title>
-    <link>https://marketsnewstoday.info/posts/iranian-fm-araghchi-visits-pakistan-amid-us-nuclear-talks.html</link>
-    <description>Iranian Foreign Minister Abbas Araghchi has arrived in Pakistan as Islamabad takes center stage in a renewed push toward US-Iran nuclear diplomacy. The high-stakes visit comes with significant disruption to daily life in the Islamabad-Rawalpindi twin cities, where residents are bearing the economic and logistical weight of the historic talks. The diplomatic development marks one of the most consequential moments in Iran-US relations in years.</description>
-    <pubDate>Sat, 25 Apr 2026 15:28:27 +0000</pubDate>
-    <guid isPermaLink="true">https://marketsnewstoday.info/posts/iranian-fm-araghchi-visits-pakistan-amid-us-nuclear-talks.html</guid>
-    <category>Politics</category>
   </item>
 </channel>
 </rss>
