@@ -862,23 +862,72 @@ def build_markets_page():
       </div>
     </div>
 
-    <!-- MARKET OVERVIEW CARDS -->
+    <!-- MARKET OVERVIEW CARDS — First 3 are interactive coin selector -->
     <div class="mkp-overview">
-      <div class="mkp-ov-card">
-        <div class="mkp-ov-label">Bitcoin (BTC)</div>
-        <div class="mkp-ov-price" id="ov-btc-p">—</div>
-        <div class="mkp-ov-chg" id="ov-btc-c">—</div>
+      <!-- Interactive Coin Card 1 -->
+      <div class="mkp-ov-card mkp-ov-interactive" id="ov-coin1-card">
+        <div class="mkp-ov-coin-sel">
+          <select id="ov-sel1" onchange="updateCoinCard(1)" class="mkp-coin-select">
+            <option value="BTC">Bitcoin (BTC)</option>
+            <option value="ETH">Ethereum (ETH)</option>
+            <option value="BNB">BNB</option>
+            <option value="SOL">Solana (SOL)</option>
+            <option value="XRP">XRP</option>
+            <option value="ADA">Cardano (ADA)</option>
+            <option value="DOGE">Dogecoin</option>
+            <option value="AVAX">Avalanche</option>
+            <option value="DOT">Polkadot</option>
+            <option value="MATIC">Polygon</option>
+            <option value="LINK">Chainlink</option>
+            <option value="LTC">Litecoin</option>
+          </select>
+        </div>
+        <div class="mkp-ov-price" id="ov-coin1-p">—</div>
+        <div class="mkp-ov-chg" id="ov-coin1-c">—</div>
       </div>
-      <div class="mkp-ov-card">
-        <div class="mkp-ov-label">Ethereum (ETH)</div>
-        <div class="mkp-ov-price" id="ov-eth-p">—</div>
-        <div class="mkp-ov-chg" id="ov-eth-c">—</div>
+      <!-- Interactive Coin Card 2 -->
+      <div class="mkp-ov-card mkp-ov-interactive" id="ov-coin2-card">
+        <div class="mkp-ov-coin-sel">
+          <select id="ov-sel2" onchange="updateCoinCard(2)" class="mkp-coin-select">
+            <option value="ETH">Ethereum (ETH)</option>
+            <option value="BTC">Bitcoin (BTC)</option>
+            <option value="BNB">BNB</option>
+            <option value="SOL">Solana (SOL)</option>
+            <option value="XRP">XRP</option>
+            <option value="ADA">Cardano (ADA)</option>
+            <option value="DOGE">Dogecoin</option>
+            <option value="AVAX">Avalanche</option>
+            <option value="DOT">Polkadot</option>
+            <option value="MATIC">Polygon</option>
+            <option value="LINK">Chainlink</option>
+            <option value="LTC">Litecoin</option>
+          </select>
+        </div>
+        <div class="mkp-ov-price" id="ov-coin2-p">—</div>
+        <div class="mkp-ov-chg" id="ov-coin2-c">—</div>
       </div>
-      <div class="mkp-ov-card">
-        <div class="mkp-ov-label">Solana (SOL)</div>
-        <div class="mkp-ov-price" id="ov-sol-p">—</div>
-        <div class="mkp-ov-chg" id="ov-sol-c">—</div>
+      <!-- Interactive Coin Card 3 -->
+      <div class="mkp-ov-card mkp-ov-interactive" id="ov-coin3-card">
+        <div class="mkp-ov-coin-sel">
+          <select id="ov-sel3" onchange="updateCoinCard(3)" class="mkp-coin-select">
+            <option value="SOL">Solana (SOL)</option>
+            <option value="BTC">Bitcoin (BTC)</option>
+            <option value="ETH">Ethereum (ETH)</option>
+            <option value="BNB">BNB</option>
+            <option value="XRP">XRP</option>
+            <option value="ADA">Cardano (ADA)</option>
+            <option value="DOGE">Dogecoin</option>
+            <option value="AVAX">Avalanche</option>
+            <option value="DOT">Polkadot</option>
+            <option value="MATIC">Polygon</option>
+            <option value="LINK">Chainlink</option>
+            <option value="LTC">Litecoin</option>
+          </select>
+        </div>
+        <div class="mkp-ov-price" id="ov-coin3-p">—</div>
+        <div class="mkp-ov-chg" id="ov-coin3-c">—</div>
       </div>
+      <!-- Fixed cards -->
       <div class="mkp-ov-card">
         <div class="mkp-ov-label">EUR / USD</div>
         <div class="mkp-ov-price" id="ov-eur-p">—</div>
@@ -1112,11 +1161,15 @@ def build_markets_page():
       }});
       set('crypto-tbody',tbody||'<tr><td colspan="7" style="text-align:center;padding:20px;color:#999">Loading...</td></tr>');
 
-      // Overview cards
-      var btc=cryptoPrices['BTC'],eth=cryptoPrices['ETH'],sol=cryptoPrices['SOL'];
-      if(btc){{set('ov-btc-p',fmt(btc.price));set('ov-btc-c',badge(btc.chg));}}
-      if(eth){{set('ov-eth-p',fmt(eth.price));set('ov-eth-c',badge(eth.chg));}}
-      if(sol){{set('ov-sol-p',fmt(sol.price));set('ov-sol-c',badge(sol.chg));}}
+      // Update interactive coin cards
+      window.updateCoinCard=function(n){{
+        var sym=document.getElementById('ov-sel'+n).value;
+        var d=cryptoPrices[sym];
+        if(!d)return;
+        document.getElementById('ov-coin'+n+'-p').textContent=fmt(d.price,d.price<1?4:2);
+        document.getElementById('ov-coin'+n+'-c').innerHTML=badge(d.chg);
+      }};
+      updateCoinCard(1);updateCoinCard(2);updateCoinCard(3);
 
       // Gainers & Losers
       var sorted=[...coins_data].sort(function(a,b){{return b.chg-a.chg;}});
