@@ -15,7 +15,7 @@ on:
       articles_count:
         description: "Articles per run"
         required: false
-        default: "10"
+        default: "5"
       profiles_count:
         description: "Net worth profiles per run"
         required: false
@@ -48,7 +48,7 @@ jobs:
           UNSPLASH_KEY:     ${{ secrets.UNSPLASH_KEY }}
           SITE_URL:         ${{ secrets.SITE_URL }}
           SITE_NAME:        ${{ secrets.SITE_NAME }}
-          ARTICLES_PER_RUN: ${{ github.event.inputs.articles_count || '10' }}
+          ARTICLES_PER_RUN: ${{ github.event.inputs.articles_count || secrets.ARTICLES_PER_RUN || '5' }}
         run: python generate_articles.py
 
       - name: Generate net worth profiles
