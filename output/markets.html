@@ -270,58 +270,47 @@
     event.target.classList.add('active');
   };
 
-  /* ── CRYPTO — Binance API (works everywhere including Pakistan) ── */
+  /* ── CRYPTO — CryptoCompare API (CORS friendly, works everywhere) ── */
   var COINS = [
-    {sym:'BTCUSDT',name:'Bitcoin',short:'BTC'},
-    {sym:'ETHUSDT',name:'Ethereum',short:'ETH'},
-    {sym:'BNBUSDT',name:'BNB',short:'BNB'},
-    {sym:'SOLUSDT',name:'Solana',short:'SOL'},
-    {sym:'XRPUSDT',name:'XRP',short:'XRP'},
-    {sym:'ADAUSDT',name:'Cardano',short:'ADA'},
-    {sym:'DOGEUSDT',name:'Dogecoin',short:'DOGE'},
-    {sym:'AVAXUSDT',name:'Avalanche',short:'AVAX'},
-    {sym:'DOTUSDT',name:'Polkadot',short:'DOT'},
-    {sym:'MATICUSDT',name:'Polygon',short:'MATIC'},
-    {sym:'LINKUSDT',name:'Chainlink',short:'LINK'},
-    {sym:'UNIUSDT',name:'Uniswap',short:'UNI'},
-    {sym:'LTCUSDT',name:'Litecoin',short:'LTC'},
-    {sym:'ATOMUSDT',name:'Cosmos',short:'ATOM'},
-    {sym:'ETCUSDT',name:'Ethereum Classic',short:'ETC'},
-    {sym:'XLMUSDT',name:'Stellar',short:'XLM'},
-    {sym:'TRXUSDT',name:'Tron',short:'TRX'},
-    {sym:'NEARUSDT',name:'NEAR Protocol',short:'NEAR'},
-    {sym:'ALGOUSDT',name:'Algorand',short:'ALGO'},
-    {sym:'FTMUSDT',name:'Fantom',short:'FTM'},
+    {sym:'BTC',name:'Bitcoin'},{sym:'ETH',name:'Ethereum'},
+    {sym:'BNB',name:'BNB'},{sym:'SOL',name:'Solana'},
+    {sym:'XRP',name:'XRP'},{sym:'ADA',name:'Cardano'},
+    {sym:'DOGE',name:'Dogecoin'},{sym:'AVAX',name:'Avalanche'},
+    {sym:'DOT',name:'Polkadot'},{sym:'MATIC',name:'Polygon'},
+    {sym:'LINK',name:'Chainlink'},{sym:'UNI',name:'Uniswap'},
+    {sym:'LTC',name:'Litecoin'},{sym:'ATOM',name:'Cosmos'},
+    {sym:'ETC',name:'Ethereum Classic'},{sym:'XLM',name:'Stellar'},
+    {sym:'TRX',name:'TRON'},{sym:'NEAR',name:'NEAR Protocol'},
+    {sym:'ALGO',name:'Algorand'},{sym:'FTM',name:'Fantom'},
   ];
   var cryptoPrices = {};
 
   async function fetchCrypto(){
     try{
-      var syms=COINS.map(function(c){return'"'+c.sym+'"';}).join(',');
-      var r=await fetch('https://api.binance.com/api/v3/ticker/24hr?symbols=['+encodeURIComponent('['+syms+']').replace('%5B','[').replace('%5D',']')+']');
-      // Simpler: fetch all tickers and filter
-      var r2=await fetch('https://api.binance.com/api/v3/ticker/24hr');
-      var all=await r2.json();
-      var symMap={};
-      all.forEach(function(t){symMap[t.symbol]=t;});
+      var syms=COINS.map(function(c){return c.sym;}).join(',');
+      var r=await fetch('https://min-api.cryptocompare.com/data/pricemultifull?fsyms='+syms+'&tsyms=USD');
+      var res=await r.json();
+      var raw=res.RAW;
+      if(!raw)throw new Error('no data');
 
       var tbody='';
       var coins_data=[];
       COINS.forEach(function(c,i){
-        var t=symMap[c.sym];
-        if(!t)return;
-        var price=parseFloat(t.lastPrice)||0;
-        var chg=parseFloat(t.priceChangePercent)||0;
-        var vol=parseFloat(t.quoteVolume)||0;
-        cryptoPrices[c.short]={price:price,chg:chg};
-        coins_data.push({name:c.name,short:c.short,price:price,chg:chg,vol:vol});
+        var d=raw[c.sym]&&raw[c.sym].USD;
+        if(!d)return;
+        var price=d.PRICE||0;
+        var chg=d.CHANGEPCT24HOUR||0;
+        var vol=d.TOTALVOLUME24HTO||0;
+        var mcap=d.MKTCAP||0;
+        cryptoPrices[c.sym]={price:price,chg:chg};
+        coins_data.push({name:c.name,short:c.sym,price:price,chg:chg,vol:vol,mcap:mcap});
         tbody+='<tr>'
           +'<td class="mkp-rank">'+(i+1)+'</td>'
-          +'<td class="mkp-name"><strong>'+c.name+'</strong> <span class="mkp-sym">'+c.short+'</span></td>'
+          +'<td class="mkp-name"><strong>'+c.name+'</strong> <span class="mkp-sym">'+c.sym+'</span></td>'
           +'<td class="mkp-price">'+fmt(price,price<1?4:2)+'</td>'
           +'<td>'+badge(chg)+'</td>'
           +'<td>—</td>'
-          +'<td class="mkp-mcap">—</td>'
+          +'<td class="mkp-mcap">'+fmt(mcap)+'</td>'
           +'<td class="mkp-vol">'+fmt(vol)+'</td>'
           +'</tr>';
       });
@@ -351,29 +340,24 @@
       });
       set('trending-list',tHtml);
 
+      // Global stats from BTC data
+      var btcD=raw['BTC']&&raw['BTC'].USD;
+      if(btcD){
+        var totalMcap=coins_data.reduce(function(s,c){return s+(c.mcap||0);},0);
+        set('ov-mcap',fmt(totalMcap*1.3));
+        set('idx-total-mcap',fmt(totalMcap*1.3));
+        var btcMcap=btcD.MKTCAP||0;
+        set('idx-btc-dom',(btcMcap/(totalMcap*1.3)*100).toFixed(1)+'%');
+        set('idx-volume',fmt(coins_data.reduce(function(s,c){return s+(c.vol||0);},0)));
+        setText('idx-active','20,000+');
+      }
+
     }catch(e){set('crypto-tbody','<tr><td colspan="7" style="text-align:center;padding:20px;color:#999">Data loading... please refresh</td></tr>');}
   }
 
-  /* ── GLOBAL MARKET DATA — Binance BTC dominance estimate ── */
+  /* ── GLOBAL — merged into fetchCrypto above ── */
   async function fetchGlobal(){
-    try{
-      // Get BTC 24h stats for market cap estimate
-      var r=await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT');
-      var btc=await r.json();
-      var btcPrice=parseFloat(btc.lastPrice)||0;
-      // Approximate market caps
-      var btcMcap=btcPrice*19800000; // ~19.8M BTC supply
-      set('idx-total-mcap',fmt(btcMcap*2.2)); // BTC ~45% dominance
-      set('ov-mcap',fmt(btcMcap*2.2));
-      set('idx-btc-dom','~'+(100/2.2).toFixed(0)+'%');
-      setText('idx-active','20,000+');
-      // Volume from all pairs
-      var r2=await fetch('https://api.binance.com/api/v3/ticker/24hr');
-      var all=await r2.json();
-      var totalVol=all.filter(function(t){return t.symbol.endsWith('USDT');})
-                      .reduce(function(s,t){return s+parseFloat(t.quoteVolume||0);},0);
-      set('idx-volume',fmt(totalVol));
-    }catch(e){}
+    // Data handled in fetchCrypto via CryptoCompare
   }
 
   /* ── FOREX ── */
