@@ -710,3 +710,14 @@ a { color: inherit; text-decoration: none; }
 }
 .mkp-coin-select:hover{background:rgba(255,255,255,0.15);}
 .mkp-coin-select option{background:#1a1a2e;color:#fff;}
+
+/* ===== INDICES FEATURED CARD ===== */
+.mkp-fg-featured{display:grid;grid-template-columns:1fr 1fr;gap:24px;background:#f9f9f9;border:1px solid #e8e8e8;border-radius:12px;padding:28px;margin-top:8px}
+.mkp-fg-featured-title{font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#666;margin-bottom:12px}
+.mkp-fg-history{display:flex;gap:20px;margin-top:12px;font-size:12px;color:#999}
+.mkp-fg-history strong{color:#333;font-weight:700}
+.mkp-fg-featured-right{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;align-content:start}
+.mkp-fg-mini-card{background:#fff;border:1px solid #e8e8e8;border-radius:8px;padding:14px 12px}
+.mkp-fg-mini-label{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:#999;margin-bottom:6px}
+.mkp-fg-mini-val{font-size:18px;font-weight:800;font-family:'Playfair Display',serif;color:#0d0d0d}
+@media(max-width:900px){.mkp-fg-featured{grid-template-columns:1fr}.mkp-fg-featured-right{grid-template-columns:1fr 1fr}}
