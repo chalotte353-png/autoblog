@@ -818,10 +818,11 @@ def build_markets_ticker():
       }
     }catch(e){}
     try{
-      var r=await fetch('https://min-api.cryptocompare.com/data/price?fsym=XAU&tsyms=USD');
+      // metals.live — free gold API, CORS friendly
+      var r=await fetch('https://api.metals.live/v1/spot/gold');
       var g=await r.json();
-      if(g.USD){
-        var goldHtml='$'+g.USD.toLocaleString('en-US',{maximumFractionDigits:2});
+      if(g&&g[0]&&g[0].price){
+        var goldHtml='$'+parseFloat(g[0].price).toLocaleString('en-US',{maximumFractionDigits:2});
         var s=document.getElementById('tk-gold');if(s){s.querySelector('span').textContent=goldHtml;}
         var s2=document.getElementById('tk-gold2');if(s2)s2.textContent=goldHtml;
         set('ov-gold-p',goldHtml);set('ov-gold-p2',goldHtml);
@@ -875,15 +876,28 @@ def build_markets_page():
         <div class="mkp-ov-price" id="ov-eth-p">—</div>
         <div class="mkp-ov-chg" id="ov-eth-c">—</div>
       </div>
+      <div class="mkp-ov-card mkp-ov-interactive">
+        <select id="ov-coin-sel" onchange="updatePickedCoin()" class="mkp-coin-select">
+          <option value="SOL">Solana (SOL)</option>
+          <option value="BNB">BNB</option>
+          <option value="XRP">XRP</option>
+          <option value="ADA">Cardano</option>
+          <option value="DOGE">Dogecoin</option>
+          <option value="AVAX">Avalanche</option>
+          <option value="DOT">Polkadot</option>
+          <option value="MATIC">Polygon</option>
+          <option value="LINK">Chainlink</option>
+          <option value="LTC">Litecoin</option>
+          <option value="TRX">TRON</option>
+          <option value="NEAR">NEAR</option>
+        </select>
+        <div class="mkp-ov-price" id="ov-picked-p">—</div>
+        <div class="mkp-ov-chg" id="ov-picked-c">—</div>
+      </div>
       <div class="mkp-ov-card">
         <div class="mkp-ov-label">BTC Dominance</div>
         <div class="mkp-ov-price" id="ov-btc-dom2">—</div>
         <div class="mkp-ov-chg mkp-ov-sub">Of total market</div>
-      </div>
-      <div class="mkp-ov-card">
-        <div class="mkp-ov-label">Market Cap</div>
-        <div class="mkp-ov-price" id="ov-mcap">—</div>
-        <div class="mkp-ov-chg" id="ov-mcap-c">—</div>
       </div>
       <div class="mkp-ov-card mkp-ov-fear" id="ov-fg-card">
         <div class="mkp-ov-label">Fear &amp; Greed</div>
@@ -891,9 +905,9 @@ def build_markets_page():
         <div class="mkp-ov-chg" id="ov-fg-label">—</div>
       </div>
       <div class="mkp-ov-card">
-        <div class="mkp-ov-label">24h Volume</div>
-        <div class="mkp-ov-price" id="ov-vol">—</div>
-        <div class="mkp-ov-chg mkp-ov-sub">Total crypto</div>
+        <div class="mkp-ov-label">Market Cap</div>
+        <div class="mkp-ov-price" id="ov-mcap">—</div>
+        <div class="mkp-ov-chg" id="ov-mcap-c">—</div>
       </div>
     </div>
 
@@ -1190,14 +1204,15 @@ def build_markets_page():
       }});
       set('crypto-tbody',tbody||'<tr><td colspan="7" style="text-align:center;padding:20px;color:#999">Loading...</td></tr>');
 
-      // Update interactive coin cards
-      window.updateCoinCard=function(n){{
-        var sym=document.getElementById('ov-sel'+n).value;
+      // Coin switcher card
+      window.updatePickedCoin=function(){{
+        var sym=document.getElementById('ov-coin-sel').value;
         var d=cryptoPrices[sym];
         if(!d)return;
-        document.getElementById('ov-coin'+n+'-p').textContent=fmt(d.price,d.price<1?4:2);
-        document.getElementById('ov-coin'+n+'-c').innerHTML=badge(d.chg);
+        document.getElementById('ov-picked-p').textContent=fmt(d.price,d.price<1?4:2);
+        document.getElementById('ov-picked-c').innerHTML=badge(d.chg);
       }};
+      updatePickedCoin();
       // Update crypto overview cards
       var btc=cryptoPrices['BTC'],eth=cryptoPrices['ETH'];
       if(btc){{set('ov-btc-p',fmt(btc.price));set('ov-btc-c',badge(btc.chg));}}
