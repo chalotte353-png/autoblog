@@ -791,7 +791,7 @@ def build_markets_ticker():
   }
   async function tick(){
     try{
-      var r=await fetch('https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC,ETH,SOL,XRP,XAU&tsyms=USD');
+      var r=await fetch('https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC,ETH,SOL,XRP&tsyms=USD');
       var d=(await r.json()).RAW;
       if(!d)throw new Error();
       var map={BTC:'tk-btc',ETH:'tk-eth',SOL:'tk-sol',XRP:'tk-xrp'};
@@ -1177,7 +1177,7 @@ def build_markets_page():
   async function fetchCrypto(){{
     try{{
       var syms=COINS.map(function(c){{return c.sym;}}).join(',');
-      var r=await fetch('https://min-api.cryptocompare.com/data/pricemultifull?fsyms='+syms+',XAU&tsyms=USD');
+      var r=await fetch('https://min-api.cryptocompare.com/data/pricemultifull?fsyms='+syms+'&tsyms=USD');
       var res=await r.json();
       var raw=res.RAW;
       if(!raw)throw new Error('no data');
