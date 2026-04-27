@@ -49,6 +49,7 @@ jobs:
           SITE_URL:         ${{ secrets.SITE_URL }}
           SITE_NAME:        ${{ secrets.SITE_NAME }}
           ARTICLES_PER_RUN: ${{ github.event.inputs.articles_count || secrets.ARTICLES_PER_RUN || '15' }}
+          MANUAL_ROTATION:  ${{ github.event_name == 'workflow_dispatch' && 'true' || 'false' }}
         run: python generate_articles.py
 
       - name: Generate net worth profiles
