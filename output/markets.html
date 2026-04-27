@@ -392,6 +392,19 @@
         var goldHtml='$'+gp.toLocaleString('en-US',{maximumFractionDigits:2});
         set('ov-gold-p',goldHtml);set('ov-gold-p2',goldHtml);set('ov-gold-p3',goldHtml);
       }
+    }catch(e){}
+    // Gold via ExchangeRate API fallback
+    try{
+      var rg=await fetch('https://open.er-api.com/v6/latest/XAU');
+      var fg=await rg.json();
+      if(fg.rates&&fg.rates.USD){
+        var goldHtml='$'+fg.rates.USD.toLocaleString('en-US',{maximumFractionDigits:2});
+        set('ov-gold-p',goldHtml);set('ov-gold-p2',goldHtml);set('ov-gold-p3',goldHtml);
+        // Also update ticker
+        var tg=document.getElementById('tk-gold');if(tg){var sp=tg.querySelector('span');if(sp)sp.textContent=goldHtml;}
+        var tg2=document.getElementById('tk-gold2');if(tg2)tg2.textContent=goldHtml;
+      }
+    }catch(e){}
 
       var tbody='';
       var coins_data=[];
