@@ -767,12 +767,18 @@ def build_markets_ticker():
   function set(id,t,c){var e=document.getElementById(id);if(!e)return;var s=e.querySelector('span');if(s){s.innerHTML=t+(c!==undefined?ch(c):'');}}
   async function tick(){
     try{
-      var r=await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,ripple&vs_currencies=usd&include_24hr_change=true');
-      var d=await r.json();
-      if(d.bitcoin)set('tk-btc',pc(d.bitcoin.usd),d.bitcoin.usd_24h_change);
-      if(d.ethereum)set('tk-eth',pc(d.ethereum.usd),d.ethereum.usd_24h_change);
-      if(d.solana)set('tk-sol',pc(d.solana.usd),d.solana.usd_24h_change);
-      if(d.ripple)set('tk-xrp','$'+d.ripple.usd.toFixed(3),d.ripple.usd_24h_change);
+      var r=await fetch('https://api.coincap.io/v2/assets?ids=bitcoin,ethereum,solana,xrp');
+      var d=(await r.json()).data;
+      if(!d)throw new Error();
+      d.forEach(function(c){
+        var price=parseFloat(c.priceUsd);
+        var chg=parseFloat(c.changePercent24Hr);
+        var u=chg>=0;
+        var html='$'+price.toLocaleString('en-US',{maximumFractionDigits:price<1?4:2})+'<em class="'+(u?'up':'dn')+'">'+(u?'▲':'▼')+Math.abs(chg).toFixed(2)+'%</em>';
+        var map={bitcoin:'tk-btc',ethereum:'tk-eth',solana:'tk-sol',xrp:'tk-xrp'};
+        var id=map[c.id];
+        if(id){var s=document.getElementById(id);if(s){var sp=s.querySelector('span');if(sp)sp.innerHTML=html;}}
+      });
     }catch(e){}
     try{
       var r=await fetch('https://open.er-api.com/v6/latest/USD');
@@ -1023,66 +1029,80 @@ def build_markets_page():
   /* ── CRYPTO ── */
   async function fetchCrypto(){{
     try{{
-      var r=await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1&sparkline=false&price_change_percentage=24h,7d');
-      var coins=await r.json();
-      cryptoData=coins;
+      // CoinCap API — free, no rate limit, CORS friendly
+      var r=await fetch('https://api.coincap.io/v2/assets?limit=50');
+      var res=await r.json();
+      var coins=res.data;
+      if(!coins||!coins.length)throw new Error('no data');
       var tbody='';
       coins.forEach(function(c,i){{
-        var p7=c.price_change_percentage_7d_in_currency;
+        var price=parseFloat(c.priceUsd)||0;
+        var chg24=parseFloat(c.changePercent24Hr)||0;
+        var mcap=parseFloat(c.marketCapUsd)||0;
+        var vol=parseFloat(c.volumeUsd24Hr)||0;
         tbody+='<tr>'
-          +'<td class="mkp-rank">'+c.market_cap_rank+'</td>'
-          +'<td class="mkp-name"><img src="'+c.image+'" class="mkp-coin-img" onerror="this.style.display=\'none\'"><strong>'+c.name+'</strong> <span class="mkp-sym">'+c.symbol.toUpperCase()+'</span></td>'
-          +'<td class="mkp-price">'+fmt(c.current_price,c.current_price<1?4:2)+'</td>'
-          +'<td>'+badge(c.price_change_percentage_24h)+'</td>'
-          +'<td>'+(p7!==undefined?badge(p7):'—')+'</td>'
-          +'<td class="mkp-mcap">'+fmt(c.market_cap)+'</td>'
-          +'<td class="mkp-vol">'+fmt(c.total_volume)+'</td>'
+          +'<td class="mkp-rank">'+(i+1)+'</td>'
+          +'<td class="mkp-name"><strong>'+c.name+'</strong> <span class="mkp-sym">'+c.symbol+'</span></td>'
+          +'<td class="mkp-price">'+fmt(price,price<1?4:2)+'</td>'
+          +'<td>'+badge(chg24)+'</td>'
+          +'<td>—</td>'
+          +'<td class="mkp-mcap">'+fmt(mcap)+'</td>'
+          +'<td class="mkp-vol">'+fmt(vol)+'</td>'
           +'</tr>';
       }});
       set('crypto-tbody',tbody);
-
       // Overview cards
-      var btc=coins[0],eth=coins[1];
-      if(btc){{set('ov-btc-p',fmt(btc.current_price));set('ov-btc-c',badge(btc.price_change_percentage_24h));}}
-      if(eth){{set('ov-eth-p',fmt(eth.current_price));set('ov-eth-c',badge(eth.price_change_percentage_24h));}}
-
+      var btc=coins[0],eth=coins.find(function(c){{return c.symbol==='ETH';}});
+      if(btc){{set('ov-btc-p',fmt(parseFloat(btc.priceUsd)));set('ov-btc-c',badge(parseFloat(btc.changePercent24Hr)));}}
+      if(eth){{set('ov-eth-p',fmt(parseFloat(eth.priceUsd)));set('ov-eth-c',badge(parseFloat(eth.changePercent24Hr)));}}
       // Gainers & Losers
-      var sorted=[...coins].sort(function(a,b){{return b.price_change_percentage_24h-a.price_change_percentage_24h;}});
+      var sorted=[...coins].sort(function(a,b){{return parseFloat(b.changePercent24Hr)-parseFloat(a.changePercent24Hr);}});
       var gHtml='',lHtml='';
       sorted.slice(0,5).forEach(function(c){{
-        gHtml+='<div class="mkp-gl-item"><span>'+c.symbol.toUpperCase()+' <small>'+c.name+'</small></span>'+badge(c.price_change_percentage_24h)+'</div>';
+        gHtml+='<div class="mkp-gl-item"><span>'+c.symbol+' <small>'+c.name+'</small></span>'+badge(parseFloat(c.changePercent24Hr))+'</div>';
       }});
       sorted.slice(-5).reverse().forEach(function(c){{
-        lHtml+='<div class="mkp-gl-item"><span>'+c.symbol.toUpperCase()+' <small>'+c.name+'</small></span>'+badge(c.price_change_percentage_24h)+'</div>';
+        lHtml+='<div class="mkp-gl-item"><span>'+c.symbol+' <small>'+c.name+'</small></span>'+badge(parseFloat(c.changePercent24Hr))+'</div>';
       }});
       set('gainers-list',gHtml);set('losers-list',lHtml);
-    }}catch(e){{set('crypto-tbody','<tr><td colspan="7">Unable to load data. Try refreshing.</td></tr>');}}
+    }}catch(e){{set('crypto-tbody','<tr><td colspan="7" style="text-align:center;padding:20px;color:#999">Data loading... please wait a moment</td></tr>');}}
   }}
 
   /* ── GLOBAL MARKET DATA ── */
   async function fetchGlobal(){{
     try{{
-      var r=await fetch('https://api.coingecko.com/api/v3/global');
-      var g=(await r.json()).data;
-      globalData=g;
-      var mcap=g.total_market_cap.usd, vol=g.total_volume.usd;
-      set('ov-mcap',fmt(mcap));set('ov-mcap-c',badge(g.market_cap_change_percentage_24h_usd));
-      set('idx-total-mcap',fmt(mcap));set('idx-total-mcap-c',badge(g.market_cap_change_percentage_24h_usd));
-      set('idx-volume',fmt(vol));
-      setText('idx-active',g.active_cryptocurrencies.toLocaleString());
-      var dom=g.market_cap_percentage.btc;
-      set('idx-btc-dom',dom.toFixed(1)+'%');
+      // CoinCap global stats — free, CORS friendly
+      var r=await fetch('https://api.coincap.io/v2/assets?limit=1');
+      var res=await r.json();
+      // Get total mcap from top assets
+      var r2=await fetch('https://api.coincap.io/v2/assets?limit=100');
+      var res2=await r2.json();
+      if(res2.data){{
+        var totalMcap=res2.data.reduce(function(s,c){{return s+parseFloat(c.marketCapUsd||0);}},0);
+        var totalVol=res2.data.reduce(function(s,c){{return s+parseFloat(c.volumeUsd24Hr||0);}},0);
+        var btcMcap=parseFloat(res2.data[0].marketCapUsd||0);
+        var btcDom=btcMcap/totalMcap*100;
+        set('ov-mcap',fmt(totalMcap));
+        set('idx-total-mcap',fmt(totalMcap));
+        set('idx-volume',fmt(totalVol));
+        set('idx-btc-dom',btcDom.toFixed(1)+'%');
+        setText('idx-active','20,000+');
+      }}
     }}catch(e){{}}
 
-    /* Trending */
+    /* Trending — use top 24h gainers from CoinCap */
     try{{
-      var r=await fetch('https://api.coingecko.com/api/v3/search/trending');
-      var t=await r.json();
-      var html='';
-      t.coins.slice(0,7).forEach(function(c,i){{
-        html+='<div class="mkp-trend-item"><span class="mkp-trend-rank">'+(i+1)+'</span><span>'+c.item.name+' <small>'+c.item.symbol+'</small></span><span class="mkp-trend-score">🔥</span></div>';
-      }});
-      set('trending-list',html);
+      var r=await fetch('https://api.coincap.io/v2/assets?limit=20');
+      var res=await r.json();
+      if(res.data){{
+        var trending=[...res.data].sort(function(a,b){{return Math.abs(parseFloat(b.changePercent24Hr))-Math.abs(parseFloat(a.changePercent24Hr));}}).slice(0,7);
+        var html='';
+        trending.forEach(function(c,i){{
+          var chg=parseFloat(c.changePercent24Hr);
+          html+='<div class="mkp-trend-item"><span class="mkp-trend-rank">'+(i+1)+'</span><span>'+c.name+' <small>'+c.symbol+'</small></span><span class="mkp-trend-score">'+(chg>=0?'🔥':'❄️')+'</span></div>';
+        }});
+        set('trending-list',html);
+      }}
     }}catch(e){{}}
   }}
 
