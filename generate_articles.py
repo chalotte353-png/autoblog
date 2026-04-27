@@ -441,6 +441,7 @@ def nav_html(prefix=""):
   <a href="{prefix}category-health.html">Health</a>
   <a href="{prefix}category-politics.html">Politics</a>
   <a href="{prefix}networth/index.html">Net Worth</a>
+  <a href="{prefix}markets.html">Markets</a>
 </div></nav>"""
 
 def foot_html(prefix=""):
@@ -694,6 +695,141 @@ def build_post(data, author, all_posts, now):
 {foot_html("../")}
 </body></html>"""
 
+# ── BUILD MARKETS TICKER (homepage VIP section) ───────────────────────
+def build_markets_ticker():
+    return """<div class="markets-strip">
+  <div class="markets-strip-inner container">
+    <a href="markets.html" class="markets-strip-label">📈 LIVE MARKETS</a>
+    <div class="markets-ticker" id="mkTicker">
+      <span class="mk-item" id="mk-btc">BTC <span class="mk-val">—</span></span>
+      <span class="mk-item" id="mk-eth">ETH <span class="mk-val">—</span></span>
+      <span class="mk-item" id="mk-bnb">BNB <span class="mk-val">—</span></span>
+      <span class="mk-sep">|</span>
+      <span class="mk-item" id="mk-eurusd">EUR/USD <span class="mk-val">—</span></span>
+      <span class="mk-item" id="mk-gbpusd">GBP/USD <span class="mk-val">—</span></span>
+      <span class="mk-item" id="mk-usdjpy">USD/JPY <span class="mk-val">—</span></span>
+      <span class="mk-sep">|</span>
+      <span class="mk-item mk-link"><a href="markets.html">Full Markets &rarr;</a></span>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  async function fetchMarkets(){
+    try {
+      const cr = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin&vs_currencies=usd&include_24hr_change=true');
+      const cd = await cr.json();
+      function fmt(v){ return '$'+Number(v).toLocaleString('en-US',{maximumFractionDigits:2}); }
+      function chg(c){ const up=c>=0; return '<span class="mk-chg '+(up?'up':'dn')+'">'+(up?'▲':'▼')+Math.abs(c).toFixed(2)+'%</span>'; }
+      document.querySelector('#mk-btc .mk-val').innerHTML = fmt(cd.bitcoin.usd)+chg(cd.bitcoin.usd_24h_change);
+      document.querySelector('#mk-eth .mk-val').innerHTML = fmt(cd.ethereum.usd)+chg(cd.ethereum.usd_24h_change);
+      document.querySelector('#mk-bnb .mk-val').innerHTML = fmt(cd.binancecoin.usd)+chg(cd.binancecoin.usd_24h_change);
+    } catch(e){}
+    try {
+      const fr = await fetch('https://open.er-api.com/v6/latest/USD');
+      const fd = await fr.json();
+      if(fd.rates){
+        document.querySelector('#mk-eurusd .mk-val').textContent = (1/fd.rates.EUR).toFixed(4);
+        document.querySelector('#mk-gbpusd .mk-val').textContent = (1/fd.rates.GBP).toFixed(4);
+        document.querySelector('#mk-usdjpy .mk-val').textContent = fd.rates.JPY.toFixed(2);
+      }
+    } catch(e){}
+  }
+  fetchMarkets();
+  setInterval(fetchMarkets, 60000);
+})();
+</script>"""
+
+# ── BUILD MARKETS PAGE ────────────────────────────────────────────────
+def build_markets_page():
+    html = f"""{head_html(
+        "Live Markets — Crypto, Forex & Stock Prices | " + SITE_NAME,
+        "Real-time cryptocurrency prices, forex exchange rates. Bitcoin, Ethereum, EUR/USD, PKR and more.",
+        SITE_URL + "/markets.html", "", "", "website")}
+{nav_html()}
+<div class="markets-page-wrap">
+  <div class="container">
+    <div class="markets-page-hdr">
+      <h1>📈 Live Markets</h1>
+      <p>Real-time prices updated every 30 seconds &mdash; <span id="mk-updated">Loading...</span></p>
+    </div>
+    <div class="mk-section">
+      <div class="mk-section-title">🪙 Cryptocurrency</div>
+      <div class="mk-cards">
+        <div class="mk-card"><div class="mk-card-name">Bitcoin (BTC)</div><div class="mk-card-price" id="cp-btc">—</div><div class="mk-card-chg" id="cc-btc">—</div></div>
+        <div class="mk-card"><div class="mk-card-name">Ethereum (ETH)</div><div class="mk-card-price" id="cp-eth">—</div><div class="mk-card-chg" id="cc-eth">—</div></div>
+        <div class="mk-card"><div class="mk-card-name">BNB</div><div class="mk-card-price" id="cp-bnb">—</div><div class="mk-card-chg" id="cc-bnb">—</div></div>
+        <div class="mk-card"><div class="mk-card-name">Solana (SOL)</div><div class="mk-card-price" id="cp-sol">—</div><div class="mk-card-chg" id="cc-sol">—</div></div>
+        <div class="mk-card"><div class="mk-card-name">XRP</div><div class="mk-card-price" id="cp-xrp">—</div><div class="mk-card-chg" id="cc-xrp">—</div></div>
+        <div class="mk-card"><div class="mk-card-name">Cardano (ADA)</div><div class="mk-card-price" id="cp-ada">—</div><div class="mk-card-chg" id="cc-ada">—</div></div>
+        <div class="mk-card"><div class="mk-card-name">Dogecoin (DOGE)</div><div class="mk-card-price" id="cp-doge">—</div><div class="mk-card-chg" id="cc-doge">—</div></div>
+        <div class="mk-card"><div class="mk-card-name">Avalanche (AVAX)</div><div class="mk-card-price" id="cp-avax">—</div><div class="mk-card-chg" id="cc-avax">—</div></div>
+      </div>
+    </div>
+    <div class="mk-section">
+      <div class="mk-section-title">💱 Forex Rates <span class="mk-note">(vs USD)</span></div>
+      <div class="mk-table-wrap">
+        <table class="mk-table">
+          <thead><tr><th>Pair</th><th>Rate</th><th>Currency</th></tr></thead>
+          <tbody>
+            <tr><td>EUR/USD</td><td id="fx-eur">—</td><td>Euro</td></tr>
+            <tr><td>GBP/USD</td><td id="fx-gbp">—</td><td>British Pound</td></tr>
+            <tr><td>USD/JPY</td><td id="fx-jpy">—</td><td>Japanese Yen</td></tr>
+            <tr><td>USD/CAD</td><td id="fx-cad">—</td><td>Canadian Dollar</td></tr>
+            <tr><td>AUD/USD</td><td id="fx-aud">—</td><td>Australian Dollar</td></tr>
+            <tr><td>USD/CHF</td><td id="fx-chf">—</td><td>Swiss Franc</td></tr>
+            <tr><td>USD/INR</td><td id="fx-inr">—</td><td>Indian Rupee</td></tr>
+            <tr><td>USD/PKR</td><td id="fx-pkr">—</td><td>Pakistani Rupee</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <p class="mk-disclaimer">Data is provided for informational purposes only and may be delayed. Not financial advice.</p>
+  </div>
+</div>
+<script>
+(function(){{
+  function fmt(v,dec){{ dec=dec||2; return '$'+Number(v).toLocaleString('en-US',{{minimumFractionDigits:dec,maximumFractionDigits:dec}}); }}
+  function fmtFx(v,dec){{ return Number(v).toFixed(dec||4); }}
+  function badge(c){{ var up=c>=0; return '<span class="mk-badge '+(up?'up':'dn')+'">'+(up?'▲':'▼')+Math.abs(c).toFixed(2)+'%</span>'; }}
+  async function fetchAll(){{
+    try{{
+      var r=await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin,solana,ripple,cardano,dogecoin,avalanche-2&vs_currencies=usd&include_24hr_change=true');
+      var d=await r.json();
+      var map={{'bitcoin':'btc','ethereum':'eth','binancecoin':'bnb','solana':'sol','ripple':'xrp','cardano':'ada','dogecoin':'doge','avalanche-2':'avax'}};
+      for(var id in map){{
+        if(!d[id]) continue;
+        var k=map[id];
+        var pe=document.getElementById('cp-'+k), ce=document.getElementById('cc-'+k);
+        if(pe) pe.textContent=fmt(d[id].usd, d[id].usd<1?4:2);
+        if(ce) ce.innerHTML=badge(d[id].usd_24h_change);
+      }}
+    }}catch(e){{}}
+    try{{
+      var r2=await fetch('https://open.er-api.com/v6/latest/USD');
+      var fd=await r2.json();
+      if(fd.rates){{
+        document.getElementById('fx-eur').textContent=fmtFx(1/fd.rates.EUR);
+        document.getElementById('fx-gbp').textContent=fmtFx(1/fd.rates.GBP);
+        document.getElementById('fx-jpy').textContent=fmtFx(fd.rates.JPY,2)+' JPY';
+        document.getElementById('fx-cad').textContent=fmtFx(fd.rates.CAD)+' CAD';
+        document.getElementById('fx-aud').textContent=fmtFx(1/fd.rates.AUD);
+        document.getElementById('fx-chf').textContent=fmtFx(fd.rates.CHF)+' CHF';
+        document.getElementById('fx-inr').textContent=fmtFx(fd.rates.INR,2)+' INR';
+        document.getElementById('fx-pkr').textContent=fmtFx(fd.rates.PKR,2)+' PKR';
+      }}
+    }}catch(e){{}}
+    var el=document.getElementById('mk-updated');
+    if(el) el.textContent='Last updated: '+new Date().toLocaleTimeString();
+  }}
+  fetchAll();
+  setInterval(fetchAll,30000);
+}})();
+</script>
+{foot_html()}
+</body></html>"""
+    (OUTPUT_DIR / "markets.html").write_text(html)
+
 # ── BUILD HOMEPAGE ────────────────────────────────────────────────────
 def build_homepage(posts):
     sp = sorted(posts, key=lambda x: x["date_iso"], reverse=True)
@@ -803,6 +939,7 @@ def build_homepage(posts):
 <script type="application/ld+json">{org_schema}</script>
 {nav_html()}
 {hero_html}
+{build_markets_ticker()}
 <div class="container"><div class="main-wrap">
   <main>{cat_html}</main>
   <aside class="sidebar">
@@ -1027,6 +1164,7 @@ def main():
     print(f"Rebuilt {rebuilt} existing posts")
 
     build_homepage(posts_index)
+    build_markets_page()
     build_categories(posts_index)
     build_authors(posts_index)
     build_sitemap(posts_index)
