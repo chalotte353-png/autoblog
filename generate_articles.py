@@ -791,7 +791,7 @@ def build_markets_ticker():
   }
   async function tick(){
     try{
-      var r=await fetch('https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC,ETH,SOL,XRP&tsyms=USD');
+      var r=await fetch('https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC,ETH,SOL,XRP,XAU&tsyms=USD');
       var d=(await r.json()).RAW;
       if(!d)throw new Error();
       var map={BTC:'tk-btc',ETH:'tk-eth',SOL:'tk-sol',XRP:'tk-xrp'};
@@ -804,25 +804,10 @@ def build_markets_ticker():
         var s=document.getElementById(map[sym]);if(s){var sp=s.querySelector('span');if(sp)sp.innerHTML=html;}
         var s2=document.getElementById(map[sym]+'2');if(s2)s2.innerHTML=html;
       }
-    }catch(e){}
-    try{
-      var r=await fetch('https://open.er-api.com/v6/latest/USD');
-      var f=await r.json();
-      if(f.rates){
-        var pairs={eurusd:(1/f.rates.EUR).toFixed(4),gbpusd:(1/f.rates.GBP).toFixed(4),usdjpy:f.rates.JPY.toFixed(2)};
-        for(var k in pairs){
-          var s=document.getElementById('tk-'+k);if(s){s.querySelector('span').textContent=pairs[k];}
-          var s2=document.getElementById('tk-'+k+'2');if(s2)s2.textContent=pairs[k];
-        }
-        if(fxRates.EUR)set('ov-eur-p',(1/f.rates.EUR).toFixed(4));
-      }
-    }catch(e){}
-    try{
-      // metals.live — free gold API, CORS friendly
-      var r=await fetch('https://api.metals.live/v1/spot/gold');
-      var g=await r.json();
-      if(g&&g[0]&&g[0].price){
-        var goldHtml='$'+parseFloat(g[0].price).toLocaleString('en-US',{maximumFractionDigits:2});
+      // Gold from same call
+      if(d.XAU&&d.XAU.USD){
+        var gp=d.XAU.USD.PRICE;
+        var goldHtml='$'+gp.toLocaleString('en-US',{maximumFractionDigits:2});
         var s=document.getElementById('tk-gold');if(s){s.querySelector('span').textContent=goldHtml;}
         var s2=document.getElementById('tk-gold2');if(s2)s2.textContent=goldHtml;
         set('ov-gold-p',goldHtml);set('ov-gold-p2',goldHtml);
@@ -1040,43 +1025,47 @@ def build_markets_page():
     <!-- INDICES TAB -->
     <div id="tab-indices" class="mkp-tab-content">
       <div class="mkp-section-hdr">
-        <h2>📈 Market Sentiment &amp; Indices</h2>
+        <h2>📊 Market Sentiment &amp; Global Indices</h2>
       </div>
-      <div class="mkp-indices-grid">
-        <div class="mkp-idx-card" id="idx-fg">
-          <div class="mkp-idx-title">Crypto Fear &amp; Greed Index</div>
-          <div class="mkp-fg-gauge">
-            <div class="mkp-fg-num" id="idx-fg-num">—</div>
-            <div class="mkp-fg-bar-wrap"><div class="mkp-fg-bar" id="idx-fg-bar"></div></div>
-            <div class="mkp-fg-labels"><span>Extreme Fear</span><span>Fear</span><span>Neutral</span><span>Greed</span><span>Extreme Greed</span></div>
-          </div>
+
+      <!-- Fear & Greed — big featured card -->
+      <div class="mkp-fg-featured">
+        <div class="mkp-fg-featured-left">
+          <div class="mkp-fg-featured-title">Crypto Fear &amp; Greed Index</div>
+          <div class="mkp-fg-num" id="idx-fg-num">—</div>
           <div class="mkp-fg-class" id="idx-fg-class">—</div>
-          <div class="mkp-idx-sub">Yesterday: <span id="idx-fg-yest">—</span> &bull; Last Week: <span id="idx-fg-week">—</span></div>
+          <div class="mkp-fg-bar-wrap" style="margin:12px 0 6px"><div class="mkp-fg-bar" id="idx-fg-bar"></div></div>
+          <div class="mkp-fg-labels"><span>Extreme Fear</span><span>Fear</span><span>Neutral</span><span>Greed</span><span>Extreme Greed</span></div>
+          <div class="mkp-fg-history">
+            <span>Yesterday: <strong id="idx-fg-yest">—</strong></span>
+            <span>Last Week: <strong id="idx-fg-week">—</strong></span>
+          </div>
         </div>
-        <div class="mkp-idx-card">
-          <div class="mkp-idx-title">Bitcoin Dominance</div>
-          <div class="mkp-idx-big" id="idx-btc-dom">—</div>
-          <div class="mkp-idx-sub">Share of total crypto market cap</div>
-        </div>
-        <div class="mkp-idx-card">
-          <div class="mkp-idx-title">Total Crypto Market Cap</div>
-          <div class="mkp-idx-big" id="idx-total-mcap">—</div>
-          <div class="mkp-idx-sub" id="idx-total-mcap-c">—</div>
-        </div>
-        <div class="mkp-idx-card">
-          <div class="mkp-idx-title">24h Trading Volume</div>
-          <div class="mkp-idx-big" id="idx-volume">—</div>
-          <div class="mkp-idx-sub">Total crypto market volume</div>
-        </div>
-        <div class="mkp-idx-card">
-          <div class="mkp-idx-title">Active Cryptocurrencies</div>
-          <div class="mkp-idx-big" id="idx-active">—</div>
-          <div class="mkp-idx-sub">Tracked by CoinGecko</div>
-        </div>
-        <div class="mkp-idx-card">
-          <div class="mkp-idx-title">US Dollar Index (DXY)</div>
-          <div class="mkp-idx-big">~<span id="idx-dxy">—</span></div>
-          <div class="mkp-idx-sub">Derived from major forex rates</div>
+        <div class="mkp-fg-featured-right">
+          <div class="mkp-fg-mini-card">
+            <div class="mkp-fg-mini-label">BTC Dominance</div>
+            <div class="mkp-fg-mini-val" id="idx-btc-dom">—</div>
+          </div>
+          <div class="mkp-fg-mini-card">
+            <div class="mkp-fg-mini-label">Market Cap</div>
+            <div class="mkp-fg-mini-val" id="idx-total-mcap">—</div>
+          </div>
+          <div class="mkp-fg-mini-card">
+            <div class="mkp-fg-mini-label">24h Volume</div>
+            <div class="mkp-fg-mini-val" id="idx-volume">—</div>
+          </div>
+          <div class="mkp-fg-mini-card">
+            <div class="mkp-fg-mini-label">Gold (XAU/USD)</div>
+            <div class="mkp-fg-mini-val" id="ov-gold-p3">—</div>
+          </div>
+          <div class="mkp-fg-mini-card">
+            <div class="mkp-fg-mini-label">Active Cryptos</div>
+            <div class="mkp-fg-mini-val" id="idx-active">20,000+</div>
+          </div>
+          <div class="mkp-fg-mini-card">
+            <div class="mkp-fg-mini-label">USD Index (DXY)</div>
+            <div class="mkp-fg-mini-val">~<span id="idx-dxy">—</span></div>
+          </div>
         </div>
       </div>
     </div>
@@ -1176,10 +1165,16 @@ def build_markets_page():
   async function fetchCrypto(){{
     try{{
       var syms=COINS.map(function(c){{return c.sym;}}).join(',');
-      var r=await fetch('https://min-api.cryptocompare.com/data/pricemultifull?fsyms='+syms+'&tsyms=USD');
+      var r=await fetch('https://min-api.cryptocompare.com/data/pricemultifull?fsyms='+syms+',XAU&tsyms=USD');
       var res=await r.json();
       var raw=res.RAW;
       if(!raw)throw new Error('no data');
+      // Gold from same call
+      if(raw.XAU&&raw.XAU.USD){{
+        var gp=raw.XAU.USD.PRICE;
+        var goldHtml='$'+gp.toLocaleString('en-US',{{maximumFractionDigits:2}});
+        set('ov-gold-p',goldHtml);set('ov-gold-p2',goldHtml);set('ov-gold-p3',goldHtml);
+      }}
 
       var tbody='';
       var coins_data=[];
