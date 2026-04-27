@@ -690,3 +690,23 @@ a { color: inherit; text-decoration: none; }
   .mkp-overview{grid-template-columns:1fr 1fr}
   .mkp-indices-grid{grid-template-columns:1fr}
 }
+
+/* ===== INTERACTIVE COIN CARDS ===== */
+.mkp-ov-interactive{cursor:pointer}
+.mkp-ov-coin-sel{margin-bottom:6px}
+.mkp-coin-select{
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.15);
+  color:#fff;
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.5px;
+  text-transform:uppercase;
+  padding:4px 8px;
+  border-radius:4px;
+  cursor:pointer;
+  width:100%;
+  outline:none;
+}
+.mkp-coin-select:hover{background:rgba(255,255,255,0.15);}
+.mkp-coin-select option{background:#1a1a2e;color:#fff;}
