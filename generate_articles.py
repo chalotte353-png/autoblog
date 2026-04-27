@@ -767,16 +767,17 @@ def build_markets_ticker():
   function set(id,t,c){var e=document.getElementById(id);if(!e)return;var s=e.querySelector('span');if(s){s.innerHTML=t+(c!==undefined?ch(c):'');}}
   async function tick(){
     try{
-      var r=await fetch('https://api.coincap.io/v2/assets?ids=bitcoin,ethereum,solana,xrp');
-      var d=(await r.json()).data;
-      if(!d)throw new Error();
-      d.forEach(function(c){
-        var price=parseFloat(c.priceUsd);
-        var chg=parseFloat(c.changePercent24Hr);
+      // Binance — works in Pakistan
+      var syms=['BTCUSDT','ETHUSDT','SOLUSDT','XRPUSDT'];
+      var r=await fetch('https://api.binance.com/api/v3/ticker/24hr?symbols=["BTCUSDT","ETHUSDT","SOLUSDT","XRPUSDT"]');
+      var d=await r.json();
+      var map={BTCUSDT:'tk-btc',ETHUSDT:'tk-eth',SOLUSDT:'tk-sol',XRPUSDT:'tk-xrp'};
+      d.forEach(function(t){
+        var price=parseFloat(t.lastPrice);
+        var chg=parseFloat(t.priceChangePercent);
         var u=chg>=0;
         var html='$'+price.toLocaleString('en-US',{maximumFractionDigits:price<1?4:2})+'<em class="'+(u?'up':'dn')+'">'+(u?'▲':'▼')+Math.abs(chg).toFixed(2)+'%</em>';
-        var map={bitcoin:'tk-btc',ethereum:'tk-eth',solana:'tk-sol',xrp:'tk-xrp'};
-        var id=map[c.id];
+        var id=map[t.symbol];
         if(id){var s=document.getElementById(id);if(s){var sp=s.querySelector('span');if(sp)sp.innerHTML=html;}}
       });
     }catch(e){}
@@ -1026,83 +1027,109 @@ def build_markets_page():
     event.target.classList.add('active');
   }};
 
-  /* ── CRYPTO ── */
+  /* ── CRYPTO — Binance API (works everywhere including Pakistan) ── */
+  var COINS = [
+    {{sym:'BTCUSDT',name:'Bitcoin',short:'BTC'}},
+    {{sym:'ETHUSDT',name:'Ethereum',short:'ETH'}},
+    {{sym:'BNBUSDT',name:'BNB',short:'BNB'}},
+    {{sym:'SOLUSDT',name:'Solana',short:'SOL'}},
+    {{sym:'XRPUSDT',name:'XRP',short:'XRP'}},
+    {{sym:'ADAUSDT',name:'Cardano',short:'ADA'}},
+    {{sym:'DOGEUSDT',name:'Dogecoin',short:'DOGE'}},
+    {{sym:'AVAXUSDT',name:'Avalanche',short:'AVAX'}},
+    {{sym:'DOTUSDT',name:'Polkadot',short:'DOT'}},
+    {{sym:'MATICUSDT',name:'Polygon',short:'MATIC'}},
+    {{sym:'LINKUSDT',name:'Chainlink',short:'LINK'}},
+    {{sym:'UNIUSDT',name:'Uniswap',short:'UNI'}},
+    {{sym:'LTCUSDT',name:'Litecoin',short:'LTC'}},
+    {{sym:'ATOMUSDT',name:'Cosmos',short:'ATOM'}},
+    {{sym:'ETCUSDT',name:'Ethereum Classic',short:'ETC'}},
+    {{sym:'XLMUSDT',name:'Stellar',short:'XLM'}},
+    {{sym:'TRXUSDT',name:'Tron',short:'TRX'}},
+    {{sym:'NEARUSDT',name:'NEAR Protocol',short:'NEAR'}},
+    {{sym:'ALGOUSDT',name:'Algorand',short:'ALGO'}},
+    {{sym:'FTMUSDT',name:'Fantom',short:'FTM'}},
+  ];
+  var cryptoPrices = {{}};
+
   async function fetchCrypto(){{
     try{{
-      // CoinCap API — free, no rate limit, CORS friendly
-      var r=await fetch('https://api.coincap.io/v2/assets?limit=50');
-      var res=await r.json();
-      var coins=res.data;
-      if(!coins||!coins.length)throw new Error('no data');
+      var syms=COINS.map(function(c){{return'"'+c.sym+'"';}}).join(',');
+      var r=await fetch('https://api.binance.com/api/v3/ticker/24hr?symbols=['+encodeURIComponent('['+syms+']').replace('%5B','[').replace('%5D',']')+']');
+      // Simpler: fetch all tickers and filter
+      var r2=await fetch('https://api.binance.com/api/v3/ticker/24hr');
+      var all=await r2.json();
+      var symMap={{}};
+      all.forEach(function(t){{symMap[t.symbol]=t;}});
+
       var tbody='';
-      coins.forEach(function(c,i){{
-        var price=parseFloat(c.priceUsd)||0;
-        var chg24=parseFloat(c.changePercent24Hr)||0;
-        var mcap=parseFloat(c.marketCapUsd)||0;
-        var vol=parseFloat(c.volumeUsd24Hr)||0;
+      var coins_data=[];
+      COINS.forEach(function(c,i){{
+        var t=symMap[c.sym];
+        if(!t)return;
+        var price=parseFloat(t.lastPrice)||0;
+        var chg=parseFloat(t.priceChangePercent)||0;
+        var vol=parseFloat(t.quoteVolume)||0;
+        cryptoPrices[c.short]={{price:price,chg:chg}};
+        coins_data.push({{name:c.name,short:c.short,price:price,chg:chg,vol:vol}});
         tbody+='<tr>'
           +'<td class="mkp-rank">'+(i+1)+'</td>'
-          +'<td class="mkp-name"><strong>'+c.name+'</strong> <span class="mkp-sym">'+c.symbol+'</span></td>'
+          +'<td class="mkp-name"><strong>'+c.name+'</strong> <span class="mkp-sym">'+c.short+'</span></td>'
           +'<td class="mkp-price">'+fmt(price,price<1?4:2)+'</td>'
-          +'<td>'+badge(chg24)+'</td>'
+          +'<td>'+badge(chg)+'</td>'
           +'<td>—</td>'
-          +'<td class="mkp-mcap">'+fmt(mcap)+'</td>'
+          +'<td class="mkp-mcap">—</td>'
           +'<td class="mkp-vol">'+fmt(vol)+'</td>'
           +'</tr>';
       }});
-      set('crypto-tbody',tbody);
+      set('crypto-tbody',tbody||'<tr><td colspan="7" style="text-align:center;padding:20px;color:#999">Loading...</td></tr>');
+
       // Overview cards
-      var btc=coins[0],eth=coins.find(function(c){{return c.symbol==='ETH';}});
-      if(btc){{set('ov-btc-p',fmt(parseFloat(btc.priceUsd)));set('ov-btc-c',badge(parseFloat(btc.changePercent24Hr)));}}
-      if(eth){{set('ov-eth-p',fmt(parseFloat(eth.priceUsd)));set('ov-eth-c',badge(parseFloat(eth.changePercent24Hr)));}}
+      var btc=cryptoPrices['BTC'],eth=cryptoPrices['ETH'];
+      if(btc){{set('ov-btc-p',fmt(btc.price));set('ov-btc-c',badge(btc.chg));}}
+      if(eth){{set('ov-eth-p',fmt(eth.price));set('ov-eth-c',badge(eth.chg));}}
+
       // Gainers & Losers
-      var sorted=[...coins].sort(function(a,b){{return parseFloat(b.changePercent24Hr)-parseFloat(a.changePercent24Hr);}});
+      var sorted=[...coins_data].sort(function(a,b){{return b.chg-a.chg;}});
       var gHtml='',lHtml='';
       sorted.slice(0,5).forEach(function(c){{
-        gHtml+='<div class="mkp-gl-item"><span>'+c.symbol+' <small>'+c.name+'</small></span>'+badge(parseFloat(c.changePercent24Hr))+'</div>';
+        gHtml+='<div class="mkp-gl-item"><span>'+c.short+' <small>'+c.name+'</small></span>'+badge(c.chg)+'</div>';
       }});
       sorted.slice(-5).reverse().forEach(function(c){{
-        lHtml+='<div class="mkp-gl-item"><span>'+c.symbol+' <small>'+c.name+'</small></span>'+badge(parseFloat(c.changePercent24Hr))+'</div>';
+        lHtml+='<div class="mkp-gl-item"><span>'+c.short+' <small>'+c.name+'</small></span>'+badge(c.chg)+'</div>';
       }});
       set('gainers-list',gHtml);set('losers-list',lHtml);
-    }}catch(e){{set('crypto-tbody','<tr><td colspan="7" style="text-align:center;padding:20px;color:#999">Data loading... please wait a moment</td></tr>');}}
+
+      // Trending — biggest movers
+      var trending=[...coins_data].sort(function(a,b){{return Math.abs(b.chg)-Math.abs(a.chg);}}).slice(0,7);
+      var tHtml='';
+      trending.forEach(function(c,i){{
+        tHtml+='<div class="mkp-trend-item"><span class="mkp-trend-rank">'+(i+1)+'</span><span>'+c.name+' <small>'+c.short+'</small></span><span class="mkp-trend-score">'+(c.chg>=0?'🔥':'❄️')+'</span></div>';
+      }});
+      set('trending-list',tHtml);
+
+    }}catch(e){{set('crypto-tbody','<tr><td colspan="7" style="text-align:center;padding:20px;color:#999">Data loading... please refresh</td></tr>');}}
   }}
 
-  /* ── GLOBAL MARKET DATA ── */
+  /* ── GLOBAL MARKET DATA — Binance BTC dominance estimate ── */
   async function fetchGlobal(){{
     try{{
-      // CoinCap global stats — free, CORS friendly
-      var r=await fetch('https://api.coincap.io/v2/assets?limit=1');
-      var res=await r.json();
-      // Get total mcap from top assets
-      var r2=await fetch('https://api.coincap.io/v2/assets?limit=100');
-      var res2=await r2.json();
-      if(res2.data){{
-        var totalMcap=res2.data.reduce(function(s,c){{return s+parseFloat(c.marketCapUsd||0);}},0);
-        var totalVol=res2.data.reduce(function(s,c){{return s+parseFloat(c.volumeUsd24Hr||0);}},0);
-        var btcMcap=parseFloat(res2.data[0].marketCapUsd||0);
-        var btcDom=btcMcap/totalMcap*100;
-        set('ov-mcap',fmt(totalMcap));
-        set('idx-total-mcap',fmt(totalMcap));
-        set('idx-volume',fmt(totalVol));
-        set('idx-btc-dom',btcDom.toFixed(1)+'%');
-        setText('idx-active','20,000+');
-      }}
-    }}catch(e){{}}
-
-    /* Trending — use top 24h gainers from CoinCap */
-    try{{
-      var r=await fetch('https://api.coincap.io/v2/assets?limit=20');
-      var res=await r.json();
-      if(res.data){{
-        var trending=[...res.data].sort(function(a,b){{return Math.abs(parseFloat(b.changePercent24Hr))-Math.abs(parseFloat(a.changePercent24Hr));}}).slice(0,7);
-        var html='';
-        trending.forEach(function(c,i){{
-          var chg=parseFloat(c.changePercent24Hr);
-          html+='<div class="mkp-trend-item"><span class="mkp-trend-rank">'+(i+1)+'</span><span>'+c.name+' <small>'+c.symbol+'</small></span><span class="mkp-trend-score">'+(chg>=0?'🔥':'❄️')+'</span></div>';
-        }});
-        set('trending-list',html);
-      }}
+      // Get BTC 24h stats for market cap estimate
+      var r=await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT');
+      var btc=await r.json();
+      var btcPrice=parseFloat(btc.lastPrice)||0;
+      // Approximate market caps
+      var btcMcap=btcPrice*19800000; // ~19.8M BTC supply
+      set('idx-total-mcap',fmt(btcMcap*2.2)); // BTC ~45% dominance
+      set('ov-mcap',fmt(btcMcap*2.2));
+      set('idx-btc-dom','~'+(100/2.2).toFixed(0)+'%');
+      setText('idx-active','20,000+');
+      // Volume from all pairs
+      var r2=await fetch('https://api.binance.com/api/v3/ticker/24hr');
+      var all=await r2.json();
+      var totalVol=all.filter(function(t){{return t.symbol.endsWith('USDT');}})
+                      .reduce(function(s,t){{return s+parseFloat(t.quoteVolume||0);}},0);
+      set('idx-volume',fmt(totalVol));
     }}catch(e){{}}
   }}
 
