@@ -144,7 +144,7 @@
   }
   async function tick(){
     try{
-      var r=await fetch('https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC,ETH,SOL,XRP,XAU&tsyms=USD');
+      var r=await fetch('https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC,ETH,SOL,XRP&tsyms=USD');
       var d=(await r.json()).RAW;
       if(!d)throw new Error();
       var map={BTC:'tk-btc',ETH:'tk-eth',SOL:'tk-sol',XRP:'tk-xrp'};

@@ -382,7 +382,7 @@
   async function fetchCrypto(){
     try{
       var syms=COINS.map(function(c){return c.sym;}).join(',');
-      var r=await fetch('https://min-api.cryptocompare.com/data/pricemultifull?fsyms='+syms+',XAU&tsyms=USD');
+      var r=await fetch('https://min-api.cryptocompare.com/data/pricemultifull?fsyms='+syms+'&tsyms=USD');
       var res=await r.json();
       var raw=res.RAW;
       if(!raw)throw new Error('no data');
