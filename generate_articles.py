@@ -826,7 +826,7 @@ def build_markets_page():
         "Live Markets — Crypto, Forex, Stocks & Commodities | " + SITE_NAME,
         "Real-time cryptocurrency prices, forex rates, market indices, Fear & Greed Index. Bitcoin, Ethereum, EUR/USD, USD/PKR and 50+ markets.",
         SITE_URL + "/markets.html", "", "", "website")}
-{nav_html()}
+{nav_html("/")}
 <div class="mkp-wrap">
 <div class="mkp-hero">
   <div class="container">
@@ -1454,7 +1454,7 @@ def build_homepage(posts):
         SITE_URL + "/", sp[0]["image_url"] if sp else "", "", "website")}
 <script type="application/ld+json">{site_schema}</script>
 <script type="application/ld+json">{org_schema}</script>
-{nav_html()}
+{nav_html("/")}
 {hero_html}
 {build_markets_ticker()}
 <div class="container"><div class="main-wrap">
@@ -1492,7 +1492,7 @@ def build_categories(posts):
         html = f"""{head_html(cat + " News | " + SITE_NAME,
             f"Latest {cat} news, analysis and expert commentary.",
             SITE_URL + "/category-" + cat.lower() + ".html", "", "")}
-{nav_html()}
+{nav_html("/")}
 <div class="container">
   <div class="cat-page-hdr">
     <div class="label">Section</div>
