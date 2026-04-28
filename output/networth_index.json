@@ -938,5 +938,15 @@
     "age": "55 (born November 14, 1969)",
     "image_url": "https://picsum.photos/seed/248/400/400",
     "meta_description": "Cate Blanchett net worth: $95 Million. Academy Award-winning Australian actress known for iconic roles in Blue Jasmine, Carol, and Lord of the Rings."
+  },
+  {
+    "name": "Robert Downey Jr",
+    "slug": "robert-downey-jr",
+    "category": "Actor",
+    "estimated_net_worth": "$300 Million",
+    "nationality": "American",
+    "age": "59 (Born April 4, 1966)",
+    "image_url": "https://picsum.photos/seed/599/400/400",
+    "meta_description": "Robert Downey Jr net worth 2026: Estimated $300 million. Hollywood's Iron Man star earned billions through MCU films, acting, and production ventures."
   }
 ]
