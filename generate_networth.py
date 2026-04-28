@@ -5707,20 +5707,43 @@ def main():
 
     print(f"\n✅ Generated {new_count} new profiles")
 
-    # Rebuild ALL existing profiles with latest nav/template every run
-    print("🔄 Rebuilding all profiles with latest nav and template...")
-    rebuilt = 0
+    # Update nav/footer in ALL existing profiles without destroying content
+    print("🔄 Updating nav/footer in all profiles...")
+    import re as _re
+    new_nav = get_nw_nav()
+    new_foot = get_nw_footer(datetime.now().year)
+    updated = 0
     for p in profiles:
         slug = p["slug"]
         html_file = NETWORTH_DIR / f"{slug}.html"
-        if html_file.exists():
-            try:
-                html = build_profile_html(p, profiles)
-                html_file.write_text(html)
-                rebuilt += 1
-            except Exception as e:
-                print(f"  Error: {slug}: {e}")
-    print(f"  Rebuilt {rebuilt} profiles")
+        if not html_file.exists():
+            continue
+        try:
+            html = html_file.read_text(encoding="utf-8")
+            original = html
+
+            # Replace navbar (any old or new format)
+            html = _re.sub(
+                r'<nav class="navbar">.*?</script>',
+                new_nav,
+                html,
+                flags=_re.DOTALL
+            )
+
+            # Replace footer
+            html = _re.sub(
+                r'<footer class="footer">.*?</footer>',
+                new_foot,
+                html,
+                flags=_re.DOTALL
+            )
+
+            if html != original:
+                html_file.write_text(html, encoding="utf-8")
+                updated += 1
+        except Exception as e:
+            print(f"  Error: {slug}: {e}")
+    print(f"  Updated nav/footer in {updated} profiles")
 
     print("📋 Rebuilding net worth index page...")
     rebuild_networth_index(profiles)
