@@ -5516,9 +5516,12 @@ def get_nw_nav():
   <a href="../category-technology.html">Technology</a>
   <a href="../category-finance.html">Finance</a>
   <a href="../category-world.html">World</a>
+  <a href="../category-politics.html">Politics</a>
   <a href="../category-sports.html">Sports</a>
   <a href="../category-health.html">Health</a>
-  <a href="../category-politics.html">Politics</a>
+  <a href="../category-science.html">Science</a>
+  <a href="../category-travel.html">Travel</a>
+  <a href="../category-entertainment.html">Entertainment</a>
   <a href="index.html">Net Worth</a>
   <a href="../markets.html">Markets</a>
   <a href="../category-crypto.html">Crypto</a>
