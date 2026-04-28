@@ -33,8 +33,8 @@
 # ── Browser Caching ──────────────────────────────────────────────────
 <IfModule mod_expires.c>
     ExpiresActive On
-    ExpiresByType text/css "access plus 1 month"
-    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType text/css "access plus 1 day"
+    ExpiresByType application/javascript "access plus 1 day"
     ExpiresByType image/webp "access plus 3 months"
     ExpiresByType image/png "access plus 3 months"
     ExpiresByType image/ico "access plus 1 year"
