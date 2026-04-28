@@ -642,7 +642,7 @@ def head_html(title, desc, canonical, image="", prefix="", og_type="article"):
 <link rel="alternate" type="application/rss+xml" title="{SITE_NAME}" href="{SITE_URL}/feed.xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="{prefix}style.css">
+<link rel="stylesheet" href="{prefix}style.css?v={datetime.now().strftime('%Y%m%d')}">
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap"></noscript>
 <!-- Google tag (gtag.js) -->
@@ -950,7 +950,7 @@ def build_markets_page():
         "Real-time cryptocurrency prices, forex rates, market indices, Fear & Greed Index. Bitcoin, Ethereum, EUR/USD, USD/PKR and 50+ markets.",
         SITE_URL + "/markets.html", "", "", "website")}
 {nav_html("/")}
-<div class="mkp-wrap">
+<div class="mkp-wrap" style="overflow-x:hidden">
 <div class="mkp-hero">
   <div class="container">
     <div class="mkp-hero-top">
