@@ -546,7 +546,9 @@ def nav_html(prefix=""):
   <a href="{prefix}" class="topbar-logo">Markets <span class="accent">News</span> Today</a>
   <span class="topbar-right">Business &middot; Finance &middot; Technology</span>
 </div></div>
-<nav class="navbar"><div class="navbar-inner">
+<nav class="navbar"><div class="navbar-wrap">
+  <button class="navbar-arrow left" id="navLeft" onclick="scrollNav(-200)" aria-label="Scroll left">&#8249;</button>
+  <div class="navbar-inner" id="navInner">
   <a href="{prefix}">Home</a>
   <a href="{prefix}category-business.html">Business</a>
   <a href="{prefix}category-technology.html">Technology</a>
@@ -563,7 +565,25 @@ def nav_html(prefix=""):
   <a href="{prefix}category-crypto.html">Crypto</a>
   <a href="{prefix}category-forex.html">Forex</a>
   <a href="{prefix}category-stocks.html">Stocks</a>
-</div></nav>"""
+  </div>
+  <button class="navbar-arrow right" id="navRight" onclick="scrollNav(200)" aria-label="Scroll right">&#8250;</button>
+</div></nav>
+<script>
+(function(){{
+  var nav=document.getElementById('navInner');
+  var btnL=document.getElementById('navLeft');
+  var btnR=document.getElementById('navRight');
+  if(!nav)return;
+  function upd(){{
+    if(nav.scrollLeft>10)btnL.classList.add('visible');else btnL.classList.remove('visible');
+    if(nav.scrollLeft<nav.scrollWidth-nav.clientWidth-10)btnR.classList.add('visible');else btnR.classList.remove('visible');
+  }}
+  nav.addEventListener('scroll',upd);
+  window.addEventListener('resize',upd);
+  upd();
+  window.scrollNav=function(d){{nav.scrollBy({{left:d,behavior:'smooth'}});}};
+}})();
+</script>"""
 
 def foot_html(prefix=""):
     y = datetime.now().year
@@ -1691,6 +1711,134 @@ def build_sitemap(posts):
     lines.append("</urlset>")
     (OUTPUT_DIR / "sitemap.xml").write_text("\n".join(lines))
 
+# ── BUILD STATIC PAGES (About, Contact, Privacy) ──────────────────────
+def build_static_pages():
+    """Rebuild About, Contact, Privacy pages with latest nav/footer every run."""
+    now = datetime.now()
+    
+    def static_head(title, desc, canonical):
+        return f"""<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{title}</title>
+<meta name="description" content="{desc}">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="{canonical}">
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" href="favicon.png">
+<meta property="og:title" content="{title}">
+<meta property="og:description" content="{desc}">
+<meta property="og:url" content="{canonical}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{SITE_NAME}">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="alternate" type="application/rss+xml" title="{SITE_NAME}" href="{SITE_URL}/feed.xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="style.css">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap"></noscript>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-YC4REN62D0"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());gtag('config','G-YC4REN62D0');</script>
+</head><body>"""
+
+    about_body = """<div class="container" style="max-width:800px;margin:48px auto;padding:0 20px">
+  <div class="label" style="margin-bottom:12px">About</div>
+  <h1 style="font-size:clamp(28px,4vw,42px);font-weight:800;line-height:1.15;margin-bottom:20px">About Markets News Today</h1>
+  <div style="width:60px;height:4px;background:var(--red);margin-bottom:32px"></div>
+  <div style="font-size:17px;line-height:1.8;color:var(--dark)">
+    <p style="margin-bottom:20px">Markets News Today is an independent digital news publication dedicated to delivering fast, accurate, and insightful reporting on the stories that shape the global economy and society.</p>
+    <h2 style="font-size:22px;font-weight:700;margin:32px 0 14px">Our Mission</h2>
+    <p style="margin-bottom:20px">Our mission is simple: to keep you informed. We focus on clarity, accuracy, and depth. Every article is written to give you the context you need to understand not just what happened — but why it matters.</p>
+    <h2 style="font-size:22px;font-weight:700;margin:32px 0 14px">What We Cover</h2>
+    <ul style="margin-bottom:20px;padding-left:24px;line-height:2">
+      <li><strong>Business &amp; Finance</strong> — Markets, earnings, economic policy, and corporate strategy</li>
+      <li><strong>Technology</strong> — AI, cybersecurity, startups, and the companies shaping our digital future</li>
+      <li><strong>Crypto &amp; Forex</strong> — Live markets, analysis, and trading insights</li>
+      <li><strong>World Affairs</strong> — International politics, diplomacy, and global events</li>
+      <li><strong>Sports</strong> — Breaking news and results from major leagues worldwide</li>
+      <li><strong>Health &amp; Science</strong> — Medical breakthroughs and research</li>
+      <li><strong>Entertainment</strong> — Film, music, television, and popular culture</li>
+    </ul>
+    <h2 style="font-size:22px;font-weight:700;margin:32px 0 14px">Our Team</h2>
+    <p style="margin-bottom:20px">Powered by experienced journalists and analysts from across the globe. Read more on our <a href="authors/" style="color:var(--red)">author profile pages</a>.</p>
+    <h2 style="font-size:22px;font-weight:700;margin:32px 0 14px">Contact Us</h2>
+    <p style="margin-bottom:20px">Have a tip or question? Visit our <a href="contact.html" style="color:var(--red)">Contact page</a>.</p>
+    <div style="background:var(--gray);border-left:4px solid var(--red);padding:20px 24px;margin:32px 0;border-radius:4px">
+      <p style="margin:0;font-size:15px;color:var(--muted)"><strong style="color:var(--dark)">Markets News Today</strong><br>
+      Email: <a href="mailto:contact@marketsnewstoday.info" style="color:var(--red)">contact@marketsnewstoday.info</a></p>
+    </div>
+  </div>
+</div>"""
+
+    contact_body = """<div class="container" style="max-width:800px;margin:48px auto;padding:0 20px">
+  <div class="label" style="margin-bottom:12px">Contact</div>
+  <h1 style="font-size:clamp(28px,4vw,42px);font-weight:800;line-height:1.15;margin-bottom:20px">Contact Us</h1>
+  <div style="width:60px;height:4px;background:var(--red);margin-bottom:32px"></div>
+  <div style="font-size:17px;line-height:1.8;color:var(--dark)">
+    <p style="margin-bottom:28px">We welcome tips, corrections, feedback, and press inquiries.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;margin-bottom:36px">
+      <div style="background:var(--gray);padding:24px;border-top:3px solid var(--red)">
+        <h3 style="font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">News Tips</h3>
+        <a href="mailto:tips@marketsnewstoday.info" style="color:var(--red);font-weight:600;font-size:14px">tips@marketsnewstoday.info</a>
+      </div>
+      <div style="background:var(--gray);padding:24px;border-top:3px solid var(--red)">
+        <h3 style="font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Corrections</h3>
+        <a href="mailto:corrections@marketsnewstoday.info" style="color:var(--red);font-weight:600;font-size:14px">corrections@marketsnewstoday.info</a>
+      </div>
+      <div style="background:var(--gray);padding:24px;border-top:3px solid var(--red)">
+        <h3 style="font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">General</h3>
+        <a href="mailto:contact@marketsnewstoday.info" style="color:var(--red);font-weight:600;font-size:14px">contact@marketsnewstoday.info</a>
+      </div>
+    </div>
+    <div style="background:var(--gray);border-left:4px solid var(--red);padding:20px 24px;margin:32px 0;border-radius:4px">
+      <p style="margin:0;font-size:15px">We aim to respond within 1-2 business days.</p>
+    </div>
+  </div>
+</div>"""
+
+    privacy_body = f"""<div class="container" style="max-width:800px;margin:48px auto;padding:0 20px">
+  <div class="label" style="margin-bottom:12px">Legal</div>
+  <h1 style="font-size:clamp(28px,4vw,42px);font-weight:800;line-height:1.15;margin-bottom:20px">Privacy Policy</h1>
+  <div style="width:60px;height:4px;background:var(--red);margin-bottom:12px"></div>
+  <p style="font-size:13px;color:var(--muted);margin-bottom:32px">Last updated: {now.strftime("%B %d, %Y")}</p>
+  <div style="font-size:16px;line-height:1.85;color:var(--dark)">
+    <p style="margin-bottom:20px">This Privacy Policy describes how Markets News Today collects, uses, and shares information when you visit <a href="{SITE_URL}" style="color:var(--red)">{SITE_URL}</a>.</p>
+    <h2 style="font-size:20px;font-weight:700;margin:32px 0 12px">1. Information We Collect</h2>
+    <ul style="padding-left:24px;margin-bottom:20px;line-height:2">
+      <li>Browser type and version</li><li>Operating system</li><li>Pages visited and time on page</li>
+      <li>Referring website</li><li>IP address (anonymized)</li><li>Device type</li>
+    </ul>
+    <h2 style="font-size:20px;font-weight:700;margin:32px 0 12px">2. Google Analytics</h2>
+    <p style="margin-bottom:20px">We use Google Analytics to analyze usage. Data is anonymized and aggregated. Opt out via the <a href="https://tools.google.com/dlpage/gaoptout" style="color:var(--red)" target="_blank" rel="noopener">Google Analytics Opt-out Add-on</a>.</p>
+    <h2 style="font-size:20px;font-weight:700;margin:32px 0 12px">3. Third-Party Services</h2>
+    <ul style="padding-left:24px;margin-bottom:20px;line-height:2">
+      <li><strong>Google Analytics</strong> — website analytics</li>
+      <li><strong>Unsplash</strong> — stock photography</li>
+      <li><strong>CryptoCompare</strong> — live crypto prices</li>
+      <li><strong>ExchangeRate-API</strong> — live forex rates</li>
+    </ul>
+    <h2 style="font-size:20px;font-weight:700;margin:32px 0 12px">4. Contact</h2>
+    <p style="margin-bottom:20px">Questions? Email <a href="mailto:contact@marketsnewstoday.info" style="color:var(--red)">contact@marketsnewstoday.info</a>.</p>
+  </div>
+</div>"""
+
+    pages = [
+        ("about.html", "About Us | " + SITE_NAME,
+         "Markets News Today is your trusted source for breaking news and expert analysis on business, finance and world affairs.",
+         SITE_URL + "/about.html", about_body),
+        ("contact.html", "Contact Us | " + SITE_NAME,
+         "Get in touch with the Markets News Today editorial team. Send us news tips, corrections, or feedback.",
+         SITE_URL + "/contact.html", contact_body),
+        ("privacy-policy.html", "Privacy Policy | " + SITE_NAME,
+         "Learn how Markets News Today collects, uses, and protects your information.",
+         SITE_URL + "/privacy-policy.html", privacy_body),
+    ]
+    for filename, title, desc, canonical, body in pages:
+        html = static_head(title, desc, canonical) + nav_html("/") + body + foot_html("/") + "</body></html>"
+        (OUTPUT_DIR / filename).write_text(html)
+    print("Built static pages (about, contact, privacy)")
+
+
 # ── MAIN ──────────────────────────────────────────────────────────────
 def main():
     OUTPUT_DIR.mkdir(exist_ok=True)
@@ -1791,6 +1939,7 @@ def main():
     build_authors(posts_index)
     build_sitemap(posts_index)
     build_robots()
+    build_static_pages()
     build_rss(posts_index)
     convert_existing_to_webp()
     save_published(published)
