@@ -498,6 +498,7 @@ def write_article(topic, hint, related_posts=None, target_category=None):
         "Write minimum 900 words. Use h2, h3, p, ul, li, strong, blockquote, a tags only. "
         "No hr tags. No dashes (-- or —). Do NOT mention any news outlet by name. "
         "Write complete professional article with proper paragraphs. "
+        "Any external links MUST have rel=\"noopener noreferrer\" and target=\"_blank\" attributes. "
         "Stay strictly on topic — do NOT reference unrelated current events or other news stories.\n"
         "</content>\n"
         "</article>"
