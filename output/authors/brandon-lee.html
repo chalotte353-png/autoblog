@@ -37,7 +37,9 @@
   <a href="../" class="topbar-logo">Markets <span class="accent">News</span> Today</a>
   <span class="topbar-right">Business &middot; Finance &middot; Technology</span>
 </div></div>
-<nav class="navbar"><div class="navbar-inner">
+<nav class="navbar"><div class="navbar-wrap">
+  <button class="navbar-arrow left" id="navLeft" onclick="scrollNav(-200)" aria-label="Scroll left">&#8249;</button>
+  <div class="navbar-inner" id="navInner">
   <a href="../">Home</a>
   <a href="../category-business.html">Business</a>
   <a href="../category-technology.html">Technology</a>
@@ -54,7 +56,25 @@
   <a href="../category-crypto.html">Crypto</a>
   <a href="../category-forex.html">Forex</a>
   <a href="../category-stocks.html">Stocks</a>
+  </div>
+  <button class="navbar-arrow right" id="navRight" onclick="scrollNav(200)" aria-label="Scroll right">&#8250;</button>
 </div></nav>
+<script>
+(function(){
+  var nav=document.getElementById('navInner');
+  var btnL=document.getElementById('navLeft');
+  var btnR=document.getElementById('navRight');
+  if(!nav)return;
+  function upd(){
+    if(nav.scrollLeft>10)btnL.classList.add('visible');else btnL.classList.remove('visible');
+    if(nav.scrollLeft<nav.scrollWidth-nav.clientWidth-10)btnR.classList.add('visible');else btnR.classList.remove('visible');
+  }
+  nav.addEventListener('scroll',upd);
+  window.addEventListener('resize',upd);
+  upd();
+  window.scrollNav=function(d){nav.scrollBy({left:d,behavior:'smooth'});};
+})();
+</script>
 <div class="container author-profile">
   <div class="author-profile-hdr">
     <img src="https://i.pravatar.cc/150?img=56" alt="Brandon Lee">

@@ -38,7 +38,9 @@
   <a href="../" class="topbar-logo">Markets <span class="accent">News</span> Today</a>
   <span class="topbar-right">Business &middot; Finance &middot; Technology</span>
 </div></div>
-<nav class="navbar"><div class="navbar-inner">
+<nav class="navbar"><div class="navbar-wrap">
+  <button class="navbar-arrow left" id="navLeft" onclick="scrollNav(-200)" aria-label="Scroll left">&#8249;</button>
+  <div class="navbar-inner" id="navInner">
   <a href="../">Home</a>
   <a href="../category-business.html">Business</a>
   <a href="../category-technology.html">Technology</a>
@@ -55,7 +57,25 @@
   <a href="../category-crypto.html">Crypto</a>
   <a href="../category-forex.html">Forex</a>
   <a href="../category-stocks.html">Stocks</a>
+  </div>
+  <button class="navbar-arrow right" id="navRight" onclick="scrollNav(200)" aria-label="Scroll right">&#8250;</button>
 </div></nav>
+<script>
+(function(){
+  var nav=document.getElementById('navInner');
+  var btnL=document.getElementById('navLeft');
+  var btnR=document.getElementById('navRight');
+  if(!nav)return;
+  function upd(){
+    if(nav.scrollLeft>10)btnL.classList.add('visible');else btnL.classList.remove('visible');
+    if(nav.scrollLeft<nav.scrollWidth-nav.clientWidth-10)btnR.classList.add('visible');else btnR.classList.remove('visible');
+  }
+  nav.addEventListener('scroll',upd);
+  window.addEventListener('resize',upd);
+  upd();
+  window.scrollNav=function(d){nav.scrollBy({left:d,behavior:'smooth'});};
+})();
+</script>
 <div class="post-wrap"><div class="container post-grid">
 <article>
   <div class="post-hdr">
@@ -110,7 +130,7 @@
 <p>Employment data, particularly the monthly nonfarm payrolls report, will be closely scrutinized for signs of labor market cooling. Any significant weakening in job creation or a rise in the unemployment rate beyond expectations would likely accelerate rate cut pricing and weigh on the dollar. Conversely, a labor market that remains resilient could push back rate cut expectations and provide renewed support for the greenback.</p>
 <p>Geopolitical developments and their potential impact on global risk sentiment remain a wildcard factor that traders are carefully monitoring. In an environment where the dollar's direction is already uncertain, any sudden escalation of global tensions could trigger rapid and significant currency moves that override fundamental analysis in the short term.</p>
 <h2>Strategic Implications for Businesses and Investors</h2>
-<p>The Federal Reserve's uncertain policy path and its impact on the dollar carry significant practical implications for businesses engaged in international trade and investors with cross-border exposure. Companies that generate substantial revenues in foreign currencies are finding that hedging strategies require more frequent adjustment than in recent years, as the dollar's near-term direction has become genuinely difficult to predict.</p>
+<p>The <a href="https://marketsnewstoday.info/posts/federal-reserve-holds-rates-steady-amid-2026-economic-shifts.html" title="Federal Reserve Holds Rates Steady Amid 2026 Economic Shifts">Federal Reserve</a>'s uncertain policy path and its impact on the dollar carry significant practical implications for businesses engaged in international trade and investors with cross-border exposure. Companies that generate substantial revenues in foreign currencies are finding that hedging strategies require more frequent adjustment than in recent years, as the dollar's near-term direction has become genuinely difficult to predict.</p>
 <p>For investors, the current environment underscores the importance of currency risk management as an integral component of portfolio strategy rather than an afterthought. The days of assuming a steadily strengthening dollar as a baseline scenario appear to be behind us, at least for the foreseeable future, as the Federal Reserve navigates what may be one of its most consequential policy periods in recent memory.</p>
 <p>As the world watches Washington's monetary policymakers closely, one thing remains abundantly clear: in 2026, the Federal Reserve's every word and action carries enormous weight for the dollar and for the global financial system that continues to depend on its stability.</p></div>
   <div class="post-related"><h3>Related Articles</h3><ul><li><a href="https://marketsnewstoday.info/posts/dow-futures-plunge-350-points-as-iran-war-tensions-surge.html">Dow Futures Plunge 350 Points as Iran War Tensions Surge</a></li><li><a href="https://marketsnewstoday.info/posts/oil-prices-jump-after-strait-of-hormuz-setbacks.html">Oil Prices Jump After Strait of Hormuz Setbacks</a></li><li><a href="https://marketsnewstoday.info/posts/us-stablecoins-threaten-emerging-markets-central-bankers-warn.html">US Stablecoins Threaten Emerging Markets, Central Bankers Warn</a></li></ul></div>

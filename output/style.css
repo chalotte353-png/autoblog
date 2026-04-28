@@ -55,17 +55,47 @@ a { color: inherit; text-decoration: none; }
   z-index: 200;
   box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 }
+.navbar-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+.navbar-arrow {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  font-size: 16px;
+  color: var(--text);
+  background: linear-gradient(to right, #fff 60%, transparent);
+  border: none;
+  padding: 0;
+  opacity: 0;
+  transition: opacity 0.2s;
+  pointer-events: none;
+}
+.navbar-arrow.right {
+  right: 0;
+  background: linear-gradient(to left, #fff 60%, transparent);
+}
+.navbar-arrow.visible { opacity: 1; pointer-events: auto; }
+.navbar-arrow:hover { color: var(--red); }
 .navbar-inner {
   display: flex;
   align-items: stretch;
   width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
   height: 44px;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   padding: 0 3%;
+  scroll-behavior: smooth;
 }
 .navbar-inner::-webkit-scrollbar { display: none; }
 .navbar-inner a {
