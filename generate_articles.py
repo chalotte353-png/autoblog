@@ -890,6 +890,23 @@ def build_markets_ticker():
     }catch(e){}
 
     try{
+      var r=await fetch('https://open.er-api.com/v6/latest/USD');
+      var f=await r.json();
+      var fx=f.rates||{};
+      if(fx.EUR){
+        var pairs=[
+          ['tk-eurusd',(1/fx.EUR).toFixed(4)],
+          ['tk-gbpusd',(1/fx.GBP).toFixed(4)],
+          ['tk-usdjpy',fx.JPY.toFixed(2)]
+        ];
+        pairs.forEach(function(p){
+          var s=document.getElementById(p[0]);if(s){var sp=s.querySelector('span');if(sp)sp.textContent=p[1];}
+          var s2=document.getElementById(p[0]+'2');if(s2)s2.textContent=p[1];
+        });
+      }
+    }catch(e){}
+
+    try{
       var r=await fetch('https://api.alternative.me/fng/');
       var g=await r.json();
       if(g.data){
