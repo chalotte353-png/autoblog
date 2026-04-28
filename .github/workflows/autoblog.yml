@@ -59,6 +59,15 @@ jobs:
           PROFILES_PER_RUN: ${{ github.event.inputs.profiles_count || '50' }}
         run: python generate_networth.py
 
+      - name: Rebuild networth pages with latest nav (always)
+        if: ${{ github.event.inputs.mode != 'networth' }}
+        env:
+          CLAUDE_API_KEY:   ${{ secrets.CLAUDE_API_KEY }}
+          SITE_URL:         ${{ secrets.SITE_URL }}
+          SITE_NAME:        ${{ secrets.SITE_NAME }}
+          PROFILES_PER_RUN: "0"
+        run: python generate_networth.py
+
       - name: Copy static assets
         run: |
           cp style.css output/style.css
