@@ -5199,7 +5199,7 @@ PROFILE_TEMPLATE = """<!DOCTYPE html>
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../style.css?v={now.strftime('%Y%m%d')}">
 <style>
 .nw-profile-hero{position:relative;background:var(--dark);color:#fff;padding:48px 0;overflow:hidden;border-bottom:3px solid var(--red)}
 .nw-hero-bg{position:absolute;inset:0;background-image:url('/celeb-images/{{ slug }}.webp'),url('/celeb-images/{{ slug }}.jpg');background-size:cover;background-position:top center;filter:blur(12px) brightness(0.18);transform:scale(1.1)}
@@ -5348,7 +5348,7 @@ NETWORTH_INDEX_TEMPLATE = """<!DOCTYPE html>
 <link rel="canonical" href="{{ site_url }}/networth/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../style.css?v={now.strftime('%Y%m%d')}">
 <style>
 .nw-index-hero {
   background: var(--dark);
