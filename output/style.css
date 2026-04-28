@@ -66,11 +66,11 @@ a { color: inherit; text-decoration: none; }
 .navbar-inner a {
   display: flex;
   align-items: center;
-  padding: 0 18px;
-  font-size: 11.5px;
+  padding: 0 13px;
+  font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.7px;
   color: var(--text);
   border-right: 1px solid var(--border);
   transition: all 0.15s;
