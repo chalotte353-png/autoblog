@@ -57,17 +57,44 @@
 <a class="topbar-logo" href="../">Markets <span class="accent">News</span> Today</a>
 <span class="topbar-right">Business · Finance · Technology</span>
 </div></div>
-<nav class="navbar"><div class="navbar-inner">
-<a href="../">Home</a>
-<a href="../category-business.html">Business</a>
-<a href="../category-technology.html">Technology</a>
-<a href="../category-finance.html">Finance</a>
-<a href="../category-world.html">World</a>
-<a href="../category-sports.html">Sports</a>
-<a href="../category-health.html">Health</a>
-<a href="../category-politics.html">Politics</a>
-<a href="index.html">Net Worth</a>
+<nav class="navbar"><div class="navbar-wrap">
+  <button class="navbar-arrow left" id="navLeft" onclick="scrollNav(-200)" aria-label="Scroll left">&#8249;</button>
+  <div class="navbar-inner" id="navInner">
+  <a href="../">Home</a>
+  <a href="../category-business.html">Business</a>
+  <a href="../category-technology.html">Technology</a>
+  <a href="../category-finance.html">Finance</a>
+  <a href="../category-world.html">World</a>
+  <a href="../category-politics.html">Politics</a>
+  <a href="../category-sports.html">Sports</a>
+  <a href="../category-health.html">Health</a>
+  <a href="../category-science.html">Science</a>
+  <a href="../category-travel.html">Travel</a>
+  <a href="../category-entertainment.html">Entertainment</a>
+  <a href="index.html">Net Worth</a>
+  <a href="../markets.html">Markets</a>
+  <a href="../category-crypto.html">Crypto</a>
+  <a href="../category-forex.html">Forex</a>
+  <a href="../category-stocks.html">Stocks</a>
+  </div>
+  <button class="navbar-arrow right" id="navRight" onclick="scrollNav(200)" aria-label="Scroll right">&#8250;</button>
 </div></nav>
+<script>
+(function(){
+  var nav=document.getElementById('navInner');
+  var btnL=document.getElementById('navLeft');
+  var btnR=document.getElementById('navRight');
+  if(!nav)return;
+  function upd(){
+    if(nav.scrollLeft>10)btnL.classList.add('visible');else btnL.classList.remove('visible');
+    if(nav.scrollLeft<nav.scrollWidth-nav.clientWidth-10)btnR.classList.add('visible');else btnR.classList.remove('visible');
+  }
+  nav.addEventListener('scroll',upd);
+  window.addEventListener('resize',upd);
+  upd();
+  window.scrollNav=function(d){nav.scrollBy({left:d,behavior:'smooth'});};
+})();
+</script>
 <div class="nw-profile-hero">
 <div class="nw-hero-bg"></div>
 <div class="container">
@@ -110,7 +137,7 @@
 <div class="nw-section-title">Career Highlights</div>
 <ul class="nw-list"><li>Grew Vsauce to over 21 million subscribers, becoming one of the most-watched educational channels on YouTube</li><li>Produced and hosted Mind Field, a premium original series for YouTube exploring human psychology and neuroscience</li><li>Co-founded the Curiosity Box, a subscription science kit service that donates proceeds to VidCon scholarships</li></ul>
 </div>
-<div class="nw-similar"><div class="nw-similar-title">Similar Profiles</div><div class="nw-similar-grid"><a class="nw-similar-card" href="mrbeast.html"><img class="nw-similar-img" onerror="this.style.display='none'" src="/celeb-images/mrbeast.jpg"/><div class="nw-similar-body"><div class="nw-similar-name">MrBeast</div><div class="nw-similar-worth">$700 Million</div></div></a><a class="nw-similar-card" href="david-dobrik.html"><img class="nw-similar-img" onerror="this.style.display='none'" src="/celeb-images/david-dobrik.jpg"/><div class="nw-similar-body"><div class="nw-similar-name">David Dobrik</div><div class="nw-similar-worth">$25 Million</div></div></a><a class="nw-similar-card" href="markiplier.html"><img class="nw-similar-img" onerror="this.style.display='none'" src="/celeb-images/markiplier.jpg"/><div class="nw-similar-body"><div class="nw-similar-name">Markiplier</div><div class="nw-similar-worth">$35 Million</div></div></a><a class="nw-similar-card" href="lilly-singh.html"><img class="nw-similar-img" onerror="this.style.display='none'" src="/celeb-images/lilly-singh.jpg"/><div class="nw-similar-body"><div class="nw-similar-name">Lilly Singh</div><div class="nw-similar-worth">$20 Million</div></div></a></div></div>
+<div class="nw-similar"><div class="nw-similar-title">Similar Profiles</div><div class="nw-similar-grid"><a class="nw-similar-card" href="mrbeast.html"><img class="nw-similar-img" onerror="this.style.display='none'" src="/celeb-images/mrbeast.webp"/><div class="nw-similar-body"><div class="nw-similar-name">MrBeast</div><div class="nw-similar-worth">$700 Million</div></div></a><a class="nw-similar-card" href="david-dobrik.html"><img class="nw-similar-img" onerror="this.style.display='none'" src="/celeb-images/david-dobrik.webp"/><div class="nw-similar-body"><div class="nw-similar-name">David Dobrik</div><div class="nw-similar-worth">$25 Million</div></div></a><a class="nw-similar-card" href="markiplier.html"><img class="nw-similar-img" onerror="this.style.display='none'" src="/celeb-images/markiplier.webp"/><div class="nw-similar-body"><div class="nw-similar-name">Markiplier</div><div class="nw-similar-worth">$35 Million</div></div></a><a class="nw-similar-card" href="lilly-singh.html"><img class="nw-similar-img" onerror="this.style.display='none'" src="/celeb-images/lilly-singh.webp"/><div class="nw-similar-body"><div class="nw-similar-name">Lilly Singh</div><div class="nw-similar-worth">$20 Million</div></div></a></div></div>
 </main>
 <aside>
 <div class="nw-sidebar-card">
