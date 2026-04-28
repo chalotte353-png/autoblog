@@ -58,23 +58,29 @@ a { color: inherit; text-decoration: none; }
 .navbar-inner {
   display: flex;
   align-items: stretch;
-  width: 94%;
+  width: 100%;
   max-width: 1280px;
   margin: 0 auto;
   height: 44px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding: 0 3%;
 }
+.navbar-inner::-webkit-scrollbar { display: none; }
 .navbar-inner a {
   display: flex;
   align-items: center;
-  padding: 0 13px;
+  padding: 0 12px;
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.7px;
+  letter-spacing: 0.6px;
   color: var(--text);
   border-right: 1px solid var(--border);
   transition: all 0.15s;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 .navbar-inner a:first-child { border-left: 1px solid var(--border); }
 .navbar-inner a:hover { background: var(--red); color: #fff; }
@@ -493,8 +499,7 @@ a { color: inherit; text-decoration: none; }
 @media (max-width: 640px) {
   .topbar-left, .topbar-right { display: none; }
   .topbar-logo { font-size: 22px; }
-  .navbar-inner { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  .navbar-inner::-webkit-scrollbar { display: none; }
+  .navbar-inner a { font-size: 10px; padding: 0 10px; }
   .cat-page-grid { grid-template-columns: 1fr; }
   .cat-page-card { grid-template-columns: 1fr; }
   .footer-grid { grid-template-columns: 1fr; }
@@ -686,9 +691,23 @@ a { color: inherit; text-decoration: none; }
 @media(max-width:600px){
   .mk-scroll-track{gap:10px}
   .mk-tick{font-size:10.5px}
-  .mkp-hero h1{font-size:24px}
-  .mkp-overview{grid-template-columns:1fr 1fr}
+  .mkp-hero{padding:20px 0 16px}
+  .mkp-hero h1{font-size:20px}
+  .mkp-hero-top{flex-direction:column;align-items:flex-start;gap:10px}
+  .mkp-tabs{width:100%;overflow-x:auto;display:flex;gap:6px;-webkit-overflow-scrolling:touch}
+  .mkp-tab{font-size:11px;padding:6px 14px;white-space:nowrap}
+  .mkp-overview{grid-template-columns:1fr 1fr;gap:8px}
+  .mkp-ov-card{padding:12px 10px}
+  .mkp-ov-price{font-size:18px}
+  .mkp-body{padding:20px 0 40px}
+  .mkp-table th,.mkp-table td{padding:9px 10px;font-size:12px}
+  .mkp-section-hdr h2{font-size:16px}
+  .mkp-gl-grid{grid-template-columns:1fr}
+  .mkp-conv{gap:6px}
+  .mkp-conv-input,.mkp-conv-sel{font-size:14px;padding:8px}
   .mkp-indices-grid{grid-template-columns:1fr}
+  .mkp-fg-featured{padding:16px}
+  .mkp-fg-num{font-size:48px}
 }
 
 /* ===== INTERACTIVE COIN CARDS ===== */
