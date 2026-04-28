@@ -1,6 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /cgi-bin/
-Disallow: /*.json$
-
-Sitemap: https://marketsnewstoday.info/sitemap.xml
