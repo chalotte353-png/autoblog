@@ -5102,6 +5102,7 @@ def generate_profile(celeb: dict, wiki_text: str) -> dict | None:
 
     prompt = f"""Write a detailed net worth profile page for: {name} ({real})
 Category: {category}
+Current Year: 2026
 
 Wikipedia background info (use as reference only, do NOT copy):
 {wiki_text}
@@ -5112,7 +5113,7 @@ Return ONLY valid JSON (no markdown fences) with these exact keys:
   "real_name": "{real}",
   "category": "{category}",
   "slug": "{slugify(name)}",
-  "meta_description": "SEO meta description 150-160 chars about {name} net worth",
+  "meta_description": "SEO meta description 150-160 chars about {name} net worth 2026",
   "estimated_net_worth": "e.g. $500 Million",
   "net_worth_rank": "e.g. Top 10 YouTubers",
   "age": "estimated age or birth year",
@@ -5127,7 +5128,8 @@ Return ONLY valid JSON (no markdown fences) with these exact keys:
 }}
 
 Rules:
-- Net worth should be well-researched estimate based on public knowledge
+- Net worth should be well-researched estimate based on public knowledge as of 2026
+- meta_description MUST include "2026" — e.g. "{name} net worth 2026: ..."
 - Biography must be original, engaging, detailed
 - Income sources must be realistic and specific
 - All data based on publicly available information"""
