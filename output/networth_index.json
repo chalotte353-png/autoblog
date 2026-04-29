@@ -958,5 +958,15 @@
     "age": "57 (Born February 11, 1969)",
     "image_url": "https://picsum.photos/seed/712/400/400",
     "meta_description": "Jennifer Aniston net worth 2026: Estimated $320 million. Friends star, actress, producer, and entrepreneur with major income from TV, film, and brand endorsements."
+  },
+  {
+    "name": "Oprah Winfrey",
+    "slug": "oprah-winfrey",
+    "category": "TV Host/Media",
+    "estimated_net_worth": "$2.5 Billion",
+    "nationality": "American",
+    "age": "72 (Born January 29, 1954)",
+    "image_url": "https://picsum.photos/seed/237/400/400",
+    "meta_description": "Oprah Winfrey net worth 2026: Estimated $2.5 billion. Media mogul, talk show host, actress, and philanthropist with diverse business ventures."
   }
 ]
