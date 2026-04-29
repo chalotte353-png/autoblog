@@ -1138,5 +1138,15 @@
     "age": "78 years old (Born July 30, 1947)",
     "image_url": "https://picsum.photos/seed/699/400/400",
     "meta_description": "Arnold Schwarzenegger net worth 2026: $450 million. Actor, former Governor, bodybuilding legend, and entertainment icon's wealth breakdown."
+  },
+  {
+    "name": "Bruce Willis",
+    "slug": "bruce-willis",
+    "category": "Actor",
+    "estimated_net_worth": "$250 Million",
+    "nationality": "American",
+    "age": "71 (Born March 19, 1955)",
+    "image_url": "https://picsum.photos/seed/257/400/400",
+    "meta_description": "Bruce Willis net worth 2026: Estimated $250 million. Die Hard star's wealth from blockbuster films, residuals, and real estate investments."
   }
 ]
