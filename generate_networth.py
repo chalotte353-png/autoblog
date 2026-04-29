@@ -5722,13 +5722,22 @@ def main():
             html = html_file.read_text(encoding="utf-8")
             original = html
 
-            # Replace navbar (any old or new format)
+            # Replace topbar + navbar (any old or new format)
+            # Must include topbar to prevent double header
             html = _re.sub(
-                r'<nav class="navbar">.*?</script>',
+                r'<div class="topbar">.*?</script>',
                 new_nav,
                 html,
                 flags=_re.DOTALL
             )
+            # Fallback: if no topbar found, replace just navbar
+            if '<div class="topbar">' not in html:
+                html = _re.sub(
+                    r'<nav class="navbar">.*?</script>',
+                    new_nav,
+                    html,
+                    flags=_re.DOTALL
+                )
 
             # Replace footer
             html = _re.sub(
