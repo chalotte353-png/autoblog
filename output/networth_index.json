@@ -518,5 +518,505 @@
     "age": "23 (born July 1, 2001)",
     "image_url": "https://picsum.photos/seed/435/400/400",
     "meta_description": "Dixie D'Amelio net worth 2026: Estimated $10 million. TikTok star, dancer, singer & entrepreneur with 150M+ followers."
+  },
+  {
+    "name": "Addison Rae",
+    "slug": "addison-rae",
+    "category": "TikToker",
+    "estimated_net_worth": "$25-30 Million",
+    "nationality": "American",
+    "age": "26 years old (born October 6, 2000)",
+    "image_url": "https://picsum.photos/seed/467/400/400",
+    "meta_description": "Addison Rae net worth 2026: $25-30 million. TikTok star turned actress, dancer, and entrepreneur with massive social media influence."
+  },
+  {
+    "name": "Bella Poarch",
+    "slug": "bella-poarch",
+    "category": "TikToker",
+    "estimated_net_worth": "$10-15 Million",
+    "nationality": "Filipino-American",
+    "age": "28 (born February 8, 1997)",
+    "image_url": "https://picsum.photos/seed/435/400/400",
+    "meta_description": "Bella Poarch net worth 2026: Estimated $10-15 million. Filipino-American TikToker, singer, and content creator with 300M+ followers."
+  },
+  {
+    "name": "Khaby Lame",
+    "slug": "khaby-lame",
+    "category": "TikToker",
+    "estimated_net_worth": "$60 Million",
+    "nationality": "Italian (Senegalese descent)",
+    "age": "24 years old (born August 9, 2001)",
+    "image_url": "https://picsum.photos/seed/565/400/400",
+    "meta_description": "Khaby Lame net worth 2026: Discover the estimated earnings of TikTok's most-followed creator and his income sources."
+  },
+  {
+    "name": "Zach King",
+    "slug": "zach-king",
+    "category": "TikToker",
+    "estimated_net_worth": "$50 Million",
+    "nationality": "American",
+    "age": "32",
+    "image_url": "https://picsum.photos/seed/852/400/400",
+    "meta_description": "Zach King net worth 2026: $50 million. TikTok magician and viral video creator known for innovative visual effects and illusion content."
+  },
+  {
+    "name": "Loren Gray",
+    "slug": "loren-gray",
+    "category": "TikToker",
+    "estimated_net_worth": "$18-25 Million",
+    "nationality": "American",
+    "age": "23 (Born April 19, 2002)",
+    "image_url": "https://picsum.photos/seed/490/400/400",
+    "meta_description": "Loren Gray net worth 2026: Estimated $18-25 million. Most-followed female TikToker with 300M+ followers across platforms."
+  },
+  {
+    "name": "Josh Richards",
+    "slug": "josh-richards",
+    "category": "TikToker",
+    "estimated_net_worth": "$20 Million",
+    "nationality": "Canadian",
+    "age": "24",
+    "image_url": "https://picsum.photos/seed/27/400/400",
+    "meta_description": "Josh Richards net worth 2026: Estimated $20 million. TikTok star, investor, and entrepreneur behind Triller and TalentX."
+  },
+  {
+    "name": "Avani Gregg",
+    "slug": "avani-gregg",
+    "category": "TikToker",
+    "estimated_net_worth": "$20 Million",
+    "nationality": "American",
+    "age": "23",
+    "image_url": "https://picsum.photos/seed/974/400/400",
+    "meta_description": "Avani Gregg net worth 2026: Discover the estimated fortune of the TikTok star known for her makeup, dance, and lifestyle content."
+  },
+  {
+    "name": "Bryce Hall",
+    "slug": "bryce-hall",
+    "category": "TikToker",
+    "estimated_net_worth": "$12 Million",
+    "nationality": "American",
+    "age": "25",
+    "image_url": "https://picsum.photos/seed/404/400/400",
+    "meta_description": "Bryce Hall net worth 2026: Discover the estimated wealth of the TikTok star, content creator, and entrepreneur behind the viral social media sensation."
+  },
+  {
+    "name": "Noah Beck",
+    "slug": "noah-beck",
+    "category": "TikToker",
+    "estimated_net_worth": "$20-25 Million",
+    "nationality": "American",
+    "age": "25 years old (born May 29, 2001)",
+    "image_url": "https://picsum.photos/seed/185/400/400",
+    "meta_description": "Noah Beck net worth 2026: estimated $20-25 million. TikTok star, dancer, and social media influencer with massive following."
+  },
+  {
+    "name": "Chase Hudson",
+    "slug": "chase-hudson",
+    "category": "TikToker",
+    "estimated_net_worth": "$20 Million",
+    "nationality": "American",
+    "age": "22 (born September 15, 2003)",
+    "image_url": "https://picsum.photos/seed/824/400/400",
+    "meta_description": "Chase Hudson net worth 2026: American TikTok star and social media influencer. Estimated net worth, income sources, and career highlights."
+  },
+  {
+    "name": "Nessa Barrett",
+    "slug": "nessa-barrett",
+    "category": "TikToker",
+    "estimated_net_worth": "$4-6 Million",
+    "nationality": "American",
+    "age": "23 (Born 2002)",
+    "image_url": "https://picsum.photos/seed/748/400/400",
+    "meta_description": "Nessa Barrett net worth 2026: Estimated $4-6 million. TikTok star, singer, and social media influencer with millions of followers."
+  },
+  {
+    "name": "Riyaz Aly",
+    "slug": "riyaz-aly",
+    "category": "TikToker",
+    "estimated_net_worth": "$5-8 Million",
+    "nationality": "Indian",
+    "age": "24 (Born September 14, 2003)",
+    "image_url": "https://picsum.photos/seed/377/400/400",
+    "meta_description": "Riyaz Aly net worth 2026: Indian TikToker and dancer with $5-8 Million estimated net worth. Top creator with 300M+ followers."
+  },
+  {
+    "name": "Jannat Zubair",
+    "slug": "jannat-zubair",
+    "category": "TikToker/Actress",
+    "estimated_net_worth": "$8-12 Million",
+    "nationality": "Indian",
+    "age": "22 years old (Born August 29, 2003)",
+    "image_url": "https://picsum.photos/seed/923/400/400",
+    "meta_description": "Jannat Zubair net worth 2026: Indian TikToker and actress with $8-12 million estimated net worth. Known for viral content and TV appearances."
+  },
+  {
+    "name": "Arishfa Khan",
+    "slug": "arishfa-khan",
+    "category": "TikToker",
+    "estimated_net_worth": "$2 Million - $5 Million",
+    "nationality": "Indian",
+    "age": "Born 2005 (21 years old)",
+    "image_url": "https://picsum.photos/seed/112/400/400",
+    "meta_description": "Arishfa Khan net worth 2026: Indian TikToker and social media influencer with millions of followers. Estimated net worth, income sources, and career highlights."
+  },
+  {
+    "name": "Mr Faisu",
+    "slug": "mr-faisu",
+    "category": "TikToker",
+    "estimated_net_worth": "$8-12 Million",
+    "nationality": "Indian",
+    "age": "28 (born September 17, 1998)",
+    "image_url": "https://picsum.photos/seed/19/400/400",
+    "meta_description": "Mr Faisu net worth 2026: Estimated $8-12 Million. Indian TikToker and content creator known for short-form videos and social media influence."
+  },
+  {
+    "name": "Hasnain Khan",
+    "slug": "hasnain-khan",
+    "category": "TikToker",
+    "estimated_net_worth": "$8-12 Million",
+    "nationality": "Pakistani",
+    "age": "26 (born 2000)",
+    "image_url": "https://picsum.photos/seed/795/400/400",
+    "meta_description": "Hasnain Khan net worth 2026: Pakistani TikToker with 300M+ followers. Estimated net worth $8-12 million from content creation and brand partnerships."
+  },
+  {
+    "name": "Dwayne Johnson",
+    "slug": "dwayne-johnson",
+    "category": "Actor",
+    "estimated_net_worth": "$800 Million",
+    "nationality": "American",
+    "age": "54 (Born May 2, 1972)",
+    "image_url": "https://picsum.photos/seed/865/400/400",
+    "meta_description": "Dwayne Johnson net worth 2026: Discover how The Rock built an estimated $800 million fortune through acting, business ventures, and entertainment empire."
+  },
+  {
+    "name": "Ryan Reynolds",
+    "slug": "ryan-reynolds",
+    "category": "Actor",
+    "estimated_net_worth": "$350 Million",
+    "nationality": "Canadian",
+    "age": "48 (Born October 23, 1976)",
+    "image_url": "https://picsum.photos/seed/437/400/400",
+    "meta_description": "Ryan Reynolds net worth 2026: $350 million. Canadian actor, producer, and entrepreneur behind Mint Mobile and Aviation American Gin."
+  },
+  {
+    "name": "Jennifer Aniston",
+    "slug": "jennifer-aniston",
+    "category": "Actress",
+    "estimated_net_worth": "$320 Million",
+    "nationality": "American",
+    "age": "57 (Born February 5, 1969)",
+    "image_url": "https://picsum.photos/seed/643/400/400",
+    "meta_description": "Jennifer Aniston net worth 2026: Estimated $320 million. Emmy-winning actress from Friends, film roles, and major brand partnerships."
+  },
+  {
+    "name": "Tom Hanks",
+    "slug": "tom-hanks",
+    "category": "Actor",
+    "estimated_net_worth": "$350 Million",
+    "nationality": "American",
+    "age": "68 (born July 9, 1956)",
+    "image_url": "https://picsum.photos/seed/259/400/400",
+    "meta_description": "Tom Hanks net worth 2026: $350 million. Academy Award-winning actor known for Forrest Gump, Cast Away, and Toy Story voice work."
+  },
+  {
+    "name": "Leonardo DiCaprio",
+    "slug": "leonardo-dicaprio",
+    "category": "Actor",
+    "estimated_net_worth": "$260 Million",
+    "nationality": "American",
+    "age": "51 (Born November 11, 1974)",
+    "image_url": "https://picsum.photos/seed/802/400/400",
+    "meta_description": "Leonardo DiCaprio net worth 2026: Estimated $260 million. Academy Award-winning actor known for iconic film roles and environmental activism."
+  },
+  {
+    "name": "Scarlett Johansson",
+    "slug": "scarlett-johansson",
+    "category": "Actress",
+    "estimated_net_worth": "$165-180 Million",
+    "nationality": "American",
+    "age": "39 (Born November 22, 1984)",
+    "image_url": "https://picsum.photos/seed/147/400/400",
+    "meta_description": "Scarlett Johansson net worth 2026: Estimated $165-180 Million. Hollywood's highest-paid actress known for Marvel's Black Widow role and diverse film career."
+  },
+  {
+    "name": "Robert Downey Jr",
+    "slug": "robert-downey-jr",
+    "category": "Actor",
+    "estimated_net_worth": "$300 Million",
+    "nationality": "American",
+    "age": "59 (Born April 4, 1966)",
+    "image_url": "https://picsum.photos/seed/220/400/400",
+    "meta_description": "Robert Downey Jr net worth 2026: Estimated $300 million. Marvel's Iron Man star turned acclaimed actor with decades of blockbuster success."
+  },
+  {
+    "name": "Will Smith",
+    "slug": "will-smith",
+    "category": "Actor",
+    "estimated_net_worth": "$350 Million",
+    "nationality": "American",
+    "age": "56 (born September 25, 1968)",
+    "image_url": "https://picsum.photos/seed/853/400/400",
+    "meta_description": "Will Smith net worth 2026: Estimated $350 million. Explore his earnings from blockbuster films, music, and business ventures."
+  },
+  {
+    "name": "Oprah Winfrey",
+    "slug": "oprah-winfrey",
+    "category": "TV Host/Media",
+    "estimated_net_worth": "$2.5 Billion",
+    "nationality": "American",
+    "age": "72 (born January 29, 1954)",
+    "image_url": "https://picsum.photos/seed/168/400/400",
+    "meta_description": "Oprah Winfrey net worth 2026: $2.5 billion. Media mogul, talk show host, and philanthropist. Detailed profile of her wealth, income sources, and career."
+  },
+  {
+    "name": "Kim Kardashian",
+    "slug": "kim-kardashian",
+    "category": "TV Personality",
+    "estimated_net_worth": "$1.7 Billion",
+    "nationality": "American",
+    "age": "45 (born October 21, 1980)",
+    "image_url": "https://picsum.photos/seed/35/400/400",
+    "meta_description": "Kim Kardashian net worth 2026: $1.7 billion. TV star, entrepreneur, and social media icon with SKIMS, KKW Beauty, and Keeping Up empire."
+  },
+  {
+    "name": "Kylie Jenner",
+    "slug": "kylie-jenner",
+    "category": "Influencer/Business",
+    "estimated_net_worth": "$750 Million - $900 Million",
+    "nationality": "American",
+    "age": "28",
+    "image_url": "https://picsum.photos/seed/291/400/400",
+    "meta_description": "Kylie Jenner net worth 2026: Estimated $750M-$900M. Self-made billionaire influencer, cosmetics entrepreneur, and media personality."
+  },
+  {
+    "name": "Kendall Jenner",
+    "slug": "kendall-jenner",
+    "category": "Model",
+    "estimated_net_worth": "$60-75 Million",
+    "nationality": "American",
+    "age": "30 (Born November 3, 1995)",
+    "image_url": "https://picsum.photos/seed/591/400/400",
+    "meta_description": "Kendall Jenner net worth 2026: Estimated $60-75 million. Top supermodel, influencer, and businesswoman with major fashion contracts and brand partnerships."
+  },
+  {
+    "name": "Ellen DeGeneres",
+    "slug": "ellen-degeneres",
+    "category": "TV Host",
+    "estimated_net_worth": "$500 Million",
+    "nationality": "American",
+    "age": "66 (born January 26, 1958)",
+    "image_url": "https://picsum.photos/seed/231/400/400",
+    "meta_description": "Ellen DeGeneres net worth 2026: estimated $500M+ from talk show, production company, real estate investments, and entertainment ventures."
+  },
+  {
+    "name": "Brad Pitt",
+    "slug": "brad-pitt",
+    "category": "Actor",
+    "estimated_net_worth": "$300 Million",
+    "nationality": "American",
+    "age": "62 (born December 18, 1963)",
+    "image_url": "https://picsum.photos/seed/933/400/400",
+    "meta_description": "Brad Pitt net worth 2026: Estimated $300M+ from blockbuster films, production company, and business ventures. Hollywood's most bankable star."
+  },
+  {
+    "name": "Angelina Jolie",
+    "slug": "angelina-jolie",
+    "category": "Actress",
+    "estimated_net_worth": "$120 Million",
+    "nationality": "American",
+    "age": "50 (Born June 4, 1975)",
+    "image_url": "https://picsum.photos/seed/655/400/400",
+    "meta_description": "Angelina Jolie net worth 2026: Estimated $120 million. Academy Award-winning actress, filmmaker, and humanitarian known for Maleficent, Mr. & Mrs. Smith, and UN advocacy."
+  },
+  {
+    "name": "Johnny Depp",
+    "slug": "johnny-depp",
+    "category": "Actor",
+    "estimated_net_worth": "$150 Million",
+    "nationality": "American",
+    "age": "60 (born June 9, 1963)",
+    "image_url": "https://picsum.photos/seed/955/400/400",
+    "meta_description": "Johnny Depp net worth 2026: Estimated $150M. Hollywood actor known for Pirates of the Caribbean, Edward Scissorhands, and controversial legal battles."
+  },
+  {
+    "name": "Tom Cruise",
+    "slug": "tom-cruise",
+    "category": "Actor",
+    "estimated_net_worth": "$600 Million",
+    "nationality": "American",
+    "age": "64 (Born December 3, 1962)",
+    "image_url": "https://picsum.photos/seed/969/400/400",
+    "meta_description": "Tom Cruise net worth 2026: Estimated $600 million. Hollywood's highest-paid actor known for Mission: Impossible franchise and iconic roles spanning four decades."
+  },
+  {
+    "name": "Denzel Washington",
+    "slug": "denzel-washington",
+    "category": "Actor",
+    "estimated_net_worth": "$280 Million",
+    "nationality": "American",
+    "age": "71 (Born December 28, 1954)",
+    "image_url": "https://picsum.photos/seed/530/400/400",
+    "meta_description": "Denzel Washington net worth 2026: Estimated $280 million. Academy Award-winning actor, producer, and director with five decades of blockbuster films."
+  },
+  {
+    "name": "Morgan Freeman",
+    "slug": "morgan-freeman",
+    "category": "Actor",
+    "estimated_net_worth": "$250 Million",
+    "nationality": "American",
+    "age": "88 (Born June 1, 1937)",
+    "image_url": "https://picsum.photos/seed/384/400/400",
+    "meta_description": "Morgan Freeman net worth 2026: Legendary actor's $250M fortune built through iconic film roles, production company, and commercial endorsements."
+  },
+  {
+    "name": "Samuel L Jackson",
+    "slug": "samuel-l-jackson",
+    "category": "Actor",
+    "estimated_net_worth": "$250 Million",
+    "nationality": "American",
+    "age": "76 (Born December 9, 1948)",
+    "image_url": "https://picsum.photos/seed/805/400/400",
+    "meta_description": "Samuel L Jackson net worth 2026: Estimated $250 million. Legendary actor known for iconic roles in Marvel, Tarantino films, and blockbuster franchises."
+  },
+  {
+    "name": "Chris Hemsworth",
+    "slug": "chris-hemsworth",
+    "category": "Actor",
+    "estimated_net_worth": "$200 Million",
+    "nationality": "Australian",
+    "age": "41 (Born August 11, 1983)",
+    "image_url": "https://picsum.photos/seed/534/400/400",
+    "meta_description": "Chris Hemsworth net worth 2026: Australian actor's $200M fortune from Thor, Marvel films, and production ventures."
+  },
+  {
+    "name": "Chris Evans",
+    "slug": "chris-evans",
+    "category": "Actor",
+    "estimated_net_worth": "$80 Million",
+    "nationality": "American",
+    "age": "42 (Born June 13, 1981)",
+    "image_url": "https://picsum.photos/seed/79/400/400",
+    "meta_description": "Chris Evans net worth 2026: Discover how the Marvel star built his $80M fortune through blockbuster films, production ventures, and strategic endorsements."
+  },
+  {
+    "name": "Chris Pratt",
+    "slug": "chris-pratt",
+    "category": "Actor",
+    "estimated_net_worth": "$250 Million",
+    "nationality": "American",
+    "age": "46 (Born August 14, 1979)",
+    "image_url": "https://picsum.photos/seed/870/400/400",
+    "meta_description": "Chris Pratt net worth 2026: Estimated $250M. Hollywood's action star and Marvel icon reveals income sources and career highlights."
+  },
+  {
+    "name": "Zendaya",
+    "slug": "zendaya",
+    "category": "Actress/Singer",
+    "estimated_net_worth": "$75-90 Million",
+    "nationality": "American",
+    "age": "28 (Born September 1, 1996)",
+    "image_url": "https://picsum.photos/seed/529/400/400",
+    "meta_description": "Zendaya net worth 2026: Estimated $75-90 million. Actress, singer, and fashion icon known for Euphoria and Spider-Man films."
+  },
+  {
+    "name": "Timothee Chalamet",
+    "slug": "timothee-chalamet",
+    "category": "Actor",
+    "estimated_net_worth": "$80-100 Million",
+    "nationality": "American (French-American)",
+    "age": "30 (Born December 27, 1995)",
+    "image_url": "https://picsum.photos/seed/643/400/400",
+    "meta_description": "Timothee Chalamet net worth 2026: Estimated $80-100 Million. Rising Hollywood star known for Dune, Call Me By Your Name, and major film roles."
+  },
+  {
+    "name": "Sydney Sweeney",
+    "slug": "sydney-sweeney",
+    "category": "Actress",
+    "estimated_net_worth": "$12-15 Million",
+    "nationality": "American",
+    "age": "27 (Born September 12, 1997)",
+    "image_url": "https://picsum.photos/seed/508/400/400",
+    "meta_description": "Sydney Sweeney net worth 2026: Estimated $12-15 million. Rising Hollywood actress known for Euphoria and The White Lotus roles."
+  },
+  {
+    "name": "Ana de Armas",
+    "slug": "ana-de-armas",
+    "category": "Actress",
+    "estimated_net_worth": "$30 Million",
+    "nationality": "Cuban-Spanish",
+    "age": "36 (Born April 30, 1988)",
+    "image_url": "https://picsum.photos/seed/38/400/400",
+    "meta_description": "Ana de Armas net worth 2026: Cuban-Spanish actress with estimated $30M fortune from blockbuster films, acting roles, and brand partnerships."
+  },
+  {
+    "name": "Margot Robbie",
+    "slug": "margot-robbie",
+    "category": "Actress",
+    "estimated_net_worth": "$25-30 Million",
+    "nationality": "Australian",
+    "age": "34 (Born July 2, 1990)",
+    "image_url": "https://picsum.photos/seed/561/400/400",
+    "meta_description": "Margot Robbie net worth 2026: Estimated $25-30 million. Australian actress known for Wolf of Wall Street, Barbie, and LuckyChap Productions success."
+  },
+  {
+    "name": "Florence Pugh",
+    "slug": "florence-pugh",
+    "category": "Actress",
+    "estimated_net_worth": "$12-15 Million",
+    "nationality": "British (English)",
+    "age": "30 (Born January 3, 1996)",
+    "image_url": "https://picsum.photos/seed/582/400/400",
+    "meta_description": "Florence Pugh net worth 2026: Estimated $12-15 million. English actress known for Midsommar, Black Widow, and critically acclaimed performances."
+  },
+  {
+    "name": "Anya Taylor-Joy",
+    "slug": "anya-taylor-joy",
+    "category": "Actress",
+    "estimated_net_worth": "$9-12 Million",
+    "nationality": "British-American (UK-born, Argentine descent)",
+    "age": "28 (Born December 16, 1996)",
+    "image_url": "https://picsum.photos/seed/891/400/400",
+    "meta_description": "Anya Taylor-Joy net worth 2026: Estimated $9-12 million. Rising Hollywood star known for The Queen's Gambit, Furiosa, and Mad Max films."
+  },
+  {
+    "name": "Julia Roberts",
+    "slug": "julia-roberts",
+    "category": "Actress",
+    "estimated_net_worth": "$250 Million",
+    "nationality": "American",
+    "age": "58 (born October 28, 1967)",
+    "image_url": "https://picsum.photos/seed/644/400/400",
+    "meta_description": "Julia Roberts net worth 2026: Estimated $250 million. Oscar-winning actress known for Pretty Woman, Erin Brockovich, and romantic comedies."
+  },
+  {
+    "name": "Sandra Bullock",
+    "slug": "sandra-bullock",
+    "category": "Actress",
+    "estimated_net_worth": "$250 Million",
+    "nationality": "American",
+    "age": "61 years old (born July 26, 1964)",
+    "image_url": "https://picsum.photos/seed/49/400/400",
+    "meta_description": "Sandra Bullock net worth 2026: Estimated $250 million. Academy Award-winning actress known for Speed, Miss Congeniality, and The Blind Side."
+  },
+  {
+    "name": "Reese Witherspoon",
+    "slug": "reese-witherspoon",
+    "category": "Actress",
+    "estimated_net_worth": "$400 Million",
+    "nationality": "American",
+    "age": "48",
+    "image_url": "https://picsum.photos/seed/232/400/400",
+    "meta_description": "Reese Witherspoon net worth 2026: Estimated $400 million. Academy Award-winning actress, producer, and entrepreneur behind Hello Sunshine."
+  },
+  {
+    "name": "Meryl Streep",
+    "slug": "meryl-streep",
+    "category": "Actress",
+    "estimated_net_worth": "$160 Million",
+    "nationality": "American",
+    "age": "77 (Born June 22, 1949)",
+    "image_url": "https://picsum.photos/seed/962/400/400",
+    "meta_description": "Meryl Streep net worth 2026: Estimated $160 Million. Hollywood's most decorated actress with 21 Oscar nominations and iconic film roles."
   }
 ]
