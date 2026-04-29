@@ -18,5 +18,505 @@
     "age": "35 years old (born October 27, 1989)",
     "image_url": "https://picsum.photos/seed/721/400/400",
     "meta_description": "PewDiePie net worth 2026: Estimated $40-50 million. Swedish YouTuber, gaming content creator, and entertainment mogul with 200M+ subscribers."
+  },
+  {
+    "name": "Logan Paul",
+    "slug": "logan-paul",
+    "category": "YouTuber/Boxer",
+    "estimated_net_worth": "$800 Million - $1 Billion",
+    "nationality": "American (United States)",
+    "age": "29 (born April 1, 1995)",
+    "image_url": "https://picsum.photos/seed/167/400/400",
+    "meta_description": "Logan Paul net worth 2026: Estimated $800M - $1B. YouTuber turned boxer with multiple revenue streams from content, boxing, and business ventures."
+  },
+  {
+    "name": "Jake Paul",
+    "slug": "jake-paul",
+    "category": "YouTuber/Boxer",
+    "estimated_net_worth": "$50-75 Million",
+    "nationality": "American",
+    "age": "29 (born January 17, 1997)",
+    "image_url": "https://picsum.photos/seed/512/400/400",
+    "meta_description": "Jake Paul net worth 2026: Estimated $50-75 million. YouTuber turned professional boxer with multiple revenue streams from boxing, content creation, and business ventures."
+  },
+  {
+    "name": "David Dobrik",
+    "slug": "david-dobrik",
+    "category": "YouTuber",
+    "estimated_net_worth": "$25 Million",
+    "nationality": "American (Slovak-born)",
+    "age": "30 (Born July 23, 1996)",
+    "image_url": "https://picsum.photos/seed/354/400/400",
+    "meta_description": "David Dobrik net worth 2026: Estimated $25 million. YouTube creator known for viral vlogs, Four Minute Films, and philanthropy."
+  },
+  {
+    "name": "Markiplier",
+    "slug": "markiplier",
+    "category": "YouTuber",
+    "estimated_net_worth": "$35-40 Million",
+    "nationality": "American",
+    "age": "35 (Born June 28, 1989)",
+    "image_url": "https://picsum.photos/seed/361/400/400",
+    "meta_description": "Markiplier net worth 2026: Estimated $35-40 million. Top gaming YouTuber known for horror games, charity work, and Unus Annus."
+  },
+  {
+    "name": "Jacksepticeye",
+    "slug": "jacksepticeye",
+    "category": "YouTuber",
+    "estimated_net_worth": "$25-30 Million",
+    "nationality": "Irish",
+    "age": "33 (born February 7, 1990)",
+    "image_url": "https://picsum.photos/seed/437/400/400",
+    "meta_description": "Jacksepticeye net worth 2026: Irish YouTuber Sean McLoughlin's estimated $25-30 million fortune from gaming, merchandise, and brand partnerships."
+  },
+  {
+    "name": "Ninja",
+    "slug": "ninja",
+    "category": "Gamer/Streamer",
+    "estimated_net_worth": "$40-50 Million",
+    "nationality": "United States",
+    "age": "33 (Born June 5, 1991)",
+    "image_url": "https://picsum.photos/seed/757/400/400",
+    "meta_description": "Ninja net worth 2026: Tyler Blevins' estimated $40-50 million fortune from gaming, streaming, esports investments & brand partnerships."
+  },
+  {
+    "name": "Pokimane",
+    "slug": "pokimane",
+    "category": "Streamer",
+    "estimated_net_worth": "$20-25 Million",
+    "nationality": "Canadian-Moroccan",
+    "age": "28 years old (Born September 14, 1996)",
+    "image_url": "https://picsum.photos/seed/977/400/400",
+    "meta_description": "Pokimane net worth 2026: $20-25 million. Top female streamer earning from Twitch, sponsorships, and business ventures."
+  },
+  {
+    "name": "Valkyrae",
+    "slug": "valkyrae",
+    "category": "Streamer",
+    "estimated_net_worth": "$12-15 Million",
+    "nationality": "American (United States)",
+    "age": "28 (born January 8, 1998)",
+    "image_url": "https://picsum.photos/seed/385/400/400",
+    "meta_description": "Valkyrae net worth 2026: $12-15 Million. Leading female gaming streamer known for Among Us gameplay, Twitch dominance, and esports investments."
+  },
+  {
+    "name": "Lilly Singh",
+    "slug": "lilly-singh",
+    "category": "YouTuber",
+    "estimated_net_worth": "$12-15 Million",
+    "nationality": "Canadian",
+    "age": "32",
+    "image_url": "https://picsum.photos/seed/10/400/400",
+    "meta_description": "Lilly Singh net worth 2026: Canadian YouTuber, comedian, and TV host worth estimated $12-15 million. Career earnings from YouTube, NBC deal, and brand partnerships."
+  },
+  {
+    "name": "Casey Neistat",
+    "slug": "casey-neistat",
+    "category": "YouTuber",
+    "estimated_net_worth": "$16 Million",
+    "nationality": "American",
+    "age": "42",
+    "image_url": "https://picsum.photos/seed/383/400/400",
+    "meta_description": "Casey Neistat net worth 2026: Estimated $16 Million. YouTube pioneer, filmmaker, and entrepreneur known for daily vlogging and tech innovation."
+  },
+  {
+    "name": "Emma Chamberlain",
+    "slug": "emma-chamberlain",
+    "category": "YouTuber",
+    "estimated_net_worth": "$12 Million",
+    "nationality": "American",
+    "age": "25 (born May 22, 2001)",
+    "image_url": "https://picsum.photos/seed/22/400/400",
+    "meta_description": "Emma Chamberlain net worth 2026: Discover the YouTube star's $12M fortune from content creation, brand partnerships, and business ventures."
+  },
+  {
+    "name": "Jeffree Star",
+    "slug": "jeffree-star",
+    "category": "Beauty YouTuber",
+    "estimated_net_worth": "$200 Million",
+    "nationality": "American",
+    "age": "36",
+    "image_url": "https://picsum.photos/seed/308/400/400",
+    "meta_description": "Jeffree Star net worth 2026: Estimated $200M+ from beauty empire, YouTube, and Killer Merch brand success."
+  },
+  {
+    "name": "James Charles",
+    "slug": "james-charles",
+    "category": "Beauty YouTuber",
+    "estimated_net_worth": "$35-50 Million",
+    "nationality": "American",
+    "age": "26 (Born May 1999)",
+    "image_url": "https://picsum.photos/seed/758/400/400",
+    "meta_description": "James Charles net worth 2026: Estimated $35-50M. Leading beauty YouTuber with 300M+ followers, makeup tutorials, and brand partnerships."
+  },
+  {
+    "name": "Dude Perfect",
+    "slug": "dude-perfect",
+    "category": "YouTuber",
+    "estimated_net_worth": "$50 Million",
+    "nationality": "United States",
+    "age": "Early 30s (founded 2010)",
+    "image_url": "https://picsum.photos/seed/1/400/400",
+    "meta_description": "Dude Perfect net worth 2026: Discover how the viral trick shot group built a $50M+ empire through YouTube, merchandise, and entertainment deals."
+  },
+  {
+    "name": "Rhett and Link",
+    "slug": "rhett-and-link",
+    "category": "YouTuber",
+    "estimated_net_worth": "$25 Million",
+    "nationality": "American",
+    "age": "Rhett (born 1988, age 38) and Link (born 1986, age 40)",
+    "image_url": "https://picsum.photos/seed/939/400/400",
+    "meta_description": "Rhett and Link net worth 2026: Discover how the iconic YouTube duo built a $25M+ empire through Mythical Entertainment and diverse ventures."
+  },
+  {
+    "name": "Smosh",
+    "slug": "smosh",
+    "category": "YouTuber",
+    "estimated_net_worth": "$25 Million",
+    "nationality": "United States",
+    "age": "Ian Hecox (born 1987, age 39) and Anthony Padilla (born 1987, age 39)",
+    "image_url": "https://picsum.photos/seed/468/400/400",
+    "meta_description": "Smosh net worth 2026: Ian Hecox and Anthony Padilla's combined estimated wealth from YouTube, merchandise, and entertainment ventures."
+  },
+  {
+    "name": "Vsauce",
+    "slug": "vsauce",
+    "category": "YouTuber",
+    "estimated_net_worth": "$12-16 Million",
+    "nationality": "American",
+    "age": "37",
+    "image_url": "https://picsum.photos/seed/917/400/400",
+    "meta_description": "Vsauce (Michael Stevens) net worth 2026: Educational YouTuber with 20M+ subscribers. Estimated net worth $12-16 million from YouTube, Nebula, and brand partnerships."
+  },
+  {
+    "name": "Veritasium",
+    "slug": "veritasium",
+    "category": "YouTuber",
+    "estimated_net_worth": "$25-35 Million",
+    "nationality": "Australian",
+    "age": "36 (born 1989)",
+    "image_url": "https://picsum.photos/seed/647/400/400",
+    "meta_description": "Veritasium (Derek Muller) net worth 2026: $25-35 million. Science YouTuber known for viral educational videos exploring physics, engineering, and scientific phenomena with millions of subscribers."
+  },
+  {
+    "name": "Kurzgesagt",
+    "slug": "kurzgesagt",
+    "category": "YouTuber",
+    "estimated_net_worth": "$50-80 Million",
+    "nationality": "German",
+    "age": "Founded 2013",
+    "image_url": "https://picsum.photos/seed/782/400/400",
+    "meta_description": "Kurzgesagt net worth 2026: German educational animation studio worth $50-80 million. Known for science explainer videos with millions of subscribers."
+  },
+  {
+    "name": "Mark Rober",
+    "slug": "mark-rober",
+    "category": "YouTuber",
+    "estimated_net_worth": "$25-30 Million",
+    "nationality": "American",
+    "age": "47 (Born March 20, 1979)",
+    "image_url": "https://picsum.photos/seed/678/400/400",
+    "meta_description": "Mark Rober net worth 2026: $25-30 million. Engineer, YouTuber, and innovator known for viral engineering videos and CrunchLabs."
+  },
+  {
+    "name": "Linus Tech Tips",
+    "slug": "linus-tech-tips",
+    "category": "Tech YouTuber",
+    "estimated_net_worth": "$25-30 Million",
+    "nationality": "Canadian",
+    "age": "38",
+    "image_url": "https://picsum.photos/seed/217/400/400",
+    "meta_description": "Linus Tech Tips net worth 2026: Canadian tech YouTuber and founder of LMG with estimated $25-30M net worth from YouTube, Floatplane, and tech reviews."
+  },
+  {
+    "name": "MKBHD",
+    "slug": "mkbhd",
+    "category": "Tech YouTuber",
+    "estimated_net_worth": "$25-30 Million",
+    "nationality": "American",
+    "age": "Born 1991 (Age 34-35)",
+    "image_url": "https://picsum.photos/seed/807/400/400",
+    "meta_description": "MKBHD net worth 2026: Marques Brownlee's estimated $25-30 million fortune from YouTube, sponsorships, and tech ventures."
+  },
+  {
+    "name": "Unbox Therapy",
+    "slug": "unbox-therapy",
+    "category": "Tech YouTuber",
+    "estimated_net_worth": "$50-70 Million",
+    "nationality": "Canadian",
+    "age": "Born 1987 (approximately 38-39 years old)",
+    "image_url": "https://picsum.photos/seed/826/400/400",
+    "meta_description": "Unbox Therapy net worth 2026: Lewis Hilsenteger's estimated $50-70 million fortune from YouTube, tech reviews, and brand partnerships."
+  },
+  {
+    "name": "Shane Dawson",
+    "slug": "shane-dawson",
+    "category": "YouTuber",
+    "estimated_net_worth": "$16-20 Million",
+    "nationality": "American",
+    "age": "35 (born July 19, 1988)",
+    "image_url": "https://picsum.photos/seed/717/400/400",
+    "meta_description": "Shane Dawson net worth 2026: Estimated $16-20 million. YouTube pioneer, content creator, and podcast host with 19M+ subscribers."
+  },
+  {
+    "name": "Trisha Paytas",
+    "slug": "trisha-paytas",
+    "category": "YouTuber",
+    "estimated_net_worth": "$10-15 Million",
+    "nationality": "American",
+    "age": "36 (Born May 1988)",
+    "image_url": "https://picsum.photos/seed/196/400/400",
+    "meta_description": "Trisha Paytas net worth 2026: Estimated $10-15 million. YouTuber, singer, and controversial internet personality with diverse income streams."
+  },
+  {
+    "name": "Tana Mongeau",
+    "slug": "tana-mongeau",
+    "category": "YouTuber",
+    "estimated_net_worth": "$10-15 Million",
+    "nationality": "American",
+    "age": "28 (born June 24, 1998)",
+    "image_url": "https://picsum.photos/seed/945/400/400",
+    "meta_description": "Tana Mongeau net worth 2026: estimated $10-15 million from YouTube, podcasting, merchandise, and digital ventures as controversial content creator."
+  },
+  {
+    "name": "KSI",
+    "slug": "ksi",
+    "category": "YouTuber/Boxer",
+    "estimated_net_worth": "$20 Million",
+    "nationality": "British",
+    "age": "31",
+    "image_url": "https://picsum.photos/seed/478/400/400",
+    "meta_description": "KSI net worth 2026: British YouTuber and boxer Olajide Olatunji's estimated wealth from boxing, YouTube, and business ventures."
+  },
+  {
+    "name": "Sidemen",
+    "slug": "sidemen",
+    "category": "YouTuber",
+    "estimated_net_worth": "$100-150 Million",
+    "nationality": "United Kingdom",
+    "age": "Founded 2013 (Members aged 25-32)",
+    "image_url": "https://picsum.photos/seed/69/400/400",
+    "meta_description": "Sidemen net worth 2026: Estimated $100-150 Million. UK's biggest YouTube group with 19M+ subscribers and multiple revenue streams."
+  },
+  {
+    "name": "W2S",
+    "slug": "w2s",
+    "category": "YouTuber",
+    "estimated_net_worth": "$18-22 Million",
+    "nationality": "British",
+    "age": "27 years old (born 1999)",
+    "image_url": "https://picsum.photos/seed/825/400/400",
+    "meta_description": "W2S net worth 2026: Harry Lewis estimated at $18-22 million. British YouTuber famous for FIFA content, pranks, and entertainment videos."
+  },
+  {
+    "name": "Miniminter",
+    "slug": "miniminter",
+    "category": "YouTuber",
+    "estimated_net_worth": "$20-25 Million",
+    "nationality": "British",
+    "age": "32 (Born 1994)",
+    "image_url": "https://picsum.photos/seed/100/400/400",
+    "meta_description": "Miniminter net worth 2026: British YouTuber Simon Minter's fortune from gaming, Sidemen, and business ventures estimated at $20-25 million."
+  },
+  {
+    "name": "Vikkstar123",
+    "slug": "vikkstar123",
+    "category": "YouTuber",
+    "estimated_net_worth": "$15-20 Million",
+    "nationality": "British",
+    "age": "29 (Born July 1997)",
+    "image_url": "https://picsum.photos/seed/502/400/400",
+    "meta_description": "Vikkstar123 net worth 2026: British YouTuber and gaming content creator with estimated $15-20M net worth. Gaming, Sidemen member, content creation."
+  },
+  {
+    "name": "Behzinga",
+    "slug": "behzinga",
+    "category": "YouTuber",
+    "estimated_net_worth": "$20 Million",
+    "nationality": "British",
+    "age": "28",
+    "image_url": "https://picsum.photos/seed/381/400/400",
+    "meta_description": "Behzinga net worth 2026: British YouTuber Ethan Payne's estimated fortune from YouTube, Sidemen, and business ventures."
+  },
+  {
+    "name": "Zerkaa",
+    "slug": "zerkaa",
+    "category": "YouTuber",
+    "estimated_net_worth": "$25 Million",
+    "nationality": "British",
+    "age": "29",
+    "image_url": "https://picsum.photos/seed/720/400/400",
+    "meta_description": "Zerkaa net worth 2026: British YouTuber and Sidemen member Josh Bradley's estimated fortune from gaming, content creation, and business ventures."
+  },
+  {
+    "name": "Tobi Brown",
+    "slug": "tobi-brown",
+    "category": "YouTuber",
+    "estimated_net_worth": "$8 Million - $12 Million",
+    "nationality": "British",
+    "age": "27",
+    "image_url": "https://picsum.photos/seed/674/400/400",
+    "meta_description": "Tobi Brown net worth 2026: Estimated $8-12 million. British YouTuber known for Sidemen group, entertainment content, and successful business ventures."
+  },
+  {
+    "name": "Calfreezy",
+    "slug": "calfreezy",
+    "category": "YouTuber",
+    "estimated_net_worth": "$8 Million - $12 Million",
+    "nationality": "British (United Kingdom)",
+    "age": "28 (born 1998)",
+    "image_url": "https://picsum.photos/seed/270/400/400",
+    "meta_description": "Calfreezy net worth 2026: British YouTuber Callum Leighton's estimated fortune from gaming, pranks, and entertainment content creation."
+  },
+  {
+    "name": "Jacksfilms",
+    "slug": "jacksfilms",
+    "category": "YouTuber",
+    "estimated_net_worth": "$12-15 Million",
+    "nationality": "American",
+    "age": "32 (Born: 1993)",
+    "image_url": "https://picsum.photos/seed/753/400/400",
+    "meta_description": "Jacksfilms net worth 2026: $12-15 million. YouTube creator known for YIAY series, comedy skits, and viral content with 20M+ subscribers."
+  },
+  {
+    "name": "Phillip DeFranco",
+    "slug": "phillip-defranco",
+    "category": "YouTuber",
+    "estimated_net_worth": "$25-35 Million",
+    "nationality": "American",
+    "age": "Born 1987 (Age 38-39)",
+    "image_url": "https://picsum.photos/seed/120/400/400",
+    "meta_description": "Phillip DeFranco net worth 2026: Estimated $25-35 million. YouTube pioneer, media entrepreneur, and digital content creator with 19M+ subscribers."
+  },
+  {
+    "name": "iJustine",
+    "slug": "ijustine",
+    "category": "YouTuber",
+    "estimated_net_worth": "$12-15 Million",
+    "nationality": "American",
+    "age": "40 (Born March 20, 1984)",
+    "image_url": "https://picsum.photos/seed/870/400/400",
+    "meta_description": "iJustine net worth 2026: Estimated $12-15 million. Pioneer tech YouTuber known for Apple unboxings, tech reviews, and lifestyle content since 2006."
+  },
+  {
+    "name": "Hannah Hart",
+    "slug": "hannah-hart",
+    "category": "YouTuber",
+    "estimated_net_worth": "$16 Million",
+    "nationality": "American",
+    "age": "37",
+    "image_url": "https://picsum.photos/seed/735/400/400",
+    "meta_description": "Hannah Hart net worth 2026: Estimated $16 million. Comedy YouTuber known for My Drunk Kitchen series, acting, and LGBTQ+ advocacy."
+  },
+  {
+    "name": "Grace Helbig",
+    "slug": "grace-helbig",
+    "category": "YouTuber",
+    "estimated_net_worth": "$12 Million",
+    "nationality": "American",
+    "age": "42",
+    "image_url": "https://picsum.photos/seed/924/400/400",
+    "meta_description": "Grace Helbig net worth 2026: Discover the YouTube star's estimated $12 million fortune built through content creation, brand deals, and digital media ventures."
+  },
+  {
+    "name": "Tyler Oakley",
+    "slug": "tyler-oakley",
+    "category": "YouTuber",
+    "estimated_net_worth": "$12-15 Million",
+    "nationality": "American",
+    "age": "33",
+    "image_url": "https://picsum.photos/seed/735/400/400",
+    "meta_description": "Tyler Oakley net worth 2026: Estimated $12-15 million. YouTuber, podcaster, and LGBTQ+ advocate with 7M+ YouTube subscribers and diverse revenue streams."
+  },
+  {
+    "name": "Troye Sivan",
+    "slug": "troye-sivan",
+    "category": "Singer/YouTuber",
+    "estimated_net_worth": "$16 Million",
+    "nationality": "Australian",
+    "age": "28 (born June 5, 1998)",
+    "image_url": "https://picsum.photos/seed/959/400/400",
+    "meta_description": "Troye Sivan net worth 2026: Australian singer and YouTuber with $16 million net worth from music, streaming, and digital content creation."
+  },
+  {
+    "name": "Connor Franta",
+    "slug": "connor-franta",
+    "category": "YouTuber",
+    "estimated_net_worth": "$5-8 Million",
+    "nationality": "American",
+    "age": "29 (born July 5, 1996)",
+    "image_url": "https://picsum.photos/seed/613/400/400",
+    "meta_description": "Connor Franta net worth 2026: Estimated $5-8 million. YouTuber, author, and entrepreneur known for lifestyle content and digital media ventures."
+  },
+  {
+    "name": "Joey Graceffa",
+    "slug": "joey-graceffa",
+    "category": "YouTuber",
+    "estimated_net_worth": "$20 Million",
+    "nationality": "American",
+    "age": "32",
+    "image_url": "https://picsum.photos/seed/707/400/400",
+    "meta_description": "Joey Graceffa net worth 2026: YouTube creator worth $20 Million. Known for horror series, conspiracy content, and digital entertainment empire."
+  },
+  {
+    "name": "Zoella",
+    "slug": "zoella",
+    "category": "Lifestyle YouTuber",
+    "estimated_net_worth": "$12 Million",
+    "nationality": "British (United Kingdom)",
+    "age": "32 (born March 28, 1990)",
+    "image_url": "https://picsum.photos/seed/359/400/400",
+    "meta_description": "Zoella net worth 2026: British lifestyle YouTuber and author Zoe Sugg's estimated wealth from YouTube, books, and brand collaborations."
+  },
+  {
+    "name": "Alfie Deyes",
+    "slug": "alfie-deyes",
+    "category": "YouTuber",
+    "estimated_net_worth": "$12 Million",
+    "nationality": "British",
+    "age": "29",
+    "image_url": "https://picsum.photos/seed/671/400/400",
+    "meta_description": "Alfie Deyes net worth 2026: British YouTuber and content creator. Estimated net worth, income sources, and career highlights of the popular vlogger."
+  },
+  {
+    "name": "Jim Chapman",
+    "slug": "jim-chapman",
+    "category": "YouTuber",
+    "estimated_net_worth": "$5-8 Million",
+    "nationality": "British",
+    "age": "32 (born 1994)",
+    "image_url": "https://picsum.photos/seed/53/400/400",
+    "meta_description": "Jim Chapman net worth 2026: British YouTuber and content creator with estimated $5-8 million net worth from YouTube, brand partnerships, and digital ventures."
+  },
+  {
+    "name": "Sprinkleofglitter",
+    "slug": "sprinkleofglitter",
+    "category": "YouTuber",
+    "estimated_net_worth": "$8-12 Million",
+    "nationality": "British (United Kingdom)",
+    "age": "Born 1989 (36-37 years old)",
+    "image_url": "https://picsum.photos/seed/443/400/400",
+    "meta_description": "Sprinkleofglitter (Louise Pentland) net worth 2026: British YouTuber and lifestyle influencer. Estimated worth $8-12 million from YouTube, brand partnerships, and digital ventures."
+  },
+  {
+    "name": "Charli D'Amelio",
+    "slug": "charli-damelio",
+    "category": "TikToker",
+    "estimated_net_worth": "$20 Million",
+    "nationality": "American",
+    "age": "22 (born May 1, 2004)",
+    "image_url": "https://picsum.photos/seed/928/400/400",
+    "meta_description": "Charli D'Amelio net worth 2026: Estimated $20 million. TikTok's biggest star turned multi-platform influencer with massive brand deals."
+  },
+  {
+    "name": "Dixie D'Amelio",
+    "slug": "dixie-damelio",
+    "category": "TikToker",
+    "estimated_net_worth": "$10 Million",
+    "nationality": "American",
+    "age": "23 (born July 1, 2001)",
+    "image_url": "https://picsum.photos/seed/435/400/400",
+    "meta_description": "Dixie D'Amelio net worth 2026: Estimated $10 million. TikTok star, dancer, singer & entrepreneur with 150M+ followers."
   }
 ]
