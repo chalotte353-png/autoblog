@@ -5724,8 +5724,8 @@ def main():
 
     print(f"\n✅ Generated {new_count} new profiles")
 
-    # Update nav/footer in ALL existing profiles without destroying content
-    print("🔄 Updating nav/footer in all profiles...")
+    # Update nav/footer AND similar profiles in ALL existing profiles
+    print("🔄 Updating nav/footer + similar profiles in all profiles...")
     import re as _re
     new_nav = get_nw_nav()
     new_foot = get_nw_footer(datetime.now().year)
@@ -5739,15 +5739,13 @@ def main():
             html = html_file.read_text(encoding="utf-8")
             original = html
 
-            # Replace topbar + navbar (any old or new format)
-            # Must include topbar to prevent double header
+            # Replace topbar + navbar
             html = _re.sub(
                 r'<div class="topbar">.*?</script>',
                 new_nav,
                 html,
                 flags=_re.DOTALL
             )
-            # Fallback: if no topbar found, replace just navbar
             if '<div class="topbar">' not in html:
                 html = _re.sub(
                     r'<nav class="navbar">.*?</script>',
@@ -5764,12 +5762,49 @@ def main():
                 flags=_re.DOTALL
             )
 
+            # Update/add similar profiles dynamically
+            cat = p.get("category", "")
+            similar = [x for x in profiles if x.get("category") == cat and x.get("slug") != slug][:4]
+            if len(similar) < 4:
+                others = [x for x in profiles if x.get("category") != cat and x.get("slug") != slug]
+                similar += others[:4 - len(similar)]
+
+            if similar:
+                cards_html = ""
+                for s in similar:
+                    cards_html += f'''
+            <a href="{s["slug"]}.html" class="nw-similar-card">
+              <img src="/celeb-images/{s["slug"]}.webp" alt="{s["name"]}" class="nw-similar-img" onerror="this.style.display='none'">
+              <div class="nw-similar-body">
+                <div class="nw-similar-name">{s["name"]}</div>
+                <div class="nw-similar-worth">{s["estimated_net_worth"]}</div>
+              </div>
+            </a>'''
+
+                similar_html = f'''
+        <div class="nw-similar">
+          <h2 class="nw-similar-title">Similar Profiles</h2>
+          <div class="nw-similar-grid">{cards_html}
+          </div>
+        </div>'''
+
+                # Replace existing similar section or add before </main>
+                if 'class="nw-similar"' in html:
+                    html = _re.sub(
+                        r'<div class="nw-similar">.*?</div>\s*</div>\s*</div>',
+                        similar_html + '\n      </main>\n    </div>\n  </div>',
+                        html,
+                        flags=_re.DOTALL
+                    )
+                elif '</main>' in html:
+                    html = html.replace('      </main>', similar_html + '\n      </main>', 1)
+
             if html != original:
                 html_file.write_text(html, encoding="utf-8")
                 updated += 1
         except Exception as e:
             print(f"  Error: {slug}: {e}")
-    print(f"  Updated nav/footer in {updated} profiles")
+    print(f"  Updated {updated} profiles")
 
     print("📋 Rebuilding net worth index page...")
     rebuild_networth_index(profiles)
