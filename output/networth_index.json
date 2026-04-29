@@ -1,0 +1,22 @@
+[
+  {
+    "name": "MrBeast",
+    "slug": "mrbeast",
+    "category": "YouTuber",
+    "estimated_net_worth": "$500 Million - $600 Million",
+    "nationality": "American",
+    "age": "26 years old (Born May 7, 1998)",
+    "image_url": "https://picsum.photos/seed/128/400/400",
+    "meta_description": "MrBeast net worth 2026: Estimated $500M+ from YouTube, MrBeast Burger, merchandise, and brand deals. Top-earning content creator."
+  },
+  {
+    "name": "PewDiePie",
+    "slug": "pewdiepie",
+    "category": "YouTuber",
+    "estimated_net_worth": "$40-50 Million",
+    "nationality": "Swedish",
+    "age": "35 years old (born October 27, 1989)",
+    "image_url": "https://picsum.photos/seed/721/400/400",
+    "meta_description": "PewDiePie net worth 2026: Estimated $40-50 million. Swedish YouTuber, gaming content creator, and entertainment mogul with 200M+ subscribers."
+  }
+]
