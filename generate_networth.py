@@ -5619,12 +5619,30 @@ def build_profile_html(data: dict, all_profiles: list = None) -> str:
     NETWORTH_DIR.mkdir(parents=True, exist_ok=True)
     now = datetime.now(timezone.utc)
     tpl = Template(PROFILE_TEMPLATE)
-    # Get similar profiles (same category, exclude self)
+    # Get similar profiles - auto expand if not enough
     similar = []
     if all_profiles:
         cat = data.get("category", "")
         slug = data.get("slug", "")
         similar = [p for p in all_profiles if p.get("category") == cat and p.get("slug") != slug][:4]
+        if len(similar) < 4:
+            cat_words = set(cat.lower().replace("/", " ").split())
+            seen = {p["slug"] for p in similar} | {slug}
+            for p in all_profiles:
+                if len(similar) >= 4: break
+                if p["slug"] in seen: continue
+                other_words = set(p.get("category","").lower().replace("/", " ").split())
+                if cat_words & other_words:
+                    similar.append(p)
+                    seen.add(p["slug"])
+        if len(similar) < 4:
+            seen = {p["slug"] for p in similar} | {slug}
+            for fill_cat in ["Actor", "Actress", "TikToker", "YouTuber"]:
+                for p in all_profiles:
+                    if len(similar) >= 4: break
+                    if p.get("slug") not in seen and p.get("category") == fill_cat:
+                        similar.append(p)
+                        seen.add(p["slug"])
     return tpl.render(**data, site_name=SITE_NAME, site_url=SITE_URL, year=now.year,
                       nav_html=get_nw_nav(), foot_html=get_nw_footer(now.year),
                       similar_profiles=similar)
@@ -5762,12 +5780,27 @@ def main():
                 flags=_re.DOTALL
             )
 
-            # Update/add similar profiles dynamically
+            # Update/add similar profiles - auto expand
             cat = p.get("category", "")
             similar = [x for x in profiles if x.get("category") == cat and x.get("slug") != slug][:4]
             if len(similar) < 4:
-                others = [x for x in profiles if x.get("category") != cat and x.get("slug") != slug]
-                similar += others[:4 - len(similar)]
+                cat_words = set(cat.lower().replace("/", " ").split())
+                seen = {x["slug"] for x in similar} | {slug}
+                for x in profiles:
+                    if len(similar) >= 4: break
+                    if x["slug"] in seen: continue
+                    other_words = set(x.get("category","").lower().replace("/", " ").split())
+                    if cat_words & other_words:
+                        similar.append(x)
+                        seen.add(x["slug"])
+            if len(similar) < 4:
+                seen = {x["slug"] for x in similar} | {slug}
+                for fill_cat in ["Actor", "Actress", "TikToker", "YouTuber"]:
+                    for x in profiles:
+                        if len(similar) >= 4: break
+                        if x.get("slug") not in seen and x.get("category") == fill_cat:
+                            similar.append(x)
+                            seen.add(x["slug"])
 
             if similar:
                 cards_html = ""
