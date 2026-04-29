@@ -1048,5 +1048,55 @@
     "age": "50 (Born August 7, 1975)",
     "image_url": "https://picsum.photos/seed/245/400/400",
     "meta_description": "Charlize Theron net worth 2026: $160 million."
+  },
+  {
+    "name": "Halle Berry",
+    "slug": "halle-berry",
+    "category": "Actress",
+    "estimated_net_worth": "$250 Million",
+    "nationality": "American",
+    "age": "60 (Born August 14, 1966)",
+    "image_url": "https://picsum.photos/seed/812/400/400",
+    "meta_description": "Halle Berry net worth 2026: Estimated $250 million. Academy Award-winning actress known for iconic film roles and business ventures."
+  },
+  {
+    "name": "Natalie Portman",
+    "slug": "natalie-portman",
+    "category": "Actress",
+    "estimated_net_worth": "$90 Million",
+    "nationality": "Israeli-American",
+    "age": "43 (born June 9, 1981)",
+    "image_url": "https://picsum.photos/seed/39/400/400",
+    "meta_description": "Natalie Portman net worth 2026: Israeli-American actress worth $90 million. Star of Star Wars, Black Swan, and Marvel films."
+  },
+  {
+    "name": "Anne Hathaway",
+    "slug": "anne-hathaway",
+    "category": "Actress",
+    "estimated_net_worth": "$80 Million",
+    "nationality": "American",
+    "age": "44 (born November 12, 1982)",
+    "image_url": "https://picsum.photos/seed/506/400/400",
+    "meta_description": "Anne Hathaway net worth 2026: Estimated $80 million. Academy Award-winning actress known for roles in The Devil Wears Prada, Les Mis\u00e9rables, and The Dark Knight Rises."
+  },
+  {
+    "name": "Gwyneth Paltrow",
+    "slug": "gwyneth-paltrow",
+    "category": "Actress/Business",
+    "estimated_net_worth": "$300 Million",
+    "nationality": "American",
+    "age": "52 (born September 27, 1972)",
+    "image_url": "https://picsum.photos/seed/638/400/400",
+    "meta_description": "Gwyneth Paltrow net worth 2026: $300 million. Oscar-winning actress turned wellness entrepreneur behind Goop empire."
+  },
+  {
+    "name": "Demi Moore",
+    "slug": "demi-moore",
+    "category": "Actress",
+    "estimated_net_worth": "$250 Million",
+    "nationality": "American",
+    "age": "64 (born November 11, 1962)",
+    "image_url": "https://picsum.photos/seed/39/400/400",
+    "meta_description": "Demi Moore net worth 2026: Estimated $250 Million. Hollywood icon known for Ghost, Indecent Proposal, and acting comeback."
   }
 ]
