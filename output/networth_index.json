@@ -1098,5 +1098,35 @@
     "age": "64 (born November 11, 1962)",
     "image_url": "https://picsum.photos/seed/39/400/400",
     "meta_description": "Demi Moore net worth 2026: Estimated $250 Million. Hollywood icon known for Ghost, Indecent Proposal, and acting comeback."
+  },
+  {
+    "name": "Keanu Reeves",
+    "slug": "keanu-reeves",
+    "category": "Actor",
+    "estimated_net_worth": "$380 Million",
+    "nationality": "Canadian-American",
+    "age": "61 (Born September 2, 1964)",
+    "image_url": "https://picsum.photos/seed/59/400/400",
+    "meta_description": "Keanu Reeves net worth 2026: Estimated $380 million. Actor famous for Matrix and John Wick franchises. Income from films, production company, and endorsements."
+  },
+  {
+    "name": "Harrison Ford",
+    "slug": "harrison-ford",
+    "category": "Actor",
+    "estimated_net_worth": "$300 Million",
+    "nationality": "American",
+    "age": "81 (Born July 13, 1942)",
+    "image_url": "https://picsum.photos/seed/702/400/400",
+    "meta_description": "Harrison Ford net worth 2026: Estimated $300 million. Legendary actor behind iconic roles in Star Wars, Indiana Jones, and more."
+  },
+  {
+    "name": "Sylvester Stallone",
+    "slug": "sylvester-stallone",
+    "category": "Actor",
+    "estimated_net_worth": "$400 Million",
+    "nationality": "American",
+    "age": "80 (Born July 6, 1946)",
+    "image_url": "https://picsum.photos/seed/539/400/400",
+    "meta_description": "Sylvester Stallone net worth 2026: Estimated $400 Million. Legendary action star behind Rocky and Rambo franchises with decades of Hollywood success."
   }
 ]
