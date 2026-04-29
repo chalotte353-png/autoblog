@@ -5807,19 +5807,23 @@ def main():
                 for s in similar:
                     cards_html += f'''<a href="{s["slug"]}.html" class="nw-similar-card"><img src="/celeb-images/{s["slug"]}.webp" alt="{s["name"]}" class="nw-similar-img" onerror="this.style.display='none'"><div class="nw-similar-body"><div class="nw-similar-name">{s["name"]}</div><div class="nw-similar-worth">{s["estimated_net_worth"]}</div></div></a>'''
 
-                # Just replace the grid content inside existing nw-similar-grid
-                if 'class="nw-similar-grid"' in html:
-                    html = _re.sub(
-                        r'(<div class="nw-similar-grid">).*?(</div>\s*</div>\s*(?=\s*</main>|\s*</aside>|\s*<aside)))',
-                        lambda m: m.group(1) + cards_html + '\n          </div>\n        </div>',
-                        html,
-                        count=1,
-                        flags=_re.DOTALL
-                    )
-                else:
-                    # No similar section exists - add before </main>
-                    similar_section = f'<div class="nw-similar"><div class="nw-similar-title">Similar Profiles</div><div class="nw-similar-grid">{cards_html}</div></div>'
-                    html = html.replace('</main>', similar_section + '\n</main>', 1)
+                # Replace entire nw-similar section cleanly
+                # Remove existing nw-similar section
+                html = _re.sub(
+                    r'<div class="nw-similar">.*?</div>\s*\n\s*</div>',
+                    '',
+                    html,
+                    count=1,
+                    flags=_re.DOTALL
+                )
+                # Add fresh similar section before </main>
+                similar_section = f'''<div class="nw-similar">
+          <div class="nw-similar-title">Similar Profiles</div>
+          <div class="nw-similar-grid">{cards_html}
+          </div>
+        </div>'''
+                # Find </main> and insert before it
+                html = _re.sub(r'(\s*</main>)', '\n        ' + similar_section + r'\1', html, count=1)
 
             if html != original:
                 html_file.write_text(html, encoding="utf-8")
