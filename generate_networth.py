@@ -5144,7 +5144,7 @@ Rules:
             },
             json={
                 "model": "claude-haiku-4-5-20251001",
-                "max_tokens": 2500,
+                "max_tokens": 4000,
                 "messages": [{"role": "user", "content": prompt}],
             },
             timeout=60,
@@ -5152,20 +5152,37 @@ Rules:
         raw = r.json()["content"][0]["text"].strip()
         raw = re.sub(r"^```json\s*", "", raw)
         raw = re.sub(r"\s*```$", "", raw)
-        # Fix common JSON issues — unterminated strings, bad apostrophes
-        raw = raw.replace("\\'", "'")          # escaped apostrophes → plain
-        raw = re.sub(r'[\x00-\x1f\x7f]', ' ', raw)  # remove control chars
+        raw = raw.replace("\\'", "'")
+        raw = re.sub(r'[\x00-\x1f\x7f]', ' ', raw)
         try:
             return json.loads(raw)
         except Exception:
-            # Try to extract just the JSON object
             m = re.search(r'\{.*\}', raw, re.DOTALL)
             if m:
                 try:
                     return json.loads(m.group(0))
                 except Exception:
                     pass
-            raise
+            # Retry with shorter biography instruction
+            print(f"  ↺ Retrying {name} with shorter output...")
+            r2 = requests.post(
+                "https://api.anthropic.com/v1/messages",
+                headers={
+                    "x-api-key": CLAUDE_API_KEY,
+                    "anthropic-version": "2023-06-01",
+                    "content-type": "application/json",
+                },
+                json={
+                    "model": "claude-haiku-4-5-20251001",
+                    "max_tokens": 4000,
+                    "messages": [{"role": "user", "content": prompt + "\n\nCRITICAL: Keep biography_html under 300 words. Return ONLY valid complete JSON. No truncation."}],
+                },
+                timeout=60,
+            )
+            raw2 = r2.json()["content"][0]["text"].strip()
+            raw2 = re.sub(r"^```json\s*", "", raw2)
+            raw2 = re.sub(r"\s*```$", "", raw2)
+            return json.loads(raw2)
     except Exception as e:
         print(f"  ✗ Claude error for {name}: {e}")
         return None
