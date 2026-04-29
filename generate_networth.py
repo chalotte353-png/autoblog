@@ -5836,6 +5836,30 @@ def main():
         </div>'''
                 html = html.replace('</main>', similar_section + '\n      </main>', 1)
 
+            # Safety check: if aside is missing, rebuild page from scratch
+            if '<aside>' not in html and '<aside ' not in html:
+                # Page is broken - rebuild from scratch using template
+                celeb_data = next((c for c in CELEBRITIES if slugify(c["name"]) == slug), None)
+                if celeb_data:
+                    # Find profile data
+                    profile_data = next((x for x in profiles if x.get("slug") == slug), None)
+                    if profile_data:
+                        full_data = dict(profile_data)
+                        full_data.setdefault("real_name", celeb_data.get("real_name", profile_data.get("name","")))
+                        full_data.setdefault("known_for", "")
+                        full_data.setdefault("income_sources", [])
+                        full_data.setdefault("career_highlights", [])
+                        full_data.setdefault("brand_deals", [])
+                        full_data.setdefault("social_following", "")
+                        full_data.setdefault("biography_html", f"<p>Biography for {profile_data.get('name','')} coming soon.</p>")
+                        full_data.setdefault("tags", [])
+                        full_data.setdefault("net_worth_rank", "")
+                        html = build_profile_html(full_data, profiles)
+                        html_file.write_text(html, encoding="utf-8")
+                        updated += 1
+                        print(f"  🔧 Rebuilt broken page: {slug}")
+                        continue
+
             if html != original:
                 html_file.write_text(html, encoding="utf-8")
                 updated += 1
