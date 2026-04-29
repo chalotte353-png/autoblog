@@ -5807,23 +5807,34 @@ def main():
                 for s in similar:
                     cards_html += f'''<a href="{s["slug"]}.html" class="nw-similar-card"><img src="/celeb-images/{s["slug"]}.webp" alt="{s["name"]}" class="nw-similar-img" onerror="this.style.display='none'"><div class="nw-similar-body"><div class="nw-similar-name">{s["name"]}</div><div class="nw-similar-worth">{s["estimated_net_worth"]}</div></div></a>'''
 
-                # Replace entire nw-similar section cleanly
-                # Remove existing nw-similar section
-                html = _re.sub(
-                    r'<div class="nw-similar">.*?</div>\s*\n\s*</div>',
-                    '',
-                    html,
-                    count=1,
-                    flags=_re.DOTALL
-                )
+                # Remove nw-similar section using div depth counting
+                body_start = html.find('<body')
+                sim_start = html.find('<div class="nw-similar">', body_start)
+                if sim_start > 0:
+                    depth = 0
+                    i = sim_start
+                    sim_end = sim_start
+                    while i < len(html):
+                        if html[i:i+4] == '<div':
+                            depth += 1
+                            i += 4
+                        elif html[i:i+6] == '</div>':
+                            depth -= 1
+                            if depth == 0:
+                                sim_end = i + 6
+                                break
+                            i += 6
+                        else:
+                            i += 1
+                    html = html[:sim_start] + html[sim_end:]
+
                 # Add fresh similar section before </main>
                 similar_section = f'''<div class="nw-similar">
           <div class="nw-similar-title">Similar Profiles</div>
           <div class="nw-similar-grid">{cards_html}
           </div>
         </div>'''
-                # Find </main> and insert before it
-                html = _re.sub(r'(\s*</main>)', '\n        ' + similar_section + r'\1', html, count=1)
+                html = html.replace('</main>', similar_section + '\n      </main>', 1)
 
             if html != original:
                 html_file.write_text(html, encoding="utf-8")
