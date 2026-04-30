@@ -764,7 +764,7 @@ def build_post(data, author, all_posts, now):
     )
     related_html = f'<div class="post-related"><h3>Related Articles</h3><ul>{related_items}</ul></div>' if related_items else ""
     
-    tags_html = "".join(f'<a href="{SITE_URL}/index.html" class="tag">{esc(t)}</a>' for t in data.get("tags", []))
+    tags_html = "".join(f'<span class="tag">{esc(t)}</span>' for t in data.get("tags", []))
     
     # Sidebar trending
     sidebar_items = "".join(
@@ -893,7 +893,7 @@ def build_markets_ticker():
   function set(id,t,c){var e=document.getElementById(id);if(!e)return;var s=e.querySelector('span');if(s){s.innerHTML=t+(c!==undefined?ch(c):'');}}
   function setTick(id,html){
     var e=document.getElementById(id);if(e){var sp=e.querySelector('span');if(sp)sp.innerHTML=html;}
-    var e2=document.getElementById(id+'2');if(e2){var sp2=e2.querySelector ? e2 : e2;if(e2)e2.innerHTML=html;}
+    var e2=document.getElementById(id+'2');if(e2)e2.innerHTML=html;
   }
   async function tick(){
     try{
