@@ -25,17 +25,16 @@ Options -Indexes
     AddType application/rss+xml .rss
 </IfModule>
 
+ErrorDocument 403 /
+
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteCond %{THE_REQUEST} ^[A-Z]+\ /posts/(\s|$) [NC]
     RewriteRule ^posts/$ / [R=301,L]
-    RewriteCond %{THE_REQUEST} ^[A-Z]+\ /networth/(\s|$) [NC]
-    RewriteRule ^networth/$ /networth/index.html [R=301,L]
+    RewriteRule ^posts$ / [R=301,L]
     RewriteCond %{THE_REQUEST} /index\.html[\s?] [NC]
     RewriteRule ^index\.html$ / [R=301,L]
     RewriteCond %{THE_REQUEST} /networth/index\.html[\s?] [NC]
     RewriteRule ^networth/index\.html$ /networth/ [R=301,L]
-    ErrorDocument 403 /
 </IfModule>
 
 <IfModule mod_expires.c>
