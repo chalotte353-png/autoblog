@@ -1,3 +1,6 @@
+# ── Directory Listing Band Karo ───────────────────────────────────────
+Options -Indexes
+
 # ── Security Headers ─────────────────────────────────────────────────
 <IfModule mod_headers.c>
     Header always set X-Frame-Options "SAMEORIGIN"
@@ -8,16 +11,12 @@
     Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
 </IfModule>
 
-# ── Sitemap & Feed — Googlebot ke liye explicit allow ────────────────
+# ── Sitemap & Feed ────────────────────────────────────────────────────
 <Files "sitemap.xml">
     Header set Content-Type "application/xml; charset=UTF-8"
-    Satisfy Any
-    Allow from all
 </Files>
 <Files "feed.xml">
     Header set Content-Type "application/rss+xml; charset=UTF-8"
-    Satisfy Any
-    Allow from all
 </Files>
 
 # ── Compression ──────────────────────────────────────────────────────
@@ -34,10 +33,25 @@
 # ── Redirects ─────────────────────────────────────────────────────────
 <IfModule mod_rewrite.c>
     RewriteEngine On
+
+    # /posts/ folder direct access → homepage redirect
+    RewriteCond %{THE_REQUEST} ^[A-Z]+\ /posts/(\s|$) [NC]
+    RewriteRule ^posts/$ / [R=301,L]
+
+    # /networth/ folder direct access → networth page redirect  
+    RewriteCond %{THE_REQUEST} ^[A-Z]+\ /networth/(\s|$) [NC]
+    RewriteRule ^networth/$ /networth/index.html [R=301,L]
+
+    # index.html → /
     RewriteCond %{THE_REQUEST} /index\.html[\s?] [NC]
     RewriteRule ^index\.html$ / [R=301,L]
+
+    # networth/index.html → networth/
     RewriteCond %{THE_REQUEST} /networth/index\.html[\s?] [NC]
     RewriteRule ^networth/index\.html$ /networth/ [R=301,L]
+
+    # 403 errors → homepage
+    ErrorDocument 403 /
 </IfModule>
 
 # ── Browser Caching ──────────────────────────────────────────────────
