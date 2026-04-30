@@ -383,28 +383,36 @@ def build_topics(count, published, posts_index=None):
 
     news = fetch_news(count * 3)
 
-    # Group news topics by likely category (rough keyword match)
+    # Group news topics by likely category (robust keyword match)
     CAT_KEYWORDS = {
-        "Politics":      ["trump","congress","senate","republican","democrat","election","vote","law","bill","white house","president","governor","policy"],
-        "World":         ["iran","china","russia","ukraine","europe","africa","india","pakistan","israel","war","ceasefire","nato","un ","global"],
-        "Sports":        ["nba","nfl","mlb","nhl","soccer","football","basketball","baseball","playoffs","draft","coach","player","game","season"],
-        "Entertainment": ["movie","film","actor","actress","singer","album","tv","show","celebrity","oscar","grammy","netflix","hulu","disney","concert"],
-        "Technology":    ["ai","tech","software","apple","google","microsoft","startup","robot","chip","cyber","data","app","openai","spacex"],
-        "Finance":       ["economy","bank","gdp","inflation","interest rate","monetary","fiscal","hedge fund","private equity","bond","treasury"],
-        "Business":      ["company","ceo","merger","acquisition","corporate","revenue","profit","layoff","worker","job","industry","deal"],
-        "Health":        ["cancer","vaccine","drug","hospital","mental health","disease","fda","medical","patient","health","virus","treatment"],
-        "Science":       ["climate","space","nasa","research","study","planet","ocean","fossil","physics","gene","species","earth","asteroid"],
-        "Travel":        ["travel","tourism","flight","hotel","destination","tourist","visa","airport","cruise","resort"],
-        "Crypto":        ["bitcoin","ethereum","crypto","blockchain","defi","nft","altcoin","binance","coinbase","solana","ripple","xrp","web3","btc","eth"],
-        "Forex":         ["forex","currency","dollar","euro","pound","yen","usd","eur","gbp","jpy","exchange rate","fx ","rupee","pkr","inr"],
-        "Stocks":        ["stock","shares","equity","s&p","nasdaq","dow jones","wall street","earnings","ipo","dividend","portfolio","nyse","bull market","bear market"],
+        "Politics":      ["trump","congress","senate","republican","democrat","election","vote","law","bill","white house","president","governor","policy","legislation","government","minister","parliament","political","administration","federal","supreme court","doj","fbi","cia","pentagon","white house","comey","biden","harris","maga"],
+        "World":         ["iran","china","russia","ukraine","europe","africa","india","pakistan","israel","war","ceasefire","nato","united nations","global","international","foreign","diplomatic","embassy","sanctions","middle east","asia","latin america","pope","vatican","eu ","g7","g20"],
+        "Sports":        ["nba","nfl","mlb","nhl","soccer","football","basketball","baseball","playoffs","draft picks","head coach","quarterback","touchdown","championship","super bowl","world cup","olympic","athlete","stadium","league","tournament","match","fixture","transfer","roster"],
+        "Entertainment": ["movie","film","actor","actress","singer","album","tv show","tv series","celebrity","oscar","grammy","netflix","hulu","disney","concert","music video","box office","hollywood","broadway","streaming","season 2","season 3","episode","finale","premiere","colbert","kimmel","fallon","reality tv","showrunner","decker","recap","cast"],
+        "Technology":    ["ai","artificial intelligence","tech","software","apple","google","microsoft","startup","robot","chip","semiconductor","cyber","data","app","openai","spacex","elon musk","silicon valley","gadget","smartphone","computer","algorithm","cloud","quantum","programming","developer","digital"],
+        "Finance":       ["economy","bank","gdp","inflation","interest rate","monetary","fiscal","hedge fund","private equity","bond","treasury","federal reserve","fed ","imf","world bank","debt","deficit","recession","economic","financial","credit","loan","mortgage","pension","investment fund"],
+        "Business":      ["company","ceo","merger","acquisition","corporate","revenue","profit","layoff","worker","job cuts","industry","deal","startup","entrepreneur","brand","retail","supply chain","manufacturing","earnings report","quarterly","shareholders","board of directors","ipo ","valuation"],
+        "Health":        ["cancer","vaccine","drug","hospital","mental health","disease","fda","medical","patient","virus","treatment","therapy","surgery","doctor","nurse","medicine","pharmaceutical","outbreak","epidemic","pandemic","obesity","diabetes","heart","lung","brain","clinical trial","cdc","who ","health care"],
+        "Science":       ["climate","space","nasa","research","study","planet","ocean","fossil","physics","gene","species","earth","asteroid","comet","galaxy","universe","telescope","experiment","discovery","scientist","laboratory","biology","chemistry","geology","evolution","crispr","dna","rna"],
+        "Travel":        ["travel","tourism","flight","hotel","destination","tourist","visa","airport","cruise","resort","vacation","holiday","airline","passport","booking","itinerary","backpacking","expedition","adventure travel"],
+        "Crypto":        ["bitcoin","btc price","ethereum","eth price","crypto","cryptocurrency","blockchain","defi","nft","altcoin","binance","coinbase","solana","ripple","xrp","web3","dogecoin","stablecoin","crypto wallet","mining","token","decentralized","satoshi","crypto bull","halving","crypto market"],
+        "Forex":         ["forex","currency","dollar index","euro","british pound","japanese yen","usd","eur","gbp","jpy","exchange rate","fx market","rupee","pkr","inr","currency pair","pip","spread","central bank","dxy","currency war","devaluation"],
+        "Stocks":        ["stock market","stock price","shares","equity","s&p 500","nasdaq","dow jones","wall street","earnings report","ipo ","dividend","nyse","bull market","bear market","market cap","index fund","etf ","short sell","options trading","analyst rating","upgrade","downgrade","target price"],
     }
 
     def guess_category(title):
+        import re as _re
         tl = title.lower()
-        scores = {cat: sum(1 for kw in kws if kw in tl) for cat, kws in CAT_KEYWORDS.items()}
+        def kw_match(kw, text):
+            # Short keywords (<=3 chars) — whole word match
+            if len(kw) <= 3:
+                return bool(_re.search(r"\b" + _re.escape(kw) + r"\b", text))
+            return kw in text
+        scores = {cat: sum(1 for kw in kws if kw_match(kw, tl)) for cat, kws in CAT_KEYWORDS.items()}
         best = max(scores, key=scores.get)
-        return best if scores[best] > 0 else "World"
+        if scores[best] == 0:
+            return "World"
+        return best
 
     # Bucket news by category
     news_by_cat = defaultdict(list)
