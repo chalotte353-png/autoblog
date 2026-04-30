@@ -82,3 +82,12 @@ jobs:
           git add output/
           git diff --staged --quiet || git commit -m "Auto: generate content $(date -u '+%Y-%m-%d %H:%M')"
           git push
+
+      - name: Deploy to cPanel via SSH
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PASS: ${{ secrets.SSH_PASS }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+          CPANEL_DIR: ${{ secrets.CPANEL_DIR }}
+        run: python ftp_upload.py
