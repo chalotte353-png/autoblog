@@ -1,7 +1,5 @@
-# ── Directory Listing Band Karo ───────────────────────────────────────
 Options -Indexes
 
-# ── Security Headers ─────────────────────────────────────────────────
 <IfModule mod_headers.c>
     Header always set X-Frame-Options "SAMEORIGIN"
     Header always set X-Content-Type-Options "nosniff"
@@ -11,7 +9,6 @@ Options -Indexes
     Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
 </IfModule>
 
-# ── Sitemap & Feed ────────────────────────────────────────────────────
 <Files "sitemap.xml">
     Header set Content-Type "application/xml; charset=UTF-8"
 </Files>
@@ -19,42 +16,28 @@ Options -Indexes
     Header set Content-Type "application/rss+xml; charset=UTF-8"
 </Files>
 
-# ── Compression ──────────────────────────────────────────────────────
 <IfModule mod_deflate.c>
     AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json application/xml
 </IfModule>
 
-# ── MIME Types ───────────────────────────────────────────────────────
 <IfModule mod_mime.c>
     AddType application/xml .xml
     AddType application/rss+xml .rss
 </IfModule>
 
-# ── Redirects ─────────────────────────────────────────────────────────
 <IfModule mod_rewrite.c>
     RewriteEngine On
-
-    # /posts/ folder direct access → homepage redirect
     RewriteCond %{THE_REQUEST} ^[A-Z]+\ /posts/(\s|$) [NC]
     RewriteRule ^posts/$ / [R=301,L]
-
-    # /networth/ folder direct access → networth page redirect  
     RewriteCond %{THE_REQUEST} ^[A-Z]+\ /networth/(\s|$) [NC]
     RewriteRule ^networth/$ /networth/index.html [R=301,L]
-
-    # index.html → /
     RewriteCond %{THE_REQUEST} /index\.html[\s?] [NC]
     RewriteRule ^index\.html$ / [R=301,L]
-
-    # networth/index.html → networth/
     RewriteCond %{THE_REQUEST} /networth/index\.html[\s?] [NC]
     RewriteRule ^networth/index\.html$ /networth/ [R=301,L]
-
-    # 403 errors → homepage
     ErrorDocument 403 /
 </IfModule>
 
-# ── Browser Caching ──────────────────────────────────────────────────
 <IfModule mod_expires.c>
     ExpiresActive On
     ExpiresByType text/css "access plus 1 day"
