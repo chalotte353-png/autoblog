@@ -18,8 +18,8 @@ from jinja2 import Template
 
 # ─── CONFIG ────────────────────────────────────────────────────────────────────
 CLAUDE_API_KEY = os.environ.get("CLAUDE_API_KEY", "")
-SITE_URL       = os.environ.get("SITE_URL", "https://yoursite.com")
-SITE_NAME      = os.environ.get("SITE_NAME", "YourBlog")
+SITE_URL       = os.environ.get("SITE_URL", "https://marketsnewstoday.info")
+SITE_NAME      = os.environ.get("SITE_NAME", "Markets News Today")
 OUTPUT_DIR     = Path("output")
 NETWORTH_DIR   = OUTPUT_DIR / "networth"
 PROFILES_PER_RUN = int(os.environ.get("PROFILES_PER_RUN", "50"))
@@ -5211,7 +5211,29 @@ PROFILE_TEMPLATE = """<!DOCTYPE html>
   "name": "{{ name }}",
   "description": "{{ meta_description }}",
   "url": "{{ site_url }}/networth/{{ slug }}.html",
-  "image": "{{ site_url }}/celeb-images/{{ slug }}.webp"
+  "image": "{{ site_url }}/celeb-images/{{ slug }}.webp",
+  "jobTitle": "{{ category }}",
+  "nationality": "{{ nationality }}",
+  "netWorth": {
+    "@type": "MonetaryAmount",
+    "currency": "USD",
+    "value": "{{ estimated_net_worth }}"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "{{ site_url }}/networth/{{ slug }}.html"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type": "ListItem", "position": 1, "name": "Home", "item": "{{ site_url }}/"},
+    {"@type": "ListItem", "position": 2, "name": "Net Worth", "item": "{{ site_url }}/networth/"},
+    {"@type": "ListItem", "position": 3, "name": "{{ name }} Net Worth"}
+  ]
 }
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
