@@ -38,6 +38,12 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Restore existing posts and networth
+        run: |
+          mkdir -p output/posts output/networth
+          git checkout HEAD -- output/posts/ 2>/dev/null || true
+          git checkout HEAD -- output/networth/ 2>/dev/null || true
+
       - name: Generate blog articles
         if: ${{ github.event.inputs.mode != 'networth' }}
         env:
