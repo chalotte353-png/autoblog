@@ -348,7 +348,7 @@ def is_duplicate(title_slug, published):
         p_words = set(p.split("-")) - STOP
         if not p_words:
             continue
-        overlap = len(words & p_words) / max(len(words), len(p_words))
+        overlap = len(words & p_words) / min(len(words), len(p_words))
         if overlap >= 0.60:   # 60%+ same keywords = duplicate story
             return True
     return False
