@@ -12,7 +12,7 @@ OUTPUT_DIR       = Path("output")
 POSTS_DIR        = OUTPUT_DIR / "posts"
 ROOT_POSTS_DIR   = Path("posts")  # Root level — Git mein hamesha saare posts rahenge
 AUTHORS_DIR      = OUTPUT_DIR / "authors"
-ARTICLES_PER_RUN = int(os.environ.get("ARTICLES_PER_RUN", "15"))
+ARTICLES_PER_RUN = int(os.environ.get("ARTICLES_PER_RUN", "20"))
 
 CATEGORIES = ["Business","Technology","Finance","World","Sports","Health","Travel","Science","Entertainment","Politics","Crypto","Forex","Stocks"]
 
@@ -20,20 +20,20 @@ CATEGORIES = ["Business","Technology","Finance","World","Sports","Health","Trave
 # Target distribution per 15 articles per run (4 runs/day = ~60 articles/day)
 # All 13 categories properly covered every day
 CATEGORY_TARGETS = {
-    "World":         2,   # broad international news
-    "Politics":      2,   # high traffic
-    "Finance":       2,   # core site focus
-    "Crypto":        2,   # core site focus
-    "Forex":         1,   # core site focus
-    "Stocks":        1,   # core site focus
-    "Technology":    1,
-    "Sports":        1,
-    "Entertainment": 1,
+    "World":         2,
+    "Politics":      2,
+    "Finance":       2,
+    "Crypto":        3,   # core site focus
+    "Forex":         2,   # core site focus
+    "Stocks":        2,   # core site focus
+    "Technology":    2,
+    "Sports":        2,
+    "Entertainment": 2,
     "Health":        1,
     "Business":      1,
-    "Science":       1,   # was 0 — now properly covered every run
-    "Travel":        1,   # was 0 — now properly covered every run
-    # Total targets = 17 for 15 slots → healthy competition, balanced coverage
+    "Science":       1,
+    "Travel":        1,
+    # Total targets = 23 for 20 slots → healthy competition, balanced coverage
 }
 
 # Wiki topics balanced across underrepresented categories
