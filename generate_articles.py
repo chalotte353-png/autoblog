@@ -648,6 +648,7 @@ def head_html(title, desc, canonical, image="", prefix="", og_type="article"):
 <meta name="twitter:title" content="{esc(title)}">
 <meta name="twitter:description" content="{esc(desc)}">
 <meta name="twitter:image" content="{image}">
+<meta name="google-site-verification" content="GHgnc6jifq43ccFgYjjD8spGle2qoCw5MW_e_cNahoY">
 <link rel="alternate" type="application/rss+xml" title="{SITE_NAME}" href="{SITE_URL}/feed.xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
