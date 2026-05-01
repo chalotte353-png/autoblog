@@ -44,9 +44,9 @@ WIKI_TOPICS_BALANCED = {
     "Technology":   ["Artificial intelligence enterprise 2026","Quantum computing breakthrough 2026",
                      "Semiconductor chip shortage update","Cybersecurity threats 2026",
                      "Electric vehicle technology update","5G network expansion 2026"],
-    "Finance":      ["Federal Reserve interest rate 2026","Bitcoin cryptocurrency outlook 2026",
-                     "Stock market outlook 2026","US housing market trends 2026",
-                     "Global debt crisis 2026","Hedge fund performance 2026"],
+    "Finance":      ["Federal Reserve interest rate 2026","US housing market trends 2026",
+                     "Global debt crisis 2026","Hedge fund performance 2026",
+                     "Private equity trends 2026","Bond market outlook 2026"],
     "Health":       ["Mental health workplace 2026","Cancer treatment breakthrough 2026",
                      "Healthcare innovation 2026","Obesity drug research update",
                      "Antibiotic resistance global","Longevity science 2026"],
@@ -348,8 +348,8 @@ def is_duplicate(title_slug, published):
         p_words = set(p.split("-")) - STOP
         if not p_words:
             continue
-        overlap = len(words & p_words) / min(len(words), len(p_words))
-        if overlap >= 0.60:   # 60%+ same keywords = duplicate story
+        overlap = len(words & p_words) / max(len(words), len(p_words))
+        if overlap >= 0.70:   # 70%+ same keywords = duplicate story
             return True
     return False
 
@@ -1881,10 +1881,7 @@ def main():
     for i, t in enumerate(topics):
         title = t["title"]
         slug = slugify(title)
-        # Check duplicate BEFORE API call — save credits
         if slug in published:
-            continue
-        if is_duplicate(slug, published):
             continue
         target_cat = t.get("_target_category")
         print(f"  Writing [{i+1}/{len(topics)}] [{target_cat or '?'}] {title}")
@@ -1892,8 +1889,7 @@ def main():
         if not article:
             continue
         article["slug"] = slugify(article["title"])
-        # Final safety check after API call
-        if article["slug"] in published or is_duplicate(article["slug"], published):
+        if is_duplicate(article["slug"], published):
             print(f"  Skipping duplicate: {article['slug']}")
             continue
         # Use target_category as fallback if Claude picked wrong one
