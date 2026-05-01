@@ -1881,7 +1881,12 @@ def main():
     for i, t in enumerate(topics):
         title = t["title"]
         slug = slugify(title)
+        # Check duplicate BEFORE API call — save credits
         if slug in published:
+            print(f"  Skipping duplicate: {slug}")
+            continue
+        if is_duplicate(slug, published):
+            print(f"  Skipping duplicate: {slug}")
             continue
         target_cat = t.get("_target_category")
         print(f"  Writing [{i+1}/{len(topics)}] [{target_cat or '?'}] {title}")
@@ -1889,8 +1894,8 @@ def main():
         if not article:
             continue
         article["slug"] = slugify(article["title"])
-        # Double check new slug not already published
-        if is_duplicate(article["slug"], published):
+        # Final safety check after API call
+        if article["slug"] in published:
             print(f"  Skipping duplicate: {article['slug']}")
             continue
         # Use target_category as fallback if Claude picked wrong one
