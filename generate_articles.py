@@ -10,6 +10,7 @@ SITE_URL         = os.environ.get("SITE_URL", "https://marketsnewstoday.info")
 SITE_NAME        = "Markets News Today"
 OUTPUT_DIR       = Path("output")
 POSTS_DIR        = OUTPUT_DIR / "posts"
+ROOT_POSTS_DIR   = Path("posts")  # Root level — Git mein hamesha saare posts rahenge
 AUTHORS_DIR      = OUTPUT_DIR / "authors"
 ARTICLES_PER_RUN = int(os.environ.get("ARTICLES_PER_RUN", "15"))
 
@@ -1903,6 +1904,8 @@ def main():
         
         html = build_post(article, author, posts_index, now)
         (POSTS_DIR / f"{article['slug']}.html").write_text(html)
+        ROOT_POSTS_DIR.mkdir(exist_ok=True)
+        (ROOT_POSTS_DIR / f"{article['slug']}.html").write_text(html)
         
         posts_index.append({
             "slug": article["slug"], "title": article["title"],
