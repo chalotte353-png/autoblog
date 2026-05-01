@@ -349,7 +349,7 @@ def is_duplicate(title_slug, published):
         if not p_words:
             continue
         overlap = len(words & p_words) / max(len(words), len(p_words))
-        if overlap >= 0.70:   # 70%+ same keywords = duplicate story (raised from 60%)
+        if overlap >= 0.60:   # 60%+ same keywords = duplicate story
             return True
     return False
 
