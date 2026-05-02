@@ -1,10 +1,4 @@
 {
-  "index": 5,
-  "used_this_cycle": [
-    "Crypto",
-    "Forex",
-    "Stocks",
-    "Finance",
-    "World"
-  ]
+  "index": 0,
+  "used_this_cycle": []
 }
