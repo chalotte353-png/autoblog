@@ -1881,10 +1881,9 @@ def main():
         topics = []
         for kw in CUSTOM_KEYWORDS:
             topics.append({"title": kw, "hint": "", "_target_category": None})
-        return topics
-
-    print(f"Getting {ARTICLES_PER_RUN} topics (with category balancing)...")
-    topics = build_topics(ARTICLES_PER_RUN, published, posts_index)
+    else:
+        print(f"Getting {ARTICLES_PER_RUN} topics (with category balancing)...")
+        topics = build_topics(ARTICLES_PER_RUN, published, posts_index)
 
     new_count = 0
     for i, t in enumerate(topics):
