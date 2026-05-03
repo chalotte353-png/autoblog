@@ -16,10 +16,11 @@
 <meta name="twitter:title" content="Sam Altman Apologises for OpenAI's Failure to Alert Police | Markets News Today">
 <meta name="twitter:description" content="OpenAI CEO Sam Altman issues public apology after revelations the company suspended a mass shooter's ChatGPT account but failed to notify Canadian law enforcement.">
 <meta name="twitter:image" content="https://images.unsplash.com/photo-1719053313659-5644393f9948?crop=entropy&cs=tinysrgb&fit=max&fm=webp&ixid=M3w5MzA5MzN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NzcxOTgyNDR8&ixlib=rb-4.1.0&q=80&w=1080">
+<meta name="google-site-verification" content="GHgnc6jifq43ccFgYjjD8spGle2qoCw5MW_e_cNahoY">
 <link rel="alternate" type="application/rss+xml" title="Markets News Today" href="https://marketsnewstoday.info/feed.xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../style.css?v=20260503">
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap"></noscript>
 <!-- Google tag (gtag.js) -->
@@ -34,25 +35,48 @@
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "NewsArticle", "headline": "Sam Altman Apologises for OpenAI's Failure to Alert Police", "image": "https://images.unsplash.com/photo-1719053313659-5644393f9948?crop=entropy&cs=tinysrgb&fit=max&fm=webp&ixid=M3w5MzA5MzN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NzcxOTgyNDR8&ixlib=rb-4.1.0&q=80&w=1080", "datePublished": "2026-04-26T10:10:44.658289+00:00", "dateModified": "2026-04-26T10:10:44.658289+00:00", "articleSection": "Technology", "wordCount": 1313, "keywords": "OpenAI, Sam Altman, ChatGPT, AI safety, mass shooting, Canada, artificial intelligence regulation", "author": {"@type": "Person", "name": "Maya Patel", "url": "https://marketsnewstoday.info/authors/maya-patel.html"}, "publisher": {"@type": "NewsMediaOrganization", "name": "Markets News Today", "url": "https://marketsnewstoday.info"}}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://marketsnewstoday.info/"}, {"@type": "ListItem", "position": 2, "name": "Technology", "item": "https://marketsnewstoday.info/category-technology.html"}, {"@type": "ListItem", "position": 3, "name": "Sam Altman Apologises for OpenAI's Failure to Alert Police"}]}</script>
 <div class="topbar"><div class="topbar-inner">
-  <span class="topbar-left">Tuesday, April 28, 2026</span>
+  <span class="topbar-left">Sunday, May 03, 2026</span>
   <a href="../" class="topbar-logo">Markets <span class="accent">News</span> Today</a>
   <span class="topbar-right">Business &middot; Finance &middot; Technology</span>
 </div></div>
-<nav class="navbar"><div class="navbar-inner">
+<nav class="navbar"><div class="navbar-wrap">
+  <button class="navbar-arrow left" id="navLeft" onclick="scrollNav(-200)" aria-label="Scroll left">&#8249;</button>
+  <div class="navbar-inner" id="navInner">
   <a href="../">Home</a>
   <a href="../category-business.html">Business</a>
   <a href="../category-technology.html">Technology</a>
   <a href="../category-finance.html">Finance</a>
   <a href="../category-world.html">World</a>
+  <a href="../category-politics.html">Politics</a>
   <a href="../category-sports.html">Sports</a>
   <a href="../category-health.html">Health</a>
-  <a href="../category-politics.html">Politics</a>
+  <a href="../category-science.html">Science</a>
+  <a href="../category-travel.html">Travel</a>
+  <a href="../category-entertainment.html">Entertainment</a>
   <a href="../networth/index.html">Net Worth</a>
   <a href="../markets.html">Markets</a>
   <a href="../category-crypto.html">Crypto</a>
   <a href="../category-forex.html">Forex</a>
   <a href="../category-stocks.html">Stocks</a>
+  </div>
+  <button class="navbar-arrow right" id="navRight" onclick="scrollNav(200)" aria-label="Scroll right">&#8250;</button>
 </div></nav>
+<script>
+(function(){
+  var nav=document.getElementById('navInner');
+  var btnL=document.getElementById('navLeft');
+  var btnR=document.getElementById('navRight');
+  if(!nav)return;
+  function upd(){
+    if(nav.scrollLeft>10)btnL.classList.add('visible');else btnL.classList.remove('visible');
+    if(nav.scrollLeft<nav.scrollWidth-nav.clientWidth-10)btnR.classList.add('visible');else btnR.classList.remove('visible');
+  }
+  nav.addEventListener('scroll',upd);
+  window.addEventListener('resize',upd);
+  upd();
+  window.scrollNav=function(d){nav.scrollBy({left:d,behavior:'smooth'});};
+})();
+</script>
 <div class="post-wrap"><div class="container post-grid">
 <article>
   <div class="post-hdr">
@@ -92,7 +116,7 @@
 </ul>
 <p>These questions are now at the centre of both the criminal investigation in Canada and a growing political debate in Washington and Ottawa about the future regulation of AI platforms.</p>
 <h2>Calls for Legislation Grow Louder</h2>
-<p>Lawmakers in both Canada and the United States have responded with urgency. Several senior Canadian politicians have called for emergency hearings and the introduction of legislation that would legally require AI companies to report credible threats of violence to law enforcement, in a manner similar to existing obligations that apply to social media companies in certain jurisdictions.</p>
+<p>Lawmakers in both Canada and the United States have responded with urgency. Several senior Canadian politicians have called for emergency hearings and the introduction of legislation that would legally require AI companies to report credible threats of violence to law enforcement, in a manner similar to existing obligations that apply to <a href="https://marketsnewstoday.info/posts/james-comey-indicted-over-alleged-86-47-social-media-post.html" title="James Comey Indicted Over Alleged '86 47' Social Media Post">Social Media</a> companies in certain jurisdictions.</p>
 <p>In the United States, members of Congress have used the incident to push for the rapid advancement of stalled AI safety legislation that has been debated in committee for over a year. The proposed framework would establish clear mandatory reporting requirements for AI platforms that detect content indicative of imminent harm.</p>
 <blockquote><p>"This is exactly the kind of scenario that we have been warning about for years. AI companies cannot be allowed to operate as islands unto themselves. When their systems identify a person who is planning to kill people, there must be a legal obligation to tell someone who can act," said one prominent senator speaking to reporters in Washington.</p></blockquote>
 <p>Industry groups representing AI and technology companies have expressed a degree of support for clearer guidelines, while cautioning against regulations that could compromise user privacy or create a chilling effect on free expression on AI platforms.</p>
@@ -116,7 +140,7 @@
 <p>"An apology is a start, but it does not bring back the people we lost. We want to know exactly what happened, who made the decision not to call the police, and we want to make sure this can never happen again," said one family representative in a statement released through their legal counsel.</p>
 <p>As investigations continue and legislative debates intensify, the incident is widely expected to mark a turning point in how artificial intelligence companies are regulated and held accountable for the actions taken on their platforms. The tragedy has made clear that as AI becomes more powerful, the stakes of getting its governance right could not be higher.</p></div>
   <div class="post-related"><h3>Related Articles</h3><ul><li><a href="https://marketsnewstoday.info/posts/humanoid-robot-smashes-half-marathon-record-at-beijing-race.html">Humanoid Robot Smashes Half-Marathon Record at Beijing Race</a></li><li><a href="https://marketsnewstoday.info/posts/humanoid-robot-shatters-human-half-marathon-record-in-beijing.html">Humanoid Robot Shatters Human Half-Marathon Record in Beijing</a></li><li><a href="https://marketsnewstoday.info/posts/hevc-licensing-fees-explained-why-vendors-drop-support.html">HEVC Licensing Fees Explained: Why Vendors Drop Support</a></li></ul></div>
-  <div class="post-tags"><a href="https://marketsnewstoday.info/index.html" class="tag">OpenAI</a><a href="https://marketsnewstoday.info/index.html" class="tag">Sam Altman</a><a href="https://marketsnewstoday.info/index.html" class="tag">ChatGPT</a><a href="https://marketsnewstoday.info/index.html" class="tag">AI safety</a><a href="https://marketsnewstoday.info/index.html" class="tag">mass shooting</a><a href="https://marketsnewstoday.info/index.html" class="tag">Canada</a><a href="https://marketsnewstoday.info/index.html" class="tag">artificial intelligence regulation</a></div>
+  <div class="post-tags"><span class="tag">OpenAI</span><span class="tag">Sam Altman</span><span class="tag">ChatGPT</span><span class="tag">AI safety</span><span class="tag">mass shooting</span><span class="tag">Canada</span><span class="tag">artificial intelligence regulation</span></div>
   <div class="author-box">
     <img src="https://i.pravatar.cc/150?img=48" alt="Maya Patel">
     <div>

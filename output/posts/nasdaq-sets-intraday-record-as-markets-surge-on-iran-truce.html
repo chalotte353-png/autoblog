@@ -16,10 +16,11 @@
 <meta name="twitter:title" content="Nasdaq Sets Intraday Record as Markets Surge on Iran Truce | Markets News Today">
 <meta name="twitter:description" content="Stocks surged Wednesday as the Nasdaq hit a new intraday record after Trump extended the Iran cease-fire. Brent crude near $100, Tesla earnings due.">
 <meta name="twitter:image" content="https://images.unsplash.com/photo-1612587592641-f2a67a7e9dad?crop=entropy&cs=tinysrgb&fit=max&fm=webp&ixid=M3w5MzA5MzN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NzY5NjY5NzV8&ixlib=rb-4.1.0&q=80&w=1080">
+<meta name="google-site-verification" content="GHgnc6jifq43ccFgYjjD8spGle2qoCw5MW_e_cNahoY">
 <link rel="alternate" type="application/rss+xml" title="Markets News Today" href="https://marketsnewstoday.info/feed.xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../style.css?v=20260503">
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap"></noscript>
 <!-- Google tag (gtag.js) -->
@@ -34,25 +35,48 @@
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "NewsArticle", "headline": "Nasdaq Sets Intraday Record as Markets Surge on Iran Truce", "image": "https://images.unsplash.com/photo-1612587592641-f2a67a7e9dad?crop=entropy&cs=tinysrgb&fit=max&fm=webp&ixid=M3w5MzA5MzN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3NzY5NjY5NzV8&ixlib=rb-4.1.0&q=80&w=1080", "datePublished": "2026-04-23T17:56:15.504914+00:00", "dateModified": "2026-04-23T17:56:15.504914+00:00", "articleSection": "Finance", "wordCount": 1228, "keywords": "Nasdaq, Stock Market, Iran Ceasefire, Tesla Earnings, Brent Crude Oil, Trump, S&P 500, Dow Jones", "author": {"@type": "Person", "name": "David Park", "url": "https://marketsnewstoday.info/authors/david-park.html"}, "publisher": {"@type": "NewsMediaOrganization", "name": "Markets News Today", "url": "https://marketsnewstoday.info"}}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://marketsnewstoday.info/"}, {"@type": "ListItem", "position": 2, "name": "Finance", "item": "https://marketsnewstoday.info/category-finance.html"}, {"@type": "ListItem", "position": 3, "name": "Nasdaq Sets Intraday Record as Markets Surge on Iran Truce"}]}</script>
 <div class="topbar"><div class="topbar-inner">
-  <span class="topbar-left">Tuesday, April 28, 2026</span>
+  <span class="topbar-left">Sunday, May 03, 2026</span>
   <a href="../" class="topbar-logo">Markets <span class="accent">News</span> Today</a>
   <span class="topbar-right">Business &middot; Finance &middot; Technology</span>
 </div></div>
-<nav class="navbar"><div class="navbar-inner">
+<nav class="navbar"><div class="navbar-wrap">
+  <button class="navbar-arrow left" id="navLeft" onclick="scrollNav(-200)" aria-label="Scroll left">&#8249;</button>
+  <div class="navbar-inner" id="navInner">
   <a href="../">Home</a>
   <a href="../category-business.html">Business</a>
   <a href="../category-technology.html">Technology</a>
   <a href="../category-finance.html">Finance</a>
   <a href="../category-world.html">World</a>
+  <a href="../category-politics.html">Politics</a>
   <a href="../category-sports.html">Sports</a>
   <a href="../category-health.html">Health</a>
-  <a href="../category-politics.html">Politics</a>
+  <a href="../category-science.html">Science</a>
+  <a href="../category-travel.html">Travel</a>
+  <a href="../category-entertainment.html">Entertainment</a>
   <a href="../networth/index.html">Net Worth</a>
   <a href="../markets.html">Markets</a>
   <a href="../category-crypto.html">Crypto</a>
   <a href="../category-forex.html">Forex</a>
   <a href="../category-stocks.html">Stocks</a>
+  </div>
+  <button class="navbar-arrow right" id="navRight" onclick="scrollNav(200)" aria-label="Scroll right">&#8250;</button>
 </div></nav>
+<script>
+(function(){
+  var nav=document.getElementById('navInner');
+  var btnL=document.getElementById('navLeft');
+  var btnR=document.getElementById('navRight');
+  if(!nav)return;
+  function upd(){
+    if(nav.scrollLeft>10)btnL.classList.add('visible');else btnL.classList.remove('visible');
+    if(nav.scrollLeft<nav.scrollWidth-nav.clientWidth-10)btnR.classList.add('visible');else btnR.classList.remove('visible');
+  }
+  nav.addEventListener('scroll',upd);
+  window.addEventListener('resize',upd);
+  upd();
+  window.scrollNav=function(d){nav.scrollBy({left:d,behavior:'smooth'});};
+})();
+</script>
 <div class="post-wrap"><div class="container post-grid">
 <article>
   <div class="post-hdr">
@@ -110,10 +134,10 @@
 <h2>Investor Sentiment and the Road Ahead</h2>
 <p>Market strategists noted that while Wednesday's rally was driven in large part by a single geopolitical headline, the underlying tone of the market had shifted more constructively in recent weeks. Corporate earnings for the first quarter of 2026 have, on balance, come in ahead of expectations, providing fundamental support for equity valuations even as the macroeconomic backdrop remains complex.</p>
 <blockquote><p>"The market has been looking for a catalyst to push to new highs, and the Iran cease-fire extension gave it exactly that. Whether this momentum is sustained will depend heavily on what we hear from Tesla tonight and how the broader earnings season progresses from here," said one senior portfolio strategist at a major asset management firm.</p></blockquote>
-<p>Looking ahead, investors will be monitoring the Federal Reserve's next policy meeting in May, ongoing trade negotiations with major partners, and any further developments on the geopolitical front. With the Nasdaq printing a new record and sentiment improving, the burden of proof has shifted slightly toward the bears, though significant risks remain on the horizon.</p>
+<p>Looking ahead, investors will be monitoring the <a href="https://marketsnewstoday.info/posts/federal-reserve-holds-rates-steady-amid-2026-economic-shifts.html" title="Federal Reserve Holds Rates Steady Amid 2026 Economic Shifts">Federal Reserve</a>'s next policy meeting in May, ongoing trade negotiations with major partners, and any further developments on the geopolitical front. With the Nasdaq printing a new record and sentiment improving, the burden of proof has shifted slightly toward the bears, though significant risks remain on the horizon.</p>
 <p>Wednesday's session served as a reminder of how quickly market dynamics can shift in response to political and diplomatic developments, and why maintaining a diversified, well-considered investment approach remains essential in an environment defined by elevated uncertainty.</p></div>
   <div class="post-related"><h3>Related Articles</h3><ul><li><a href="https://marketsnewstoday.info/posts/dow-futures-plunge-350-points-as-iran-war-tensions-surge.html">Dow Futures Plunge 350 Points as Iran War Tensions Surge</a></li><li><a href="https://marketsnewstoday.info/posts/oil-prices-jump-after-strait-of-hormuz-setbacks.html">Oil Prices Jump After Strait of Hormuz Setbacks</a></li><li><a href="https://marketsnewstoday.info/posts/us-stablecoins-threaten-emerging-markets-central-bankers-warn.html">US Stablecoins Threaten Emerging Markets, Central Bankers Warn</a></li></ul></div>
-  <div class="post-tags"><a href="https://marketsnewstoday.info/index.html" class="tag">Nasdaq</a><a href="https://marketsnewstoday.info/index.html" class="tag">Stock Market</a><a href="https://marketsnewstoday.info/index.html" class="tag">Iran Ceasefire</a><a href="https://marketsnewstoday.info/index.html" class="tag">Tesla Earnings</a><a href="https://marketsnewstoday.info/index.html" class="tag">Brent Crude Oil</a><a href="https://marketsnewstoday.info/index.html" class="tag">Trump</a><a href="https://marketsnewstoday.info/index.html" class="tag">S&P 500</a><a href="https://marketsnewstoday.info/index.html" class="tag">Dow Jones</a></div>
+  <div class="post-tags"><span class="tag">Nasdaq</span><span class="tag">Stock Market</span><span class="tag">Iran Ceasefire</span><span class="tag">Tesla Earnings</span><span class="tag">Brent Crude Oil</span><span class="tag">Trump</span><span class="tag">S&P 500</span><span class="tag">Dow Jones</span></div>
   <div class="author-box">
     <img src="https://i.pravatar.cc/150?img=13" alt="David Park">
     <div>
