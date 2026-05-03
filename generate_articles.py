@@ -13,6 +13,7 @@ POSTS_DIR        = OUTPUT_DIR / "posts"
 ROOT_POSTS_DIR   = Path("posts")  # Root level — Git mein hamesha saare posts rahenge
 AUTHORS_DIR      = OUTPUT_DIR / "authors"
 ARTICLES_PER_RUN = int(os.environ.get("ARTICLES_PER_RUN", "20"))
+CUSTOM_KEYWORDS  = [k.strip() for k in os.environ.get("CUSTOM_KEYWORDS", "").split(",") if k.strip()]
 
 CATEGORIES = ["Business","Technology","Finance","World","Sports","Health","Travel","Science","Entertainment","Politics","Crypto","Forex","Stocks"]
 
@@ -1873,6 +1874,15 @@ def main():
         else:
             print(f"  Removing duplicate from index: {p['slug']}")
     posts_index = deduped
+
+    # Keyword mode — agar custom keywords hain toh unhi pe articles banao
+    if CUSTOM_KEYWORDS:
+        print(f"Keyword mode: {len(CUSTOM_KEYWORDS)} keywords provided")
+        topics = []
+        for kw in CUSTOM_KEYWORDS:
+            cat = guess_category(slugify(kw))
+            topics.append({"title": kw, "hint": "", "_target_category": cat})
+        return topics
 
     print(f"Getting {ARTICLES_PER_RUN} topics (with category balancing)...")
     topics = build_topics(ARTICLES_PER_RUN, published, posts_index)
