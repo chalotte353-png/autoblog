@@ -12,11 +12,15 @@ on:
       articles_count:
         description: "Articles per run"
         required: false
-        default: "15"
+        default: "20"
       profiles_count:
         description: "Net worth profiles per run"
         required: false
         default: "50"
+      keywords:
+        description: "Custom keywords (comma separated) — leave empty for auto"
+        required: false
+        default: ""
 
 jobs:
   generate-and-deploy:
@@ -51,8 +55,9 @@ jobs:
           UNSPLASH_KEY:     ${{ secrets.UNSPLASH_KEY }}
           SITE_URL:         ${{ secrets.SITE_URL }}
           SITE_NAME:        ${{ secrets.SITE_NAME }}
-          ARTICLES_PER_RUN: ${{ github.event.inputs.articles_count || secrets.ARTICLES_PER_RUN || '15' }}
+          ARTICLES_PER_RUN: ${{ github.event.inputs.articles_count || secrets.ARTICLES_PER_RUN || '20' }}
           MANUAL_ROTATION:  ${{ github.event_name == 'workflow_dispatch' && 'true' || 'false' }}
+          CUSTOM_KEYWORDS:  ${{ github.event.inputs.keywords }}
         run: python generate_articles.py
 
       - name: Generate net worth profiles
