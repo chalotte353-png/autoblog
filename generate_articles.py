@@ -489,10 +489,23 @@ def write_article(topic, hint, related_posts=None, target_category=None):
     cat_hint = (f"IMPORTANT: This article MUST be categorized as '{target_category}'. "
                 if target_category else "")
 
+    # Keyword SEO instructions
+    kw_hint = ""
+    if CUSTOM_KEYWORDS and topic in CUSTOM_KEYWORDS:
+        kw_hint = (
+            f"CRITICAL SEO INSTRUCTIONS:\n"
+            f"1. EXACT keyword '{topic}' MUST appear in the title\n"
+            f"2. EXACT keyword '{topic}' MUST appear in meta description\n"
+            f"3. EXACT keyword '{topic}' MUST appear in first paragraph\n"
+            f"4. EXACT keyword '{topic}' MUST appear 3-5 times in article\n"
+            f"5. Use keyword in at least one H2 heading\n"
+        )
+
     prompt = (
         f"Write a professional news article dated {now.strftime('%B %d, %Y')} about: {topic}\n"
         f"Background: {hint}\n"
         f"{cat_hint}"
+        f"{kw_hint}"
         "Respond with ONLY this XML format — no extra text:\n"
         "<article>\n"
         "<title>Compelling headline 55-70 chars</title>\n"
