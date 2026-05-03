@@ -1880,8 +1880,7 @@ def main():
         print(f"Keyword mode: {len(CUSTOM_KEYWORDS)} keywords provided")
         topics = []
         for kw in CUSTOM_KEYWORDS:
-            cat = guess_category(slugify(kw))
-            topics.append({"title": kw, "hint": "", "_target_category": cat})
+            topics.append({"title": kw, "hint": "", "_target_category": None})
         return topics
 
     print(f"Getting {ARTICLES_PER_RUN} topics (with category balancing)...")
