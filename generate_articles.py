@@ -10,10 +10,8 @@ SITE_URL         = os.environ.get("SITE_URL", "https://marketsnewstoday.info")
 SITE_NAME        = "Markets News Today"
 OUTPUT_DIR       = Path("output")
 POSTS_DIR        = OUTPUT_DIR / "posts"
-ROOT_POSTS_DIR   = Path("posts")  # Root level — Git mein hamesha saare posts rahenge
 AUTHORS_DIR      = OUTPUT_DIR / "authors"
-ARTICLES_PER_RUN = int(os.environ.get("ARTICLES_PER_RUN", "20"))
-CUSTOM_KEYWORDS  = [k.strip() for k in os.environ.get("CUSTOM_KEYWORDS", "").split(",") if k.strip()]
+ARTICLES_PER_RUN = int(os.environ.get("ARTICLES_PER_RUN", "15"))
 
 CATEGORIES = ["Business","Technology","Finance","World","Sports","Health","Travel","Science","Entertainment","Politics","Crypto","Forex","Stocks"]
 
@@ -21,20 +19,20 @@ CATEGORIES = ["Business","Technology","Finance","World","Sports","Health","Trave
 # Target distribution per 15 articles per run (4 runs/day = ~60 articles/day)
 # All 13 categories properly covered every day
 CATEGORY_TARGETS = {
-    "World":         2,
-    "Politics":      2,
-    "Finance":       2,
-    "Crypto":        3,   # core site focus
-    "Forex":         2,   # core site focus
-    "Stocks":        2,   # core site focus
-    "Technology":    2,
-    "Sports":        2,
-    "Entertainment": 2,
+    "World":         2,   # broad international news
+    "Politics":      2,   # high traffic
+    "Finance":       2,   # core site focus
+    "Crypto":        2,   # core site focus
+    "Forex":         1,   # core site focus
+    "Stocks":        1,   # core site focus
+    "Technology":    1,
+    "Sports":        1,
+    "Entertainment": 1,
     "Health":        1,
     "Business":      1,
-    "Science":       1,
-    "Travel":        1,
-    # Total targets = 23 for 20 slots → healthy competition, balanced coverage
+    "Science":       1,   # was 0 — now properly covered every run
+    "Travel":        1,   # was 0 — now properly covered every run
+    # Total targets = 17 for 15 slots → healthy competition, balanced coverage
 }
 
 # Wiki topics balanced across underrepresented categories
@@ -45,9 +43,9 @@ WIKI_TOPICS_BALANCED = {
     "Technology":   ["Artificial intelligence enterprise 2026","Quantum computing breakthrough 2026",
                      "Semiconductor chip shortage update","Cybersecurity threats 2026",
                      "Electric vehicle technology update","5G network expansion 2026"],
-    "Finance":      ["Federal Reserve interest rate 2026","US housing market trends 2026",
-                     "Global debt crisis 2026","Hedge fund performance 2026",
-                     "Private equity trends 2026","Bond market outlook 2026"],
+    "Finance":      ["Federal Reserve interest rate 2026","Bitcoin cryptocurrency outlook 2026",
+                     "Stock market outlook 2026","US housing market trends 2026",
+                     "Global debt crisis 2026","Hedge fund performance 2026"],
     "Health":       ["Mental health workplace 2026","Cancer treatment breakthrough 2026",
                      "Healthcare innovation 2026","Obesity drug research update",
                      "Antibiotic resistance global","Longevity science 2026"],
@@ -179,7 +177,6 @@ def load_index():
 
 def save_index(posts):
     (OUTPUT_DIR / "posts_index.json").write_text(json.dumps(posts, indent=2))
-
 
 # ── MANUAL RUN ROTATION STATE ────────────────────────────────────────
 # Tracks which category comes next in manual runs, so each manual run
@@ -351,7 +348,7 @@ def is_duplicate(title_slug, published):
         if not p_words:
             continue
         overlap = len(words & p_words) / max(len(words), len(p_words))
-        if overlap >= 0.70:   # 70%+ same keywords = duplicate story
+        if overlap >= 0.70:   # 70%+ same keywords = duplicate story (raised from 60%)
             return True
     return False
 
@@ -386,36 +383,28 @@ def build_topics(count, published, posts_index=None):
 
     news = fetch_news(count * 3)
 
-    # Group news topics by likely category (robust keyword match)
+    # Group news topics by likely category (rough keyword match)
     CAT_KEYWORDS = {
-        "Politics":      ["trump","congress","senate","republican","democrat","election","vote","law","bill","white house","president","governor","policy","legislation","government","minister","parliament","political","administration","federal","supreme court","doj","fbi","cia","pentagon","white house","comey","biden","harris","maga"],
-        "World":         ["iran","china","russia","ukraine","europe","africa","india","pakistan","israel","war","ceasefire","nato","united nations","global","international","foreign","diplomatic","embassy","sanctions","middle east","asia","latin america","pope","vatican","eu ","g7","g20"],
-        "Sports":        ["nba","nfl","mlb","nhl","soccer","football","basketball","baseball","playoffs","draft picks","head coach","quarterback","touchdown","championship","super bowl","world cup","olympic","athlete","stadium","league","tournament","match","fixture","transfer","roster"],
-        "Entertainment": ["movie","film","actor","actress","singer","album","tv show","tv series","celebrity","oscar","grammy","netflix","hulu","disney","concert","music video","box office","hollywood","broadway","streaming","season 2","season 3","episode","finale","premiere","colbert","kimmel","fallon","reality tv","showrunner","decker","recap","cast"],
-        "Technology":    ["ai","artificial intelligence","tech","software","apple","google","microsoft","startup","robot","chip","semiconductor","cyber","data","app","openai","spacex","elon musk","silicon valley","gadget","smartphone","computer","algorithm","cloud","quantum","programming","developer","digital"],
-        "Finance":       ["economy","bank","gdp","inflation","interest rate","monetary","fiscal","hedge fund","private equity","bond","treasury","federal reserve","fed ","imf","world bank","debt","deficit","recession","economic","financial","credit","loan","mortgage","pension","investment fund"],
-        "Business":      ["company","ceo","merger","acquisition","corporate","revenue","profit","layoff","worker","job cuts","industry","deal","startup","entrepreneur","brand","retail","supply chain","manufacturing","earnings report","quarterly","shareholders","board of directors","ipo ","valuation"],
-        "Health":        ["cancer","vaccine","drug","hospital","mental health","disease","fda","medical","patient","virus","treatment","therapy","surgery","doctor","nurse","medicine","pharmaceutical","outbreak","epidemic","pandemic","obesity","diabetes","heart","lung","brain","clinical trial","cdc","who ","health care"],
-        "Science":       ["climate","space","nasa","research","study","planet","ocean","fossil","physics","gene","species","earth","asteroid","comet","galaxy","universe","telescope","experiment","discovery","scientist","laboratory","biology","chemistry","geology","evolution","crispr","dna","rna"],
-        "Travel":        ["travel","tourism","flight","hotel","destination","tourist","visa","airport","cruise","resort","vacation","holiday","airline","passport","booking","itinerary","backpacking","expedition","adventure travel"],
-        "Crypto":        ["bitcoin","btc price","ethereum","eth price","crypto","cryptocurrency","blockchain","defi","nft","altcoin","binance","coinbase","solana","ripple","xrp","web3","dogecoin","stablecoin","crypto wallet","mining","token","decentralized","satoshi","crypto bull","halving","crypto market"],
-        "Forex":         ["forex","currency","dollar index","euro","british pound","japanese yen","usd","eur","gbp","jpy","exchange rate","fx market","rupee","pkr","inr","currency pair","pip","spread","central bank","dxy","currency war","devaluation"],
-        "Stocks":        ["stock market","stock price","shares","equity","s&p 500","nasdaq","dow jones","wall street","earnings report","ipo ","dividend","nyse","bull market","bear market","market cap","index fund","etf ","short sell","options trading","analyst rating","upgrade","downgrade","target price"],
+        "Politics":      ["trump","congress","senate","republican","democrat","election","vote","law","bill","white house","president","governor","policy"],
+        "World":         ["iran","china","russia","ukraine","europe","africa","india","pakistan","israel","war","ceasefire","nato","un ","global"],
+        "Sports":        ["nba","nfl","mlb","nhl","soccer","football","basketball","baseball","playoffs","draft","coach","player","game","season"],
+        "Entertainment": ["movie","film","actor","actress","singer","album","tv","show","celebrity","oscar","grammy","netflix","hulu","disney","concert"],
+        "Technology":    ["ai","tech","software","apple","google","microsoft","startup","robot","chip","cyber","data","app","openai","spacex"],
+        "Finance":       ["economy","bank","gdp","inflation","interest rate","monetary","fiscal","hedge fund","private equity","bond","treasury"],
+        "Business":      ["company","ceo","merger","acquisition","corporate","revenue","profit","layoff","worker","job","industry","deal"],
+        "Health":        ["cancer","vaccine","drug","hospital","mental health","disease","fda","medical","patient","health","virus","treatment"],
+        "Science":       ["climate","space","nasa","research","study","planet","ocean","fossil","physics","gene","species","earth","asteroid"],
+        "Travel":        ["travel","tourism","flight","hotel","destination","tourist","visa","airport","cruise","resort"],
+        "Crypto":        ["bitcoin","ethereum","crypto","blockchain","defi","nft","altcoin","binance","coinbase","solana","ripple","xrp","web3","btc","eth"],
+        "Forex":         ["forex","currency","dollar","euro","pound","yen","usd","eur","gbp","jpy","exchange rate","fx ","rupee","pkr","inr"],
+        "Stocks":        ["stock","shares","equity","s&p","nasdaq","dow jones","wall street","earnings","ipo","dividend","portfolio","nyse","bull market","bear market"],
     }
 
     def guess_category(title):
-        import re as _re
         tl = title.lower()
-        def kw_match(kw, text):
-            # Short keywords (<=3 chars) — whole word match
-            if len(kw) <= 3:
-                return bool(_re.search(r"\b" + _re.escape(kw) + r"\b", text))
-            return kw in text
-        scores = {cat: sum(1 for kw in kws if kw_match(kw, tl)) for cat, kws in CAT_KEYWORDS.items()}
+        scores = {cat: sum(1 for kw in kws if kw in tl) for cat, kws in CAT_KEYWORDS.items()}
         best = max(scores, key=scores.get)
-        if scores[best] == 0:
-            return "World"
-        return best
+        return best if scores[best] > 0 else "World"
 
     # Bucket news by category
     news_by_cat = defaultdict(list)
@@ -490,23 +479,10 @@ def write_article(topic, hint, related_posts=None, target_category=None):
     cat_hint = (f"IMPORTANT: This article MUST be categorized as '{target_category}'. "
                 if target_category else "")
 
-    # Keyword SEO instructions
-    kw_hint = ""
-    if CUSTOM_KEYWORDS and topic in CUSTOM_KEYWORDS:
-        kw_hint = (
-            f"CRITICAL SEO INSTRUCTIONS:\n"
-            f"1. EXACT keyword '{topic}' MUST appear in the title\n"
-            f"2. EXACT keyword '{topic}' MUST appear in meta description\n"
-            f"3. EXACT keyword '{topic}' MUST appear in first paragraph\n"
-            f"4. EXACT keyword '{topic}' MUST appear 3-5 times in article\n"
-            f"5. Use keyword in at least one H2 heading\n"
-        )
-
     prompt = (
         f"Write a professional news article dated {now.strftime('%B %d, %Y')} about: {topic}\n"
         f"Background: {hint}\n"
         f"{cat_hint}"
-        f"{kw_hint}"
         "Respond with ONLY this XML format — no extra text:\n"
         "<article>\n"
         "<title>Compelling headline 55-70 chars</title>\n"
@@ -663,7 +639,6 @@ def head_html(title, desc, canonical, image="", prefix="", og_type="article"):
 <meta name="twitter:title" content="{esc(title)}">
 <meta name="twitter:description" content="{esc(desc)}">
 <meta name="twitter:image" content="{image}">
-<meta name="google-site-verification" content="GHgnc6jifq43ccFgYjjD8spGle2qoCw5MW_e_cNahoY">
 <link rel="alternate" type="application/rss+xml" title="{SITE_NAME}" href="{SITE_URL}/feed.xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -797,7 +772,7 @@ def build_post(data, author, all_posts, now):
           <div class="sw-item-img"><img src="{get_thumbnail_url(p["image_url"])}" alt="{esc(p["title"])}" loading="lazy"></div>
           <div><h4>{esc(p["title"][:80])}{"..." if len(p["title"])>80 else ""}</h4>
           <div class="sw-item-date">{p.get("date_human","")}</div></div></a>'''
-        for p in [x for x in all_posts if x["slug"] != slug and x.get("image_url") and x["slug"] != "index"][:6]
+        for p in [x for x in all_posts if x["slug"] != slug][:6]
     )
     
     schema = json.dumps({
@@ -1707,18 +1682,18 @@ def build_authors(posts):
 def build_sitemap(posts):
     seen_slugs = set()
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-    lines = ['<?xml version="1.0" encoding="UTF-8"?>',
-             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-             f'  <url><loc>{SITE_URL}/</loc><lastmod>{today}</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>']
-    for cat in CATEGORIES:
-        lines.append(f'  <url><loc>{SITE_URL}/category-{cat.lower()}.html</loc><lastmod>{today}</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>')
-    # Static pages
-    lines.append(f'  <url><loc>{SITE_URL}/markets.html</loc><lastmod>{today}</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>')
-    lines.append(f'  <url><loc>{SITE_URL}/about.html</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>')
-    lines.append(f'  <url><loc>{SITE_URL}/contact.html</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>')
-    lines.append(f'  <url><loc>{SITE_URL}/privacy-policy.html</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>0.3</priority></url>')
-    # Networth section
-    lines.append(f'  <url><loc>{SITE_URL}/networth/</loc><lastmod>{today}</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>')
+
+    # ── 1. POST SITEMAP ──────────────────────────────────────────────
+    post_lines = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    ]
+    for p in posts:
+        if p["slug"] in seen_slugs:
+            continue
+        seen_slugs.add(p["slug"])
+        post_date = p["date_iso"][:10]
+        post_lines.append(f'  <url><loc>{SITE_URL}/posts/{p["slug"]}.html</loc><lastmod>{post_date}</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>')
     nw_index = OUTPUT_DIR / "networth_index.json"
     if nw_index.exists():
         try:
@@ -1726,20 +1701,39 @@ def build_sitemap(posts):
                 nw_slug = profile.get("slug", "")
                 if nw_slug and nw_slug not in seen_slugs:
                     seen_slugs.add(nw_slug)
-                    lines.append(f'  <url><loc>{SITE_URL}/networth/{nw_slug}.html</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>')
+                    post_lines.append(f'  <url><loc>{SITE_URL}/networth/{nw_slug}.html</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>')
         except Exception:
             pass
-    seen_slugs.clear()
-    # Posts — deduplicated, with lastmod + changefreq
-    for p in posts:
-        if p["slug"] in seen_slugs:
-            print(f"  Sitemap: skipping duplicate slug {p['slug']}")
-            continue
-        seen_slugs.add(p["slug"])
-        post_date = p["date_iso"][:10]
-        lines.append(f'  <url><loc>{SITE_URL}/posts/{p["slug"]}.html</loc><lastmod>{post_date}</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>')
-    lines.append("</urlset>")
-    (OUTPUT_DIR / "sitemap.xml").write_text("\n".join(lines))
+    post_lines.append("</urlset>")
+    (OUTPUT_DIR / "post-sitemap.xml").write_text("\n".join(post_lines))
+
+    # ── 2. CATEGORY SITEMAP ──────────────────────────────────────────
+    cat_lines = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+        f'  <url><loc>{SITE_URL}/</loc><lastmod>{today}</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>',
+        f'  <url><loc>{SITE_URL}/markets.html</loc><lastmod>{today}</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>',
+        f'  <url><loc>{SITE_URL}/networth/</loc><lastmod>{today}</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>',
+    ]
+    for cat in CATEGORIES:
+        cat_lines.append(f'  <url><loc>{SITE_URL}/category-{cat.lower()}.html</loc><lastmod>{today}</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>')
+    cat_lines += [
+        f'  <url><loc>{SITE_URL}/about.html</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>',
+        f'  <url><loc>{SITE_URL}/contact.html</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>',
+        f'  <url><loc>{SITE_URL}/privacy-policy.html</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>0.3</priority></url>',
+        "</urlset>"
+    ]
+    (OUTPUT_DIR / "category-sitemap.xml").write_text("\n".join(cat_lines))
+
+    # ── 3. SITEMAP INDEX ─────────────────────────────────────────────
+    index_lines = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+        f'  <sitemap><loc>{SITE_URL}/post-sitemap.xml</loc><lastmod>{today}</lastmod></sitemap>',
+        f'  <sitemap><loc>{SITE_URL}/category-sitemap.xml</loc><lastmod>{today}</lastmod></sitemap>',
+        '</sitemapindex>',
+    ]
+    (OUTPUT_DIR / "sitemap.xml").write_text("\n".join(index_lines))
 
 # ── BUILD STATIC PAGES (About, Contact, Privacy) ──────────────────────
 def build_static_pages():
@@ -1878,7 +1872,6 @@ def main():
     published = load_published()
     posts_index = load_index()
 
-
     # Deduplicate posts_index — remove any duplicate slugs that crept in previously
     seen = set()
     deduped = []
@@ -1890,15 +1883,8 @@ def main():
             print(f"  Removing duplicate from index: {p['slug']}")
     posts_index = deduped
 
-    # Keyword mode — agar custom keywords hain toh unhi pe articles banao
-    if CUSTOM_KEYWORDS:
-        print(f"Keyword mode: {len(CUSTOM_KEYWORDS)} keywords provided")
-        topics = []
-        for kw in CUSTOM_KEYWORDS:
-            topics.append({"title": kw, "hint": "", "_target_category": None})
-    else:
-        print(f"Getting {ARTICLES_PER_RUN} topics (with category balancing)...")
-        topics = build_topics(ARTICLES_PER_RUN, published, posts_index)
+    print(f"Getting {ARTICLES_PER_RUN} topics (with category balancing)...")
+    topics = build_topics(ARTICLES_PER_RUN, published, posts_index)
 
     new_count = 0
     for i, t in enumerate(topics):
@@ -1912,6 +1898,7 @@ def main():
         if not article:
             continue
         article["slug"] = slugify(article["title"])
+        # Double check new slug not already published
         if is_duplicate(article["slug"], published):
             print(f"  Skipping duplicate: {article['slug']}")
             continue
@@ -1927,8 +1914,6 @@ def main():
         
         html = build_post(article, author, posts_index, now)
         (POSTS_DIR / f"{article['slug']}.html").write_text(html)
-        ROOT_POSTS_DIR.mkdir(exist_ok=True)
-        (ROOT_POSTS_DIR / f"{article['slug']}.html").write_text(html)
         
         posts_index.append({
             "slug": article["slug"], "title": article["title"],
