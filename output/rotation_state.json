@@ -1,4 +1,6 @@
 {
-  "index": 0,
-  "used_this_cycle": []
+  "index": 1,
+  "used_this_cycle": [
+    "Crypto"
+  ]
 }
