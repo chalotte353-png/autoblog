@@ -181,11 +181,20 @@ def save_index(posts):
     (OUTPUT_DIR / "posts_index.json").write_text(json.dumps(posts, indent=2))
 
 def scan_missing_posts(posts_index):
-    """Scan posts/ folder and add any posts missing from posts_index.json"""
+    """Scan posts/ folders and add any posts missing from posts_index.json"""
     from bs4 import BeautifulSoup
+    import pathlib
     indexed_slugs = {p["slug"] for p in posts_index}
     added = 0
-    for html_file in sorted(POSTS_DIR.glob("*.html")):
+    # Scan both possible post locations
+    scan_dirs = [POSTS_DIR]
+    site_posts = pathlib.Path("/home/beitragp/marketsnewstoday.info/posts")
+    if site_posts.exists() and site_posts != POSTS_DIR:
+        scan_dirs.append(site_posts)
+    all_files = []
+    for d in scan_dirs:
+        all_files.extend(sorted(d.glob("*.html")))
+    for html_file in all_files:
         slug = html_file.stem
         if slug in indexed_slugs:
             continue
