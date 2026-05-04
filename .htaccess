@@ -11,12 +11,12 @@ Options -Indexes
 
 # Sitemap — force text response
 <Files "sitemap.xml">
-    ForceType text/xml
-    Header set Content-Type "text/xml; charset=UTF-8"
+    ForceType application/xml
+    Header set Content-Type "application/xml; charset=UTF-8"
 </Files>
 
 <Files "feed.xml">
-    ForceType text/xml
+    ForceType application/xml
     Header set Content-Type "application/rss+xml; charset=UTF-8"
 </Files>
 
@@ -25,7 +25,7 @@ Options -Indexes
 </IfModule>
 
 <IfModule mod_mime.c>
-    AddType text/xml .xml
+    AddType application/xml .xml
     AddType application/rss+xml .rss
 </IfModule>
 
