@@ -180,57 +180,6 @@ def load_index():
 def save_index(posts):
     (OUTPUT_DIR / "posts_index.json").write_text(json.dumps(posts, indent=2))
 
-def scan_missing_posts(posts_index):
-    """Scan posts/ folders and add any posts missing from posts_index.json"""
-    from bs4 import BeautifulSoup
-    import pathlib
-    indexed_slugs = {p["slug"] for p in posts_index}
-    added = 0
-    # Scan both possible post locations
-    scan_dirs = [POSTS_DIR]
-    site_posts = pathlib.Path("/home/beitragp/marketsnewstoday.info/posts")
-    if site_posts.exists() and site_posts != POSTS_DIR:
-        scan_dirs.append(site_posts)
-    all_files = []
-    for d in scan_dirs:
-        all_files.extend(sorted(d.glob("*.html")))
-    for html_file in all_files:
-        slug = html_file.stem
-        if slug in indexed_slugs:
-            continue
-        # Parse HTML to extract metadata
-        try:
-            soup = BeautifulSoup(html_file.read_text(), "html.parser")
-            title = soup.find("h1")
-            title = title.get_text().strip() if title else slug.replace("-", " ").title()
-            desc = soup.find("meta", {"name": "description"})
-            desc = desc["content"] if desc else ""
-            cat_el = soup.find("a", {"class": "label"})
-            category = cat_el.get_text().strip() if cat_el else "World"
-            img = soup.find("div", {"class": "post-hero"})
-            img = img.find("img")["src"] if img and img.find("img") else ""
-            author_el = soup.find("div", {"class": "author-box-name"})
-            author = author_el.get_text().strip() if author_el else "Editorial Team"
-            tags_el = soup.find_all("span", {"class": "tag"})
-            tags = [t.get_text().strip() for t in tags_el]
-            from datetime import datetime, timezone
-            now = datetime.now(timezone.utc)
-            posts_index.insert(0, {
-                "slug": slug, "title": title,
-                "meta_description": desc, "excerpt": desc,
-                "category": category, "tags": tags,
-                "image_url": img, "read_time": "5 min read",
-                "author_name": author, "author_title": "Reporter",
-                "author_avatar": "", "author_id": "staff",
-                "date_iso": now.isoformat(), "date_human": now.strftime("%B %d, %Y"),
-            })
-            indexed_slugs.add(slug)
-            added += 1
-        except Exception as e:
-            print(f"  Warning: Could not parse {slug}: {e}")
-    if added:
-        print(f"  Added {added} missing posts from posts/ folder to index")
-    return posts_index
 
 # ── MANUAL RUN ROTATION STATE ────────────────────────────────────────
 # Tracks which category comes next in manual runs, so each manual run
@@ -848,7 +797,7 @@ def build_post(data, author, all_posts, now):
           <div class="sw-item-img"><img src="{get_thumbnail_url(p["image_url"])}" alt="{esc(p["title"])}" loading="lazy"></div>
           <div><h4>{esc(p["title"][:80])}{"..." if len(p["title"])>80 else ""}</h4>
           <div class="sw-item-date">{p.get("date_human","")}</div></div></a>'''
-        for p in [x for x in all_posts if x["slug"] != slug][:6]
+        for p in [x for x in all_posts if x["slug"] != slug and x.get("image_url") and x["slug"] != "index"][:6]
     )
     
     schema = json.dumps({
@@ -1929,8 +1878,6 @@ def main():
     published = load_published()
     posts_index = load_index()
 
-    # Scan posts/ folder — add any admin panel posts missing from index
-    posts_index = scan_missing_posts(posts_index)
 
     # Deduplicate posts_index — remove any duplicate slugs that crept in previously
     seen = set()
