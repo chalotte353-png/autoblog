@@ -1548,7 +1548,7 @@ def build_homepage(posts):
           <div class="sw-item-img"><img src="{get_thumbnail_url(p["image_url"])}" alt="{esc(p["title"])}" loading="lazy"></div>
           <div><h4>{esc(p["title"][:80])}{"..." if len(p["title"])>80 else ""}</h4>
           <div class="sw-item-date">{p.get("date_human","")}</div></div></a>"""
-        for p in sp[:7]
+        for p in [x for x in sp if x.get("image_url") and x["slug"] != "index"][:7]
     )
     sw_cats = "".join(
         f'<a href="category-{c.lower()}.html" class="sw-cat"><span>{c}</span><span>&rarr;</span></a>'
