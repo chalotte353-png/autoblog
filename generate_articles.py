@@ -775,7 +775,7 @@ def build_post(data, author, all_posts, now):
           <div class="sw-item-img"><img src="{get_thumbnail_url(p["image_url"])}" alt="{esc(p["title"])}" loading="lazy"></div>
           <div><h4>{esc(p["title"][:80])}{"..." if len(p["title"])>80 else ""}</h4>
           <div class="sw-item-date">{p.get("date_human","")}</div></div></a>'''
-        for p in [x for x in all_posts if x["slug"] != slug and x.get("image_url") and x["slug"] != "index"][:6]
+        for p in [x for x in all_posts if x["slug"] != slug][:6]
     )
     
     schema = json.dumps({
@@ -1549,7 +1549,7 @@ def build_homepage(posts):
           <div class="sw-item-img"><img src="{get_thumbnail_url(p["image_url"])}" alt="{esc(p["title"])}" loading="lazy"></div>
           <div><h4>{esc(p["title"][:80])}{"..." if len(p["title"])>80 else ""}</h4>
           <div class="sw-item-date">{p.get("date_human","")}</div></div></a>"""
-        for p in [x for x in sp if x.get("image_url") and x["slug"] != "index"][:7]
+        for p in sp[:7]
     )
     sw_cats = "".join(
         f'<a href="category-{c.lower()}.html" class="sw-cat"><span>{c}</span><span>&rarr;</span></a>'
@@ -1686,7 +1686,7 @@ def build_sitemap(posts):
     seen_slugs = set()
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
-    # ── 1. POST SITEMAP
+    # 1. POST SITEMAP
     post_lines = [
         '<?xml version="1.0" encoding="UTF-8"?>',
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
@@ -1710,7 +1710,7 @@ def build_sitemap(posts):
     post_lines.append("</urlset>")
     (OUTPUT_DIR / "post-sitemap.xml").write_text("\n".join(post_lines))
 
-    # ── 2. CATEGORY SITEMAP
+    # 2. CATEGORY SITEMAP
     cat_lines = [
         '<?xml version="1.0" encoding="UTF-8"?>',
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
@@ -1728,7 +1728,7 @@ def build_sitemap(posts):
     ]
     (OUTPUT_DIR / "category-sitemap.xml").write_text("\n".join(cat_lines))
 
-    # ── 3. SITEMAP INDEX
+    # 3. SITEMAP INDEX
     index_lines = [
         '<?xml version="1.0" encoding="UTF-8"?>',
         '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
@@ -1738,7 +1738,6 @@ def build_sitemap(posts):
     ]
     (OUTPUT_DIR / "sitemap.xml").write_text("\n".join(index_lines))
 
-# ── BUILD STATIC PAGES (About, Contact, Privacy) ──────────────────────
 def build_static_pages():
     """Rebuild About, Contact, Privacy pages with latest nav/footer every run."""
     now = datetime.now()
@@ -1886,13 +1885,8 @@ def main():
             print(f"  Removing duplicate from index: {p['slug']}")
     posts_index = deduped
 
-    # Keyword mode
-    if CUSTOM_KEYWORDS:
-        print(f"Keyword mode: {len(CUSTOM_KEYWORDS)} keywords provided")
-        topics = [{"title": kw, "hint": "", "_target_category": None} for kw in CUSTOM_KEYWORDS]
-    else:
-        print(f"Getting {ARTICLES_PER_RUN} topics (with category balancing)...")
-        topics = build_topics(ARTICLES_PER_RUN, published, posts_index)
+    print(f"Getting {ARTICLES_PER_RUN} topics (with category balancing)...")
+    topics = build_topics(ARTICLES_PER_RUN, published, posts_index)
 
     new_count = 0
     for i, t in enumerate(topics):
