@@ -10,8 +10,10 @@ SITE_URL         = os.environ.get("SITE_URL", "https://marketsnewstoday.info")
 SITE_NAME        = "Markets News Today"
 OUTPUT_DIR       = Path("output")
 POSTS_DIR        = OUTPUT_DIR / "posts"
+ROOT_POSTS_DIR   = Path("posts")
 AUTHORS_DIR      = OUTPUT_DIR / "authors"
-ARTICLES_PER_RUN = int(os.environ.get("ARTICLES_PER_RUN", "15"))
+ARTICLES_PER_RUN = int(os.environ.get("ARTICLES_PER_RUN", "20"))
+CUSTOM_KEYWORDS  = [k.strip() for k in os.environ.get("CUSTOM_KEYWORDS", "").split(",") if k.strip()]
 
 CATEGORIES = ["Business","Technology","Finance","World","Sports","Health","Travel","Science","Entertainment","Politics","Crypto","Forex","Stocks"]
 
@@ -772,7 +774,7 @@ def build_post(data, author, all_posts, now):
           <div class="sw-item-img"><img src="{get_thumbnail_url(p["image_url"])}" alt="{esc(p["title"])}" loading="lazy"></div>
           <div><h4>{esc(p["title"][:80])}{"..." if len(p["title"])>80 else ""}</h4>
           <div class="sw-item-date">{p.get("date_human","")}</div></div></a>'''
-        for p in [x for x in all_posts if x["slug"] != slug][:6]
+        for p in [x for x in all_posts if x["slug"] != slug and x.get("image_url") and x["slug"] != "index"][:6]
     )
     
     schema = json.dumps({
@@ -1682,18 +1684,18 @@ def build_authors(posts):
 def build_sitemap(posts):
     seen_slugs = set()
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-
-    # ── 1. POST SITEMAP ──────────────────────────────────────────────
-    post_lines = [
-        '<?xml version="1.0" encoding="UTF-8"?>',
-        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-    ]
-    for p in posts:
-        if p["slug"] in seen_slugs:
-            continue
-        seen_slugs.add(p["slug"])
-        post_date = p["date_iso"][:10]
-        post_lines.append(f'  <url><loc>{SITE_URL}/posts/{p["slug"]}.html</loc><lastmod>{post_date}</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>')
+    lines = ['<?xml version="1.0" encoding="UTF-8"?>',
+             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+             f'  <url><loc>{SITE_URL}/</loc><lastmod>{today}</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>']
+    for cat in CATEGORIES:
+        lines.append(f'  <url><loc>{SITE_URL}/category-{cat.lower()}.html</loc><lastmod>{today}</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>')
+    # Static pages
+    lines.append(f'  <url><loc>{SITE_URL}/markets.html</loc><lastmod>{today}</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>')
+    lines.append(f'  <url><loc>{SITE_URL}/about.html</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>')
+    lines.append(f'  <url><loc>{SITE_URL}/contact.html</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>')
+    lines.append(f'  <url><loc>{SITE_URL}/privacy-policy.html</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>0.3</priority></url>')
+    # Networth section
+    lines.append(f'  <url><loc>{SITE_URL}/networth/</loc><lastmod>{today}</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>')
     nw_index = OUTPUT_DIR / "networth_index.json"
     if nw_index.exists():
         try:
@@ -1701,39 +1703,20 @@ def build_sitemap(posts):
                 nw_slug = profile.get("slug", "")
                 if nw_slug and nw_slug not in seen_slugs:
                     seen_slugs.add(nw_slug)
-                    post_lines.append(f'  <url><loc>{SITE_URL}/networth/{nw_slug}.html</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>')
+                    lines.append(f'  <url><loc>{SITE_URL}/networth/{nw_slug}.html</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>')
         except Exception:
             pass
-    post_lines.append("</urlset>")
-    (OUTPUT_DIR / "post-sitemap.xml").write_text("\n".join(post_lines))
-
-    # ── 2. CATEGORY SITEMAP ──────────────────────────────────────────
-    cat_lines = [
-        '<?xml version="1.0" encoding="UTF-8"?>',
-        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-        f'  <url><loc>{SITE_URL}/</loc><lastmod>{today}</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>',
-        f'  <url><loc>{SITE_URL}/markets.html</loc><lastmod>{today}</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>',
-        f'  <url><loc>{SITE_URL}/networth/</loc><lastmod>{today}</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>',
-    ]
-    for cat in CATEGORIES:
-        cat_lines.append(f'  <url><loc>{SITE_URL}/category-{cat.lower()}.html</loc><lastmod>{today}</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>')
-    cat_lines += [
-        f'  <url><loc>{SITE_URL}/about.html</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>',
-        f'  <url><loc>{SITE_URL}/contact.html</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>',
-        f'  <url><loc>{SITE_URL}/privacy-policy.html</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>0.3</priority></url>',
-        "</urlset>"
-    ]
-    (OUTPUT_DIR / "category-sitemap.xml").write_text("\n".join(cat_lines))
-
-    # ── 3. SITEMAP INDEX ─────────────────────────────────────────────
-    index_lines = [
-        '<?xml version="1.0" encoding="UTF-8"?>',
-        '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-        f'  <sitemap><loc>{SITE_URL}/post-sitemap.xml</loc><lastmod>{today}</lastmod></sitemap>',
-        f'  <sitemap><loc>{SITE_URL}/category-sitemap.xml</loc><lastmod>{today}</lastmod></sitemap>',
-        '</sitemapindex>',
-    ]
-    (OUTPUT_DIR / "sitemap.xml").write_text("\n".join(index_lines))
+    seen_slugs.clear()
+    # Posts — deduplicated, with lastmod + changefreq
+    for p in posts:
+        if p["slug"] in seen_slugs:
+            print(f"  Sitemap: skipping duplicate slug {p['slug']}")
+            continue
+        seen_slugs.add(p["slug"])
+        post_date = p["date_iso"][:10]
+        lines.append(f'  <url><loc>{SITE_URL}/posts/{p["slug"]}.html</loc><lastmod>{post_date}</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>')
+    lines.append("</urlset>")
+    (OUTPUT_DIR / "sitemap.xml").write_text("\n".join(lines))
 
 # ── BUILD STATIC PAGES (About, Contact, Privacy) ──────────────────────
 def build_static_pages():
@@ -1883,8 +1866,13 @@ def main():
             print(f"  Removing duplicate from index: {p['slug']}")
     posts_index = deduped
 
-    print(f"Getting {ARTICLES_PER_RUN} topics (with category balancing)...")
-    topics = build_topics(ARTICLES_PER_RUN, published, posts_index)
+    # Keyword mode
+    if CUSTOM_KEYWORDS:
+        print(f"Keyword mode: {len(CUSTOM_KEYWORDS)} keywords provided")
+        topics = [{"title": kw, "hint": "", "_target_category": None} for kw in CUSTOM_KEYWORDS]
+    else:
+        print(f"Getting {ARTICLES_PER_RUN} topics (with category balancing)...")
+        topics = build_topics(ARTICLES_PER_RUN, published, posts_index)
 
     new_count = 0
     for i, t in enumerate(topics):
@@ -1914,6 +1902,8 @@ def main():
         
         html = build_post(article, author, posts_index, now)
         (POSTS_DIR / f"{article['slug']}.html").write_text(html)
+        ROOT_POSTS_DIR.mkdir(exist_ok=True)
+        (ROOT_POSTS_DIR / f"{article['slug']}.html").write_text(html)
         
         posts_index.append({
             "slug": article["slug"], "title": article["title"],
