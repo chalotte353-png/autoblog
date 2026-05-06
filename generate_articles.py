@@ -885,7 +885,10 @@ def head_html(title, desc, canonical, image="", prefix="", og_type="article"):
   gtag('js', new Date());
   gtag('config', 'G-YC4REN62D0');
 </script>
-</head><body>"""
+</head><body>
+<style>
+.seo-h1{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+</style>"""
 
 def byline_html(p, prefix=""):
     return f"""<div class="byline">
@@ -1053,7 +1056,7 @@ def build_post(data, author, all_posts, now):
       <span class="read">{data.get("read_time","5 min read")}</span>
     </div>
   </div>
-  <div class="post-hero"><img src="{data["image_url"]}" alt="{esc(data["title"])}" loading="eager" fetchpriority="high"></div>
+  <div class="post-hero"><img src="{data["image_url"]}" alt="{esc(data["title"])} - {cat} News | Markets News Today" loading="eager" fetchpriority="high"></div>
   <div class="post-body">{linked_html}</div>
   {related_html}
   <div class="post-tags">{tags_html}</div>
@@ -1760,7 +1763,7 @@ def build_homepage(posts):
   </div>
   <div class="cat-grid">
     <a href="posts/{lead["slug"]}.html" class="cat-lead">
-      <div class="cat-lead-img"><img src="{lead["image_url"]}" alt="{esc(lead["title"][:40])}" loading="lazy"></div>
+      <div class="cat-lead-img"><img src="{lead["image_url"]}" alt="{esc(lead["title"][:60])} - {cat} News" loading="lazy"></div>
       <div class="cat-lead-body">
         <div class="label">{lead["category"]}</div>
         <h2>{esc(lead["title"])}</h2>
@@ -1804,8 +1807,8 @@ def build_homepage(posts):
         "logo": {"@type": "ImageObject", "url": f"{SITE_URL}/favicon.png"}
     })
 
-    html = f"""{head_html(SITE_NAME + " — Business, Finance & World News",
-        "Breaking news and expert analysis on business, finance, technology and world affairs.",
+    html = f"""{head_html(SITE_NAME + " — Breaking News on Business, Finance, Crypto & World Affairs",
+        "Markets News Today covers breaking news, crypto prices, forex rates, stock market updates, finance, technology, health, travel and world affairs. Stay informed 24/7.",
         SITE_URL + "/", sp[0]["image_url"] if sp else "", "", "website")}
 <script type="application/ld+json">{site_schema}</script>
 <script type="application/ld+json">{org_schema}</script>
