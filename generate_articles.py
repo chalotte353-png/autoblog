@@ -38,262 +38,7 @@ CATEGORY_TARGETS = {
 }
 
 # Wiki topics balanced across underrepresented categories
-WIKI_TOPICS_BALANCED = {
-    "Business": [
-        "How to start a small business 2026",
-        "What is corporate social responsibility",
-        "How to write a business plan step by step",
-        "Best business ideas for beginners 2026",
-        "What is supply chain management explained",
-        "How to register a company online",
-        "Best CRM software for small business 2026",
-        "What is franchise business model",
-        "How to get business loan 2026",
-        "Best accounting software for small business",
-        "What is B2B vs B2C business",
-        "How to scale a startup business",
-        "Global mergers and acquisitions 2026",
-        "Corporate sustainability ESG 2026",
-        "Remote work business productivity 2026",
-        "Private equity market trends 2026",
-        "Small business growth strategies 2026",
-        "Supply chain resilience business 2026",
-    ],
-    "Technology": [
-        "What is artificial intelligence explained simply",
-        "How does ChatGPT work explained",
-        "Best laptops for students 2026",
-        "What is quantum computing explained",
-        "How to learn coding for beginners",
-        "Best antivirus software 2026",
-        "What is cloud computing explained",
-        "How to speed up your computer",
-        "Best smartphone under 500 dollars 2026",
-        "What is cybersecurity and how it works",
-        "How to protect yourself from hackers",
-        "Best VPN services 2026 review",
-        "What is 5G technology explained",
-        "How to back up your data safely",
-        "Best smart home devices 2026",
-        "Artificial intelligence enterprise 2026",
-        "Quantum computing breakthrough 2026",
-        "Cybersecurity threats 2026",
-        "Electric vehicle technology update 2026",
-    ],
-    "Finance": [
-        "How to invest money for beginners",
-        "What is compound interest explained",
-        "How to create a budget plan",
-        "Best high yield savings accounts 2026",
-        "What is inflation and how it affects you",
-        "How to get out of debt fast",
-        "What is ETF vs mutual fund",
-        "How to build an emergency fund",
-        "Best credit cards 2026 review",
-        "What is dollar cost averaging",
-        "How to improve your credit score",
-        "What is passive income explained",
-        "How to retire early FIRE method",
-        "Best robo advisors 2026",
-        "What is hedge fund explained",
-        "Federal Reserve interest rate 2026",
-        "Stock market outlook 2026",
-        "US housing market trends 2026",
-        "Global debt crisis 2026",
-    ],
-    "Health": [
-        "How to lose weight fast naturally",
-        "What is intermittent fasting explained",
-        "Best vitamins and supplements 2026",
-        "How to improve mental health daily",
-        "What is Mediterranean diet explained",
-        "How to build immune system naturally",
-        "Best exercises for weight loss at home",
-        "What is diabetes symptoms and treatment",
-        "How to lower blood pressure naturally",
-        "Best protein foods for muscle building",
-        "What is anxiety disorder symptoms",
-        "How to sleep better at night",
-        "What is ADHD symptoms in adults",
-        "How to quit smoking permanently",
-        "Best superfoods for health 2026",
-        "What is gut health and probiotics",
-        "How to reduce stress and anxiety naturally",
-        "Cancer treatment breakthrough 2026",
-        "Healthcare innovation 2026",
-        "Obesity drug research update 2026",
-        "Longevity science 2026",
-    ],
-    "Science": [
-        "What is black hole explained simply",
-        "How does DNA work explained",
-        "What is climate change causes and effects",
-        "How do vaccines work explained",
-        "What is CRISPR gene editing",
-        "How does the human brain work",
-        "What is dark matter in space",
-        "How do solar panels work",
-        "What is nuclear fusion energy",
-        "How does the internet work explained",
-        "What is evolution theory explained",
-        "How do electric cars work",
-        "SpaceX mission update 2026",
-        "Climate change research 2026",
-        "Dark matter discovery 2026",
-        "Renewable energy innovation 2026",
-        "Ocean plastic pollution science 2026",
-    ],
-    "Travel": [
-        "Best countries to visit in 2026",
-        "How to travel cheap on a budget",
-        "Best travel destinations in Asia 2026",
-        "How to get cheapest flights online",
-        "Best travel insurance 2026 review",
-        "How to pack light for travel",
-        "Best hotels in Dubai 2026",
-        "How to apply for Schengen visa",
-        "Best places to visit in Europe 2026",
-        "How to travel solo safely",
-        "Best travel credit cards 2026",
-        "How to find cheap accommodation abroad",
-        "Best places to retire abroad 2026",
-        "How to become a digital nomad",
-        "Best beaches in the world 2026",
-        "Luxury travel trends 2026",
-        "Sustainable eco tourism 2026",
-        "Air travel recovery 2026",
-        "Digital nomad hotspots 2026",
-    ],
-    "Entertainment": [
-        "Best movies to watch 2026",
-        "Best Netflix series 2026",
-        "Best anime series for beginners",
-        "How does Hollywood make money",
-        "Best music streaming services 2026",
-        "What is method acting explained",
-        "Best video games 2026",
-        "How to become a YouTuber",
-        "Best podcasts to listen 2026",
-        "How does Spotify algorithm work",
-        "Best board games for adults 2026",
-        "Hollywood box office 2026",
-        "Streaming wars update 2026",
-        "Music industry trends 2026",
-        "Video game market 2026",
-    ],
-    "Sports": [
-        "How to run faster and longer",
-        "Best protein supplements for athletes",
-        "How to improve your football skills",
-        "Best running shoes 2026 review",
-        "How to build muscle fast at home",
-        "What is VO2 max explained",
-        "How to train for a marathon",
-        "Best gym equipment for home 2026",
-        "How to improve basketball skills",
-        "What is sports nutrition explained",
-        "How to recover from sports injury fast",
-        "NBA season highlights 2026",
-        "Premier League football 2026",
-        "Formula 1 season 2026",
-        "Olympic sports update 2026",
-    ],
-    "Politics": [
-        "What is democracy explained simply",
-        "How does the US electoral system work",
-        "What is socialism vs capitalism",
-        "How does the United Nations work",
-        "What is NATO explained",
-        "How does immigration policy work",
-        "What is geopolitics explained",
-        "How does the Supreme Court work",
-        "US Congress legislation 2026",
-        "Global elections 2026",
-        "Climate policy international 2026",
-        "Trade policy tariffs 2026",
-    ],
-    "World": [
-        "Why is India economy growing fast",
-        "What is BRICS explained",
-        "How does China economy work",
-        "What is European Union explained",
-        "Why is Africa growing economically",
-        "What is globalization explained",
-        "How does foreign aid work",
-        "What is the World Bank explained",
-        "India economy growth 2026",
-        "China trade policy 2026",
-        "European Union politics 2026",
-        "Africa development 2026",
-    ],
-    "Crypto": [
-        "What is Bitcoin explained for beginners",
-        "How to buy Bitcoin step by step",
-        "Best crypto wallets 2026 review",
-        "What is Ethereum and how it works",
-        "How to invest in cryptocurrency safely",
-        "What is DeFi explained simply",
-        "Best crypto exchanges 2026",
-        "What is NFT and how it works",
-        "How does blockchain technology work",
-        "What is crypto staking explained",
-        "How to avoid crypto scams",
-        "What is altcoin explained",
-        "Best cryptocurrency to invest 2026",
-        "What is Web3 explained simply",
-        "How to do crypto tax 2026",
-        "Bitcoin price analysis 2026",
-        "Ethereum network upgrade 2026",
-        "Cryptocurrency regulation update 2026",
-        "Bitcoin ETF market update 2026",
-        "Solana ecosystem growth 2026",
-        "XRP Ripple court case update 2026",
-    ],
-    "Forex": [
-        "What is forex trading explained for beginners",
-        "How to start forex trading step by step",
-        "Best forex brokers 2026 review",
-        "What is pip in forex trading",
-        "How to read forex charts",
-        "Best forex trading strategies 2026",
-        "What is leverage in forex",
-        "How to manage risk in forex trading",
-        "Best forex trading apps 2026",
-        "What is USD to PKR exchange rate today",
-        "How does currency exchange work",
-        "What is technical analysis forex",
-        "Best time to trade forex",
-        "What is USD to INR exchange rate",
-        "How to choose forex broker",
-        "US Dollar index outlook 2026",
-        "EUR USD analysis 2026",
-        "Pakistani Rupee PKR outlook 2026",
-        "Indian Rupee INR forecast 2026",
-        "British Pound GBP forecast 2026",
-    ],
-    "Stocks": [
-        "What is stock market explained for beginners",
-        "How to invest in stocks for beginners",
-        "Best stocks to buy 2026",
-        "What is dividend stock explained",
-        "How to read stock charts",
-        "Best stock trading apps 2026",
-        "What is P/E ratio explained",
-        "How to pick winning stocks",
-        "What is index fund explained",
-        "Best index funds 2026 review",
-        "How does stock market work",
-        "What is short selling stocks",
-        "Best growth stocks 2026",
-        "How to start investing with little money",
-        "What is Warren Buffett investment strategy",
-        "S&P 500 outlook 2026",
-        "NASDAQ tech stocks 2026",
-        "AI stocks investment 2026",
-        "Stock market earnings season 2026",
-        "IPO market 2026",
-    ],
-}
+# Topics are now dynamically generated by Claude AI
 
 AUTHORS = {
     "Business":      [{"id":"james-mitchell","name":"James Mitchell","title":"Business Editor","bio":"15 years covering global markets and corporate strategy.","avatar":"https://i.pravatar.cc/150?img=11","twitter":"@jmitchell_biz"},
@@ -580,23 +325,101 @@ def pick_needed_category(posts_index, run_used_cats):
         scores[cat] = target_ratio - actual_ratio - run_penalty
     return max(scores, key=scores.get)
 
-def build_topics(count, published, posts_index=None):
-    """Build topic list with category balance enforcement.
 
-    - Scheduled (auto) runs: use pick_needed_category (ratio-based balancing)
-    - Manual runs: use get_next_rotation_categories (round-robin rotation)
-      so every single manual trigger cycles through all 13 categories in order.
+# ── DYNAMIC TOPIC GENERATOR ─────────────────────────────────────────
+def generate_informational_topics(category, count, published):
+    """
+    Ask Claude to generate fresh informational topics for a category.
+    Topics are always fresh, trend-aware, and never hardcoded.
+    """
+    now = datetime.now()
+    year = now.strftime("%Y")
+    month = now.strftime("%B")
+    
+    # Category-specific topic type hints for maximum diversity
+    CATEGORY_HINTS = {
+        "Business": "business strategies, entrepreneurship, management, leadership, marketing, ecommerce, freelancing, side hustles, corporate culture, startups",
+        "Technology": "gadgets, software, apps, programming, cybersecurity, AI tools, social media, gaming, internet, smartphones, computers, wearables",
+        "Finance": "personal finance, budgeting, saving money, taxes, insurance, retirement, loans, credit cards, banking, wealth building, frugal living",
+        "Health": "fitness, nutrition, mental health, diet, sleep, vitamins, yoga, weight loss, skincare, pregnancy, parenting, aging, home remedies",
+        "Science": "space, environment, biology, chemistry, physics, climate, animals, nature, discoveries, inventions, psychology, archaeology",
+        "Travel": "destinations, budget travel, hotels, flights, visas, packing tips, solo travel, family travel, road trips, hidden gems, food tourism",
+        "Entertainment": "movies, TV shows, music, celebrities, gaming, books, anime, streaming, pop culture, awards, hobbies, photography",
+        "Sports": "fitness tips, workout routines, sports gear, nutrition for athletes, yoga, running, cycling, swimming, team sports, martial arts",
+        "Politics": "government systems, history, international relations, laws, human rights, diplomacy, economics policy, social issues",
+        "World": "culture, history, languages, traditions, famous places, world records, geography, famous people, religions, global issues",
+        "Crypto": "blockchain basics, crypto for beginners, Web3, NFTs, DeFi, crypto security, wallets, exchanges, mining, crypto taxes",
+        "Forex": "currency trading basics, forex strategies, exchange rates, international money transfer, currency conversion, economic indicators",
+        "Stocks": "stock market basics, investing strategies, dividend investing, index funds, ETFs, Warren Buffett, value investing, day trading basics",
+    }
+    
+    hint = CATEGORY_HINTS.get(category, "general knowledge, how-to guides, tips and tricks, reviews, comparisons")
+    
+    prompt = (
+        f"You are a world-class SEO content strategist. Generate {count} diverse, high-traffic "
+        f"informational article topics for the '{category}' category. Today is {month} {year}.\n\n"
+        f"Topic areas to cover (pick varied ones): {hint}\n\n"
+        f"STRICT RULES:\n"
+        f"1. MAXIMUM DIVERSITY — every topic must be completely different type and style\n"
+        f"2. Mix these formats: How to X, What is X, Best X for Y, X vs Y, Why does X happen, "
+        f"   Top X ways to Y, X tips for beginners, Complete guide to X, X explained simply, "
+        f"   Is X worth it, How much does X cost, X pros and cons, When to X, Where to X\n"
+        f"3. Cover DIFFERENT subtopics within {category} — not just the most obvious ones\n"
+        f"4. Include {year} only where it adds freshness value\n"
+        f"5. High search volume, conversational, easy to rank\n"
+        f"6. NO news, NO breaking stories, NO current events — evergreen + trending informational ONLY\n"
+        f"7. Write topics exactly as a person would Google search them\n"
+        f"8. Topics should be genuinely useful and answer real questions people ask\n\n"
+        f"Respond with ONLY a JSON array of strings — no markdown, no extra text:\n"
+        f'["topic 1", "topic 2", "topic 3"]'
+    )
+    
+    try:
+        r = requests.post("https://api.anthropic.com/v1/messages",
+            headers={"x-api-key": CLAUDE_API_KEY, "anthropic-version": "2023-06-01", "content-type": "application/json"},
+            json={"model": "claude-sonnet-4-6", "max_tokens": 1000,
+                  "messages": [{"role": "user", "content": prompt}]}, timeout=30)
+        resp = r.json()
+        if "content" not in resp:
+            return []
+        raw = resp["content"][0]["text"].strip()
+        # Parse JSON array
+        import json as json_module
+        # Clean up response
+        raw = raw.strip()
+        if raw.startswith("```"):
+            raw = re.sub(r"```.*?\n", "", raw)
+            raw = raw.replace("```", "")
+        topics = json_module.loads(raw.strip())
+        # Filter already published
+        fresh = []
+        for t in topics:
+            slug = slugify(t)
+            if not is_duplicate(slug, published):
+                fresh.append({"title": t, "hint": "", "_generated": True})
+        return fresh
+    except Exception as e:
+        print(f"  Topic generator error: {e}")
+        return []
+
+def build_topics(count, published, posts_index=None):
+    """
+    Build topic list with DYNAMIC generation — no hardcoded topics!
+    
+    3-Layer Strategy:
+    1. NewsAPI → fresh breaking news (real-time)
+    2. Claude AI → fresh informational topics (dynamic, never repeats)
+    3. Mix both based on category targets
+    
+    Result: Infinite fresh content — news + informational, always unique!
     """
     from collections import defaultdict, Counter
     if posts_index is None:
         posts_index = []
 
-    # Detect if this is a manual/forced rotation run
     IS_MANUAL = os.environ.get("MANUAL_ROTATION", "false").lower() == "true"
-
-    news = fetch_news(count * 3)
-
-    # Group news topics by likely category (rough keyword match)
+    
+    # Category keyword matcher for news
     CAT_KEYWORDS = {
         "Politics":      ["trump","congress","senate","republican","democrat","election","vote","law","bill","white house","president","governor","policy"],
         "World":         ["iran","china","russia","ukraine","europe","africa","india","pakistan","israel","war","ceasefire","nato","un ","global"],
@@ -619,7 +442,8 @@ def build_topics(count, published, posts_index=None):
         best = max(scores, key=scores.get)
         return best if scores[best] > 0 else "World"
 
-    # Bucket news by category
+    # ── LAYER 1: Fetch news ──
+    news = fetch_news(count * 3)
     news_by_cat = defaultdict(list)
     for t in news:
         cat = guess_category(t["title"])
@@ -627,61 +451,87 @@ def build_topics(count, published, posts_index=None):
         if not is_duplicate(slug, published):
             news_by_cat[cat].append(t)
 
-    # Build wiki pool by category
-    wiki_by_cat = {}
-    for cat, topics in WIKI_TOPICS_BALANCED.items():
-        random.shuffle(topics)
-        wiki_by_cat[cat] = [{"title": t, "hint": ""} for t in topics
-                            if not is_duplicate(slugify(t), published)]
+    # ── LAYER 2: Generate informational topics dynamically ──
+    # 50/50 split: half news, half informational
+    info_count_per_cat = max(2, count // len(CATEGORIES))
+    
+    # Determine which categories need informational topics
+    needed_cats = list(CATEGORY_TARGETS.keys())
+    info_by_cat = defaultdict(list)
+    
+    print(f"  Generating dynamic informational topics...")
+    for cat in needed_cats:
+        generated = generate_informational_topics(cat, info_count_per_cat, published)
+        if generated:
+            info_by_cat[cat].extend(generated)
+    
+    total_info = sum(len(v) for v in info_by_cat.values())
+    print(f"  Generated {total_info} fresh informational topics")
 
-    # Select topics with category balance
+    # ── SELECT TOPICS WITH SMART MIXING ──
     selected = []
     run_used_cats = Counter()
     attempts = 0
 
-    # For manual runs: get a pre-set rotation list of categories
-    # For auto runs: pick_needed_category dynamically as before
     if IS_MANUAL:
         rotation_cats = get_next_rotation_categories(count)
-        rotation_queue = list(rotation_cats)  # consume in order
+        rotation_queue = list(rotation_cats)
         print(f"  Manual rotation mode: {rotation_queue}")
     else:
         rotation_queue = None
 
-    while len(selected) < count and attempts < count * 5:
+    while len(selected) < count and attempts < count * 8:
         attempts += 1
 
+        # Pick category
         if rotation_queue:
-            # Manual mode: take next category from rotation queue
             cat = rotation_queue.pop(0) if rotation_queue else pick_needed_category(posts_index, run_used_cats)
         else:
-            # Auto mode: ratio-based balancing
             cat = pick_needed_category(posts_index, run_used_cats)
 
-        # Try news first, then wiki
         topic = None
-        if news_by_cat.get(cat):
+        
+        # Smart mixing: alternate news and informational
+        use_news = (len(selected) % 2 == 0)  # Even = news, Odd = informational
+        
+        if use_news and news_by_cat.get(cat):
             topic = news_by_cat[cat].pop(0)
-        elif wiki_by_cat.get(cat):
-            topic = wiki_by_cat[cat].pop(0)
+        elif not use_news and info_by_cat.get(cat):
+            topic = info_by_cat[cat].pop(0)
+        elif news_by_cat.get(cat):
+            topic = news_by_cat[cat].pop(0)
+        elif info_by_cat.get(cat):
+            topic = info_by_cat[cat].pop(0)
         else:
-            # fallback: any available news
-            for c in random.sample(list(CAT_KEYWORDS.keys()), len(CAT_KEYWORDS)):
+            # Fallback: any available topic from any category
+            for c in list(CAT_KEYWORDS.keys()):
                 if news_by_cat.get(c):
                     topic = news_by_cat[c].pop(0)
                     cat = c
                     break
+                elif info_by_cat.get(c):
+                    topic = info_by_cat[c].pop(0)
+                    cat = c
+                    break
             if not topic:
-                break
+                # Generate more topics for needed category
+                extra = generate_informational_topics(cat, 3, published)
+                if extra:
+                    topic = extra[0]
+                else:
+                    break
 
         slug = slugify(topic["title"])
-        # Final duplicate check including already selected this run
         selected_slugs = {slugify(s["title"]) for s in selected}
         if not is_duplicate(slug, published | selected_slugs):
             topic["_target_category"] = cat
             selected.append(topic)
             run_used_cats[cat] += 1
 
+    # Log mixing stats
+    news_count = sum(1 for t in selected if not t.get("_generated"))
+    info_count = sum(1 for t in selected if t.get("_generated"))
+    print(f"  Mix: {news_count} news + {info_count} informational = {len(selected)} total")
     print(f"  Category distribution this run: {dict(run_used_cats)}")
     return selected
 
@@ -1007,7 +857,7 @@ def build_post(data, author, all_posts, now):
           <div class="sw-item-img"><img src="{get_thumbnail_url(p["image_url"])}" alt="{esc(p["title"])}" loading="lazy"></div>
           <div><h4>{esc(p["title"][:80])}{"..." if len(p["title"])>80 else ""}</h4>
           <div class="sw-item-date">{p.get("date_human","")}</div></div></a>'''
-        for p in [x for x in all_posts if x["slug"] != slug][:6]
+        for p in [x for x in all_posts if x["slug"] != slug and x.get("image_url") and x["slug"] != "index"][:6]
     )
     
     schema = json.dumps({
@@ -1781,7 +1631,7 @@ def build_homepage(posts):
           <div class="sw-item-img"><img src="{get_thumbnail_url(p["image_url"])}" alt="{esc(p["title"])}" loading="lazy"></div>
           <div><h4>{esc(p["title"][:80])}{"..." if len(p["title"])>80 else ""}</h4>
           <div class="sw-item-date">{p.get("date_human","")}</div></div></a>"""
-        for p in sp[:7]
+        for p in [x for x in sp if x.get("image_url") and x["slug"] != "index"][:7]
     )
     sw_cats = "".join(
         f'<a href="category-{c.lower()}.html" class="sw-cat"><span>{c}</span><span>&rarr;</span></a>'
