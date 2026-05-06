@@ -10,10 +10,8 @@ SITE_URL         = os.environ.get("SITE_URL", "https://marketsnewstoday.info")
 SITE_NAME        = "Markets News Today"
 OUTPUT_DIR       = Path("output")
 POSTS_DIR        = OUTPUT_DIR / "posts"
-ROOT_POSTS_DIR   = Path("posts")
 AUTHORS_DIR      = OUTPUT_DIR / "authors"
-ARTICLES_PER_RUN = int(os.environ.get("ARTICLES_PER_RUN", "20"))
-CUSTOM_KEYWORDS  = [k.strip() for k in os.environ.get("CUSTOM_KEYWORDS", "").split(",") if k.strip()]
+ARTICLES_PER_RUN = int(os.environ.get("ARTICLES_PER_RUN", "15"))
 
 CATEGORIES = ["Business","Technology","Finance","World","Sports","Health","Travel","Science","Entertainment","Politics","Crypto","Forex","Stocks"]
 
@@ -39,49 +37,260 @@ CATEGORY_TARGETS = {
 
 # Wiki topics balanced across underrepresented categories
 WIKI_TOPICS_BALANCED = {
-    "Business":     ["Global mergers and acquisitions 2026","Small business growth strategies 2026",
-                     "Corporate sustainability ESG 2026","Supply chain resilience business",
-                     "Remote work business productivity 2026","Private equity market trends 2026"],
-    "Technology":   ["Artificial intelligence enterprise 2026","Quantum computing breakthrough 2026",
-                     "Semiconductor chip shortage update","Cybersecurity threats 2026",
-                     "Electric vehicle technology update","5G network expansion 2026"],
-    "Finance":      ["Federal Reserve interest rate 2026","Bitcoin cryptocurrency outlook 2026",
-                     "Stock market outlook 2026","US housing market trends 2026",
-                     "Global debt crisis 2026","Hedge fund performance 2026"],
-    "Health":       ["Mental health workplace 2026","Cancer treatment breakthrough 2026",
-                     "Healthcare innovation 2026","Obesity drug research update",
-                     "Antibiotic resistance global","Longevity science 2026"],
-    "Science":      ["SpaceX mission update 2026","Climate change research 2026",
-                     "CRISPR gene editing breakthrough","Ocean plastic pollution science",
-                     "Dark matter discovery 2026","Renewable energy innovation 2026"],
-    "Travel":       ["Best travel destinations 2026","Luxury travel trends 2026",
-                     "Sustainable eco-tourism 2026","Budget travel tips 2026",
-                     "Digital nomad hotspots 2026","Air travel recovery 2026"],
-    "World":        ["India economy growth 2026","China trade policy 2026",
-                     "European Union politics 2026","Africa development 2026"],
-    "Sports":       ["NBA season highlights 2026","Premier League football 2026",
-                     "Olympic sports update 2026","Formula 1 season 2026"],
-    "Entertainment":["Hollywood box office 2026","Streaming wars update 2026",
-                     "Music industry trends 2026","Video game market 2026"],
-    "Politics":     ["US Congress legislation 2026","Global elections 2026",
-                     "Climate policy international","Trade policy tariffs 2026"],
-    "Crypto":       ["Bitcoin price analysis 2026","Ethereum network upgrade 2026",
-                     "Cryptocurrency regulation update 2026","DeFi decentralized finance trends",
-                     "Bitcoin ETF market update 2026","Altcoin season predictions 2026",
-                     "Crypto market bull run 2026","Solana ecosystem growth 2026",
-                     "XRP Ripple court case update","Blockchain technology adoption 2026",
-                     "Cryptocurrency tax rules 2026","NFT market recovery 2026"],
-    "Forex":        ["US Dollar index outlook 2026","EUR USD analysis 2026",
-                     "British Pound GBP forecast 2026","Japanese Yen intervention 2026",
-                     "Forex trading strategies 2026","Currency war global 2026",
-                     "Pakistani Rupee PKR outlook 2026","Indian Rupee INR forecast 2026",
-                     "Emerging market currencies 2026","Federal Reserve dollar impact 2026"],
-    "Stocks":       ["S&P 500 outlook 2026","NASDAQ tech stocks 2026",
-                     "Dow Jones analysis 2026","Stock market crash risk 2026",
-                     "Dividend stocks best 2026","Growth stocks to watch 2026",
-                     "Apple stock analysis 2026","Tesla stock forecast 2026",
-                     "AI stocks investment 2026","Small cap stocks 2026",
-                     "Stock market earnings season 2026","IPO market 2026"],
+    "Business": [
+        "How to start a small business 2026",
+        "What is corporate social responsibility",
+        "How to write a business plan step by step",
+        "Best business ideas for beginners 2026",
+        "What is supply chain management explained",
+        "How to register a company online",
+        "Best CRM software for small business 2026",
+        "What is franchise business model",
+        "How to get business loan 2026",
+        "Best accounting software for small business",
+        "What is B2B vs B2C business",
+        "How to scale a startup business",
+        "Global mergers and acquisitions 2026",
+        "Corporate sustainability ESG 2026",
+        "Remote work business productivity 2026",
+        "Private equity market trends 2026",
+        "Small business growth strategies 2026",
+        "Supply chain resilience business 2026",
+    ],
+    "Technology": [
+        "What is artificial intelligence explained simply",
+        "How does ChatGPT work explained",
+        "Best laptops for students 2026",
+        "What is quantum computing explained",
+        "How to learn coding for beginners",
+        "Best antivirus software 2026",
+        "What is cloud computing explained",
+        "How to speed up your computer",
+        "Best smartphone under 500 dollars 2026",
+        "What is cybersecurity and how it works",
+        "How to protect yourself from hackers",
+        "Best VPN services 2026 review",
+        "What is 5G technology explained",
+        "How to back up your data safely",
+        "Best smart home devices 2026",
+        "Artificial intelligence enterprise 2026",
+        "Quantum computing breakthrough 2026",
+        "Cybersecurity threats 2026",
+        "Electric vehicle technology update 2026",
+    ],
+    "Finance": [
+        "How to invest money for beginners",
+        "What is compound interest explained",
+        "How to create a budget plan",
+        "Best high yield savings accounts 2026",
+        "What is inflation and how it affects you",
+        "How to get out of debt fast",
+        "What is ETF vs mutual fund",
+        "How to build an emergency fund",
+        "Best credit cards 2026 review",
+        "What is dollar cost averaging",
+        "How to improve your credit score",
+        "What is passive income explained",
+        "How to retire early FIRE method",
+        "Best robo advisors 2026",
+        "What is hedge fund explained",
+        "Federal Reserve interest rate 2026",
+        "Stock market outlook 2026",
+        "US housing market trends 2026",
+        "Global debt crisis 2026",
+    ],
+    "Health": [
+        "How to lose weight fast naturally",
+        "What is intermittent fasting explained",
+        "Best vitamins and supplements 2026",
+        "How to improve mental health daily",
+        "What is Mediterranean diet explained",
+        "How to build immune system naturally",
+        "Best exercises for weight loss at home",
+        "What is diabetes symptoms and treatment",
+        "How to lower blood pressure naturally",
+        "Best protein foods for muscle building",
+        "What is anxiety disorder symptoms",
+        "How to sleep better at night",
+        "What is ADHD symptoms in adults",
+        "How to quit smoking permanently",
+        "Best superfoods for health 2026",
+        "What is gut health and probiotics",
+        "How to reduce stress and anxiety naturally",
+        "Cancer treatment breakthrough 2026",
+        "Healthcare innovation 2026",
+        "Obesity drug research update 2026",
+        "Longevity science 2026",
+    ],
+    "Science": [
+        "What is black hole explained simply",
+        "How does DNA work explained",
+        "What is climate change causes and effects",
+        "How do vaccines work explained",
+        "What is CRISPR gene editing",
+        "How does the human brain work",
+        "What is dark matter in space",
+        "How do solar panels work",
+        "What is nuclear fusion energy",
+        "How does the internet work explained",
+        "What is evolution theory explained",
+        "How do electric cars work",
+        "SpaceX mission update 2026",
+        "Climate change research 2026",
+        "Dark matter discovery 2026",
+        "Renewable energy innovation 2026",
+        "Ocean plastic pollution science 2026",
+    ],
+    "Travel": [
+        "Best countries to visit in 2026",
+        "How to travel cheap on a budget",
+        "Best travel destinations in Asia 2026",
+        "How to get cheapest flights online",
+        "Best travel insurance 2026 review",
+        "How to pack light for travel",
+        "Best hotels in Dubai 2026",
+        "How to apply for Schengen visa",
+        "Best places to visit in Europe 2026",
+        "How to travel solo safely",
+        "Best travel credit cards 2026",
+        "How to find cheap accommodation abroad",
+        "Best places to retire abroad 2026",
+        "How to become a digital nomad",
+        "Best beaches in the world 2026",
+        "Luxury travel trends 2026",
+        "Sustainable eco tourism 2026",
+        "Air travel recovery 2026",
+        "Digital nomad hotspots 2026",
+    ],
+    "Entertainment": [
+        "Best movies to watch 2026",
+        "Best Netflix series 2026",
+        "Best anime series for beginners",
+        "How does Hollywood make money",
+        "Best music streaming services 2026",
+        "What is method acting explained",
+        "Best video games 2026",
+        "How to become a YouTuber",
+        "Best podcasts to listen 2026",
+        "How does Spotify algorithm work",
+        "Best board games for adults 2026",
+        "Hollywood box office 2026",
+        "Streaming wars update 2026",
+        "Music industry trends 2026",
+        "Video game market 2026",
+    ],
+    "Sports": [
+        "How to run faster and longer",
+        "Best protein supplements for athletes",
+        "How to improve your football skills",
+        "Best running shoes 2026 review",
+        "How to build muscle fast at home",
+        "What is VO2 max explained",
+        "How to train for a marathon",
+        "Best gym equipment for home 2026",
+        "How to improve basketball skills",
+        "What is sports nutrition explained",
+        "How to recover from sports injury fast",
+        "NBA season highlights 2026",
+        "Premier League football 2026",
+        "Formula 1 season 2026",
+        "Olympic sports update 2026",
+    ],
+    "Politics": [
+        "What is democracy explained simply",
+        "How does the US electoral system work",
+        "What is socialism vs capitalism",
+        "How does the United Nations work",
+        "What is NATO explained",
+        "How does immigration policy work",
+        "What is geopolitics explained",
+        "How does the Supreme Court work",
+        "US Congress legislation 2026",
+        "Global elections 2026",
+        "Climate policy international 2026",
+        "Trade policy tariffs 2026",
+    ],
+    "World": [
+        "Why is India economy growing fast",
+        "What is BRICS explained",
+        "How does China economy work",
+        "What is European Union explained",
+        "Why is Africa growing economically",
+        "What is globalization explained",
+        "How does foreign aid work",
+        "What is the World Bank explained",
+        "India economy growth 2026",
+        "China trade policy 2026",
+        "European Union politics 2026",
+        "Africa development 2026",
+    ],
+    "Crypto": [
+        "What is Bitcoin explained for beginners",
+        "How to buy Bitcoin step by step",
+        "Best crypto wallets 2026 review",
+        "What is Ethereum and how it works",
+        "How to invest in cryptocurrency safely",
+        "What is DeFi explained simply",
+        "Best crypto exchanges 2026",
+        "What is NFT and how it works",
+        "How does blockchain technology work",
+        "What is crypto staking explained",
+        "How to avoid crypto scams",
+        "What is altcoin explained",
+        "Best cryptocurrency to invest 2026",
+        "What is Web3 explained simply",
+        "How to do crypto tax 2026",
+        "Bitcoin price analysis 2026",
+        "Ethereum network upgrade 2026",
+        "Cryptocurrency regulation update 2026",
+        "Bitcoin ETF market update 2026",
+        "Solana ecosystem growth 2026",
+        "XRP Ripple court case update 2026",
+    ],
+    "Forex": [
+        "What is forex trading explained for beginners",
+        "How to start forex trading step by step",
+        "Best forex brokers 2026 review",
+        "What is pip in forex trading",
+        "How to read forex charts",
+        "Best forex trading strategies 2026",
+        "What is leverage in forex",
+        "How to manage risk in forex trading",
+        "Best forex trading apps 2026",
+        "What is USD to PKR exchange rate today",
+        "How does currency exchange work",
+        "What is technical analysis forex",
+        "Best time to trade forex",
+        "What is USD to INR exchange rate",
+        "How to choose forex broker",
+        "US Dollar index outlook 2026",
+        "EUR USD analysis 2026",
+        "Pakistani Rupee PKR outlook 2026",
+        "Indian Rupee INR forecast 2026",
+        "British Pound GBP forecast 2026",
+    ],
+    "Stocks": [
+        "What is stock market explained for beginners",
+        "How to invest in stocks for beginners",
+        "Best stocks to buy 2026",
+        "What is dividend stock explained",
+        "How to read stock charts",
+        "Best stock trading apps 2026",
+        "What is P/E ratio explained",
+        "How to pick winning stocks",
+        "What is index fund explained",
+        "Best index funds 2026 review",
+        "How does stock market work",
+        "What is short selling stocks",
+        "Best growth stocks 2026",
+        "How to start investing with little money",
+        "What is Warren Buffett investment strategy",
+        "S&P 500 outlook 2026",
+        "NASDAQ tech stocks 2026",
+        "AI stocks investment 2026",
+        "Stock market earnings season 2026",
+        "IPO market 2026",
+    ],
 }
 
 AUTHORS = {
@@ -482,26 +691,44 @@ def write_article(topic, hint, related_posts=None, target_category=None):
                 if target_category else "")
 
     prompt = (
-        f"Write a professional news article dated {now.strftime('%B %d, %Y')} about: {topic}\n"
-        f"Background: {hint}\n"
+        f"You are an expert human content writer with deep knowledge of SEO, user intent, and natural writing flow.\n"
+        f"Write a professional, in-depth article dated {now.strftime('%B %d, %Y')} about: {topic}\n"
+        f"Background context: {hint}\n"
         f"{cat_hint}"
-        "Respond with ONLY this XML format — no extra text:\n"
+        "\n"
+        "CONTENT RULES:\n"
+        "1. Identify the EXACT search intent (informational, commercial, navigational) and write accordingly\n"
+        "2. Answer what the user is searching for in the FIRST paragraph — clearly and naturally\n"
+        "3. Write like a real human expert — casual, friendly, conversational tone. NO robotic language\n"
+        "4. NEVER use phrases like: In this guide, This article will, Era, It is worth noting, Delve\n"
+        "5. Each article MUST have a DIFFERENT structure — vary headings, intro style, and conclusion naturally\n"
+        "6. Use natural LSI keywords and semantic terms throughout for SEO without stuffing\n"
+        "7. Follow best on-page SEO: proper H2/H3 headings, short paragraphs, bullet points where needed\n"
+        "8. Optimize for Featured Snippets — use clear definitions, numbered steps, comparison tables where relevant\n"
+        "9. Write 1500 to 2000 words minimum — thorough, useful, intent-focused content\n"
+        "10. Where comparison is needed — use a proper HTML table with headers and rows\n"
+        "11. For product/service reviews — include: Overview, Key Features, Pros (list), Cons (list), Verdict\n"
+        "12. For how-to content — use numbered steps with clear explanations\n"
+        "13. Do NOT mention any news outlet, media brand, or publication by name\n"
+        "14. Any external links MUST have rel=\"noopener noreferrer\" and target=\"_blank\" attributes\n"
+        "15. Content must be FREE from AI detection patterns — write naturally like a human expert\n"
+        "\n"
+        "HTML TAGS ALLOWED: h2, h3, p, ul, ol, li, strong, em, blockquote, a, table, thead, tbody, tr, th, td\n"
+        "NO hr tags. NO dashes (-- or —). NO markdown.\n"
+        "\n"
+        "Respond with ONLY this XML format — no extra text before or after:\n"
         "<article>\n"
-        "<title>Compelling headline 55-70 chars</title>\n"
+        "<title>Compelling SEO headline 55-70 chars</title>\n"
         "<slug>url-slug-from-title</slug>\n"
-        "<meta_description>SEO description 150-158 chars</meta_description>\n"
+        "<meta_description>SEO meta description 150-158 chars with primary keyword</meta_description>\n"
         "<focus_keyword>primary keyword phrase</focus_keyword>\n"
         "<category>Business or Technology or Finance or World or Sports or Health or Travel or Science or Entertainment or Politics or Crypto or Forex or Stocks</category>\n"
         "<image_keyword>specific 3-4 word Unsplash search term</image_keyword>\n"
         "<read_time>X min read</read_time>\n"
-        "<excerpt>2-3 compelling sentences</excerpt>\n"
-        "<tags>tag1,tag2,tag3,tag4</tags>\n"
+        "<excerpt>2-3 compelling sentences that hook the reader</excerpt>\n"
+        "<tags>tag1,tag2,tag3,tag4,tag5</tags>\n"
         "<content>\n"
-        "Write minimum 900 words. Use h2, h3, p, ul, li, strong, blockquote, a tags only. "
-        "No hr tags. No dashes (-- or —). Do NOT mention any news outlet by name. "
-        "Write complete professional article with proper paragraphs. "
-        "Any external links MUST have rel=\"noopener noreferrer\" and target=\"_blank\" attributes. "
-        "Stay strictly on topic — do NOT reference unrelated current events or other news stories.\n"
+        "[Write your complete 1500-2000 word article here with proper HTML formatting]\n"
         "</content>\n"
         "</article>"
     )
@@ -641,7 +868,6 @@ def head_html(title, desc, canonical, image="", prefix="", og_type="article"):
 <meta name="twitter:title" content="{esc(title)}">
 <meta name="twitter:description" content="{esc(desc)}">
 <meta name="twitter:image" content="{image}">
-<meta name="google-site-verification" content="GHgnc6jifq43ccFgYjjD8spGle2qoCw5MW_e_cNahoY">
 <link rel="alternate" type="application/rss+xml" title="{SITE_NAME}" href="{SITE_URL}/feed.xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1685,18 +1911,18 @@ def build_authors(posts):
 def build_sitemap(posts):
     seen_slugs = set()
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-
-    # 1. POST SITEMAP
-    post_lines = [
-        '<?xml version="1.0" encoding="UTF-8"?>',
-        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-    ]
-    for p in posts:
-        if p["slug"] in seen_slugs:
-            continue
-        seen_slugs.add(p["slug"])
-        post_date = p["date_iso"][:10]
-        post_lines.append(f'  <url><loc>{SITE_URL}/posts/{p["slug"]}.html</loc><lastmod>{post_date}</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>')
+    lines = ['<?xml version="1.0" encoding="UTF-8"?>',
+             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+             f'  <url><loc>{SITE_URL}/</loc><lastmod>{today}</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>']
+    for cat in CATEGORIES:
+        lines.append(f'  <url><loc>{SITE_URL}/category-{cat.lower()}.html</loc><lastmod>{today}</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>')
+    # Static pages
+    lines.append(f'  <url><loc>{SITE_URL}/markets.html</loc><lastmod>{today}</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>')
+    lines.append(f'  <url><loc>{SITE_URL}/about.html</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>')
+    lines.append(f'  <url><loc>{SITE_URL}/contact.html</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>')
+    lines.append(f'  <url><loc>{SITE_URL}/privacy-policy.html</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>0.3</priority></url>')
+    # Networth section
+    lines.append(f'  <url><loc>{SITE_URL}/networth/</loc><lastmod>{today}</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>')
     nw_index = OUTPUT_DIR / "networth_index.json"
     if nw_index.exists():
         try:
@@ -1704,40 +1930,22 @@ def build_sitemap(posts):
                 nw_slug = profile.get("slug", "")
                 if nw_slug and nw_slug not in seen_slugs:
                     seen_slugs.add(nw_slug)
-                    post_lines.append(f'  <url><loc>{SITE_URL}/networth/{nw_slug}.html</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>')
+                    lines.append(f'  <url><loc>{SITE_URL}/networth/{nw_slug}.html</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>')
         except Exception:
             pass
-    post_lines.append("</urlset>")
-    (OUTPUT_DIR / "post-sitemap.xml").write_text("\n".join(post_lines))
+    seen_slugs.clear()
+    # Posts — deduplicated, with lastmod + changefreq
+    for p in posts:
+        if p["slug"] in seen_slugs:
+            print(f"  Sitemap: skipping duplicate slug {p['slug']}")
+            continue
+        seen_slugs.add(p["slug"])
+        post_date = p["date_iso"][:10]
+        lines.append(f'  <url><loc>{SITE_URL}/posts/{p["slug"]}.html</loc><lastmod>{post_date}</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>')
+    lines.append("</urlset>")
+    (OUTPUT_DIR / "sitemap.xml").write_text("\n".join(lines))
 
-    # 2. CATEGORY SITEMAP
-    cat_lines = [
-        '<?xml version="1.0" encoding="UTF-8"?>',
-        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-        f'  <url><loc>{SITE_URL}/</loc><lastmod>{today}</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>',
-        f'  <url><loc>{SITE_URL}/markets.html</loc><lastmod>{today}</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>',
-        f'  <url><loc>{SITE_URL}/networth/</loc><lastmod>{today}</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>',
-    ]
-    for cat in CATEGORIES:
-        cat_lines.append(f'  <url><loc>{SITE_URL}/category-{cat.lower()}.html</loc><lastmod>{today}</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>')
-    cat_lines += [
-        f'  <url><loc>{SITE_URL}/about.html</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>',
-        f'  <url><loc>{SITE_URL}/contact.html</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>',
-        f'  <url><loc>{SITE_URL}/privacy-policy.html</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>0.3</priority></url>',
-        "</urlset>"
-    ]
-    (OUTPUT_DIR / "category-sitemap.xml").write_text("\n".join(cat_lines))
-
-    # 3. SITEMAP INDEX
-    index_lines = [
-        '<?xml version="1.0" encoding="UTF-8"?>',
-        '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-        f'  <sitemap><loc>{SITE_URL}/post-sitemap.xml</loc><lastmod>{today}</lastmod></sitemap>',
-        f'  <sitemap><loc>{SITE_URL}/category-sitemap.xml</loc><lastmod>{today}</lastmod></sitemap>',
-        '</sitemapindex>',
-    ]
-    (OUTPUT_DIR / "sitemap.xml").write_text("\n".join(index_lines))
-
+# ── BUILD STATIC PAGES (About, Contact, Privacy) ──────────────────────
 def build_static_pages():
     """Rebuild About, Contact, Privacy pages with latest nav/footer every run."""
     now = datetime.now()
@@ -1916,8 +2124,6 @@ def main():
         
         html = build_post(article, author, posts_index, now)
         (POSTS_DIR / f"{article['slug']}.html").write_text(html)
-        ROOT_POSTS_DIR.mkdir(exist_ok=True)
-        (ROOT_POSTS_DIR / f"{article['slug']}.html").write_text(html)
         
         posts_index.append({
             "slug": article["slug"], "title": article["title"],
