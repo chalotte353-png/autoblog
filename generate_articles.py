@@ -832,10 +832,130 @@ def inject_internal_links(article_html, current_slug, all_posts):
 
     return str(soup)
 
+
+# ── AUTO TABLE OF CONTENTS ──────────────────────────────────────────
+def generate_toc(article_html):
+    """
+    Auto-generate Table of Contents from H2/H3 headings in article.
+    Adds anchor IDs to headings and creates clickable TOC at top.
+    """
+    from bs4 import BeautifulSoup
+    import re
+    
+    soup = BeautifulSoup(article_html, 'html.parser')
+    headings = soup.find_all(['h2', 'h3'])
+    
+    if len(headings) < 3:
+        return article_html  # Not enough headings for TOC
+    
+    toc_items = []
+    for i, heading in enumerate(headings):
+        # Create anchor ID from heading text
+        heading_text = heading.get_text().strip()
+        anchor_id = re.sub(r'[^a-zA-Z0-9]+', '-', heading_text.lower()).strip('-')[:50]
+        anchor_id = f"toc-{i}-{anchor_id}"
+        
+        # Add ID to heading
+        heading['id'] = anchor_id
+        
+        # Add to TOC list
+        indent = "padding-left:20px" if heading.name == 'h3' else ""
+        toc_items.append(
+            f'<li style="{indent}"><a href="#{anchor_id}" style="color:var(--red);text-decoration:none">{heading_text}</a></li>'
+        )
+    
+    # Build TOC HTML
+    toc_html = f'''<div class="toc-box" style="background:#f8f9fa;border-left:4px solid var(--red);padding:20px 24px;margin:24px 0;border-radius:4px">
+<div style="font-weight:700;font-size:16px;margin-bottom:12px;color:var(--dark)">📋 Table of Contents</div>
+<ol style="margin:0;padding-left:20px;line-height:2">
+{chr(10).join(toc_items)}
+</ol>
+</div>'''
+    
+    # Insert TOC after first paragraph
+    first_p = soup.find('p')
+    if first_p:
+        first_p.insert_after(BeautifulSoup(toc_html, 'html.parser'))
+    
+    return str(soup)
+
+
+# ── FAQ SECTION GENERATOR ───────────────────────────────────────────
+def generate_faq(topic, category, article_html):
+    """
+    Generate FAQ section using Claude based on article topic.
+    FAQs are SEO-optimized and target featured snippets.
+    Includes FAQ schema markup for Google rich results.
+    """
+    import json as json_mod
+    
+    prompt = (
+        f"Generate 5 frequently asked questions (FAQ) with answers for an article about: {topic}\n"
+        f"Category: {category}\n\n"
+        f"Requirements:\n"
+        f"- Questions must be what people ACTUALLY search on Google\n"
+        f"- Answers must be concise: 2-4 sentences max\n"
+        f"- Include the main keyword naturally\n"
+        f"- Target featured snippets — clear, direct answers\n"
+        f"- Each answer must be genuinely useful\n\n"
+        f"Respond with ONLY a JSON array — no extra text:\n"
+        f'[{{"q": "question 1", "a": "answer 1"}}, {{"q": "question 2", "a": "answer 2"}}]'
+    )
+    
+    try:
+        r = requests.post("https://api.anthropic.com/v1/messages",
+            headers={"x-api-key": CLAUDE_API_KEY, "anthropic-version": "2023-06-01", "content-type": "application/json"},
+            json={"model": "claude-sonnet-4-6", "max_tokens": 800,
+                  "messages": [{"role": "user", "content": prompt}]}, timeout=30)
+        resp = r.json()
+        if "content" not in resp:
+            return "", ""
+        raw = resp["content"][0]["text"].strip()
+        # Clean markdown if any
+        raw = re.sub(r"```.*?\n", "", raw).replace("```", "").strip()
+        faqs = json_mod.loads(raw)
+        
+        # Build FAQ HTML
+        faq_items_html = ""
+        for faq in faqs:
+            faq_items_html += f'''<div class="faq-item" style="border-bottom:1px solid #eee;padding:16px 0">
+<h3 style="font-size:17px;font-weight:700;color:var(--dark);margin-bottom:8px">{faq["q"]}</h3>
+<p style="color:#555;line-height:1.7;margin:0">{faq["a"]}</p>
+</div>'''
+        
+        faq_html = f'''<div class="faq-section" style="background:#fff;border:2px solid #f0f0f0;padding:24px;margin:32px 0;border-radius:8px">
+<h2 style="font-size:22px;font-weight:800;margin-bottom:4px;color:var(--dark)">Frequently Asked Questions</h2>
+<p style="color:#888;font-size:14px;margin-bottom:20px">Common questions about {topic}</p>
+{faq_items_html}
+</div>'''
+        
+        # FAQ Schema for Google Rich Results
+        schema_faqs = [{"@type": "Question", "name": f["q"], 
+                        "acceptedAnswer": {"@type": "Answer", "text": f["a"]}} for f in faqs]
+        faq_schema = json_mod.dumps({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": schema_faqs
+        })
+        
+        return faq_html, faq_schema
+        
+    except Exception as e:
+        print(f"  FAQ error: {e}")
+        return "", ""
+
 # ── BUILD POST ───────────────────────────────────────────────────────
 def build_post(data, author, all_posts, now):
     slug = data["slug"]
     cat = data["category"]
+    
+    # Generate TOC and FAQ
+    article_with_toc = generate_toc(data.get("article_html", ""))
+    faq_html, faq_schema = generate_faq(data["title"], cat, article_with_toc)
+    
+    # Add FAQ to end of article
+    if faq_html:
+        article_with_toc = article_with_toc + faq_html
     
     # Related: same category first
     same = [p for p in all_posts if p["slug"] != slug and p.get("category") == cat][:3]
@@ -883,7 +1003,7 @@ def build_post(data, author, all_posts, now):
     })
     
     # Inject internal links — before f-string
-    linked_html = inject_internal_links(data["article_html"], slug, all_posts)
+    linked_html = inject_internal_links(article_with_toc, slug, all_posts)
 
     return f"""{head_html(data["title"] + " | " + SITE_NAME, data["meta_description"],
         SITE_URL + "/posts/" + slug + ".html", data["image_url"], "../")}
