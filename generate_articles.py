@@ -1896,9 +1896,11 @@ def build_sitemap(posts):
     for p in posts:
         if p["slug"] in seen_slugs:
             continue
+        if p["slug"] == "index":  # Skip index redirect page
+            continue
         seen_slugs.add(p["slug"])
         post_date = p["date_iso"][:10]
-        post_lines.append(f'  <url><loc>{SITE_URL}/posts/{p["slug"]}.html</loc><lastmod>{post_date}</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>')
+        post_lines.append(f'  <url><loc>{SITE_URL}/posts/{p["slug"]}.html</loc><lastmod>{post_date}</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>')
     nw_index = OUTPUT_DIR / "networth_index.json"
     if nw_index.exists():
         try:
