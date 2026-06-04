@@ -44,8 +44,6 @@ jobs:
       - name: Restore existing posts and networth
         run: |
           mkdir -p output/posts output/networth
-          cp -rf posts/. output/posts/ 2>/dev/null || true
-          git checkout HEAD -- output/networth/ 2>/dev/null || true
 
       - name: Generate blog articles
         if: ${{ github.event.inputs.mode != 'networth' }}
@@ -90,6 +88,5 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git pull --rebase origin main || true
           git add output/
-          git add posts/
           git diff --staged --quiet || git commit -m "Auto: generate content $(date -u '+%Y-%m-%d %H:%M')"
           git push
