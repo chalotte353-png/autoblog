@@ -578,6 +578,9 @@ def write_article(topic, hint, related_posts=None, target_category=None):
         "\n"
         "HTML TAGS ALLOWED: h2, h3, p, ul, ol, li, strong, em, blockquote, a, table, thead, tbody, tr, th, td\n"
         "NO <hr> tags. NO markdown. NO dashes (-- or —). Pure HTML only.\n"
+        "DO NOT write a Table of Contents — it is auto-generated.\n"
+        "DO NOT write FAQ section — it is auto-generated separately.\n"
+        "DO NOT write 'Conclusion' or 'Summary' as last section heading.\n"
         "\n"
         "Respond with ONLY this XML format — no extra text before or after:\n"
         "<article>\n"
@@ -874,9 +877,9 @@ def generate_toc(article_html):
         )
     
     # Build TOC HTML
-    toc_html = f'''<div class="toc-box" style="background:#f8f9fa;border-left:4px solid var(--red);padding:20px 24px;margin:24px 0;border-radius:4px">
-<div style="font-weight:700;font-size:16px;margin-bottom:12px;color:var(--dark)">📋 Table of Contents</div>
-<ol style="margin:0;padding-left:20px;line-height:2">
+    toc_html = f'''<div class="toc-box" style="display:none;visibility:hidden;height:0;overflow:hidden" aria-hidden="true">
+<div>Table of Contents</div>
+<ol>
 {chr(10).join(toc_items)}
 </ol>
 </div>'''
@@ -958,6 +961,26 @@ def build_post(data, author, all_posts, now):
     slug = data["slug"]
     cat = data["category"]
     
+    # Style tables in article content
+    raw_article = data.get("article_html", "")
+    raw_article = raw_article.replace(
+        '<table>',
+        '<div style="overflow-x:auto;margin:24px 0"><table style="width:100%;border-collapse:collapse;font-size:15px">'
+    ).replace(
+        '</table>',
+        '</table></div>'
+    ).replace(
+        '<th>',
+        '<th style="background:var(--dark);color:#fff;padding:12px 16px;text-align:left;font-weight:600">'
+    ).replace(
+        '<td>',
+        '<td style="padding:11px 16px;border-bottom:1px solid #eee;vertical-align:top">'
+    ).replace(
+        '<tr>',
+        '<tr style="background:#fff">'
+    )
+    data["article_html"] = raw_article
+
     # Generate TOC and FAQ
     article_with_toc = generate_toc(data.get("article_html", ""))
     faq_html, faq_schema = generate_faq(data["title"], cat, article_with_toc)
