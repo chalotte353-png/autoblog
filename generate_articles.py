@@ -3,26 +3,40 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 # ── CONFIG ──────────────────────────────────────────────────────────
-GROQ_API_KEY     = os.environ.get("GROQ_API_KEY", "")
+GROQ_API_KEY_1   = os.environ.get("GROQ_API_KEY_1", "") or os.environ.get("GROQ_API_KEY", "")
+GROQ_API_KEY_2   = os.environ.get("GROQ_API_KEY_2", "")
+GROQ_API_KEY_3   = os.environ.get("GROQ_API_KEY_3", "")
+GROQ_API_KEY_4   = os.environ.get("GROQ_API_KEY_4", "")
+GROQ_KEYS        = [k for k in [GROQ_API_KEY_1, GROQ_API_KEY_2, GROQ_API_KEY_3, GROQ_API_KEY_4] if k]
 
 def groq_call(messages, max_tokens=1000, temperature=0.7, timeout=90):
-    """Central Groq API call — single attempt, no auto retry."""
-    try:
-        r = requests.post(
-            "https://api.groq.com/openai/v1/chat/completions",
-            headers={"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"},
-            json={"model": "llama-3.3-70b-versatile", "max_tokens": max_tokens,
-                  "temperature": temperature, "messages": messages},
-            timeout=timeout
-        )
-        resp = r.json()
-        if "choices" in resp:
-            return resp["choices"][0]["message"]["content"].strip()
-        print(f"  Groq error: {resp}")
-        return None
-    except Exception as e:
-        print(f"  Groq call error: {e}")
-        return None
+    """Central Groq API call — tries all available keys, shifts on rate limit."""
+    for i, key in enumerate(GROQ_KEYS):
+        key_label = f"Key {i+1}"
+        try:
+            r = requests.post(
+                "https://api.groq.com/openai/v1/chat/completions",
+                headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
+                json={"model": "llama-3.3-70b-versatile", "max_tokens": max_tokens,
+                      "temperature": temperature, "messages": messages},
+                timeout=timeout
+            )
+            resp = r.json()
+            if "choices" in resp:
+                if i > 0:
+                    print(f"  Switched to {key_label} successfully")
+                return resp["choices"][0]["message"]["content"].strip()
+            err = resp.get("error", {})
+            if err.get("code") == "rate_limit_exceeded":
+                print(f"  {key_label} rate limit hit — trying next key...")
+                continue
+            print(f"  Groq error ({key_label}): {resp}")
+            return None
+        except Exception as e:
+            print(f"  Groq call error ({key_label}): {e}")
+            continue
+    print("  All Groq keys exhausted or rate limited.")
+    return None
 NEWS_API_KEY     = os.environ.get("NEWS_API_KEY", "")
 UNSPLASH_KEY     = os.environ.get("UNSPLASH_KEY", "")
 SITE_URL         = os.environ.get("SITE_URL", "https://marketsnewstoday.info")
@@ -31,7 +45,7 @@ OUTPUT_DIR       = Path("output")
 POSTS_DIR        = OUTPUT_DIR / "posts"
 ROOT_POSTS_DIR   = Path("posts")
 AUTHORS_DIR      = OUTPUT_DIR / "authors"
-ARTICLES_PER_RUN = int(os.environ.get("ARTICLES_PER_RUN", "2"))
+ARTICLES_PER_RUN = int(os.environ.get("ARTICLES_PER_RUN", "1"))
 CUSTOM_KEYWORDS  = [k.strip() for k in os.environ.get("CUSTOM_KEYWORDS", "").split(",") if k.strip()]
 
 CATEGORIES = ["Business","Technology","Finance","World","Sports","Health","Travel","Science","Entertainment","Politics","Crypto","Forex","Stocks"]
