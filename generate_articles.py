@@ -636,7 +636,7 @@ def write_article(topic, hint, related_posts=None, target_category=None):
         "<meta_description>SEO meta description 150-158 chars with primary keyword</meta_description>\n"
         "<focus_keyword>primary keyword phrase</focus_keyword>\n"
         "<category>Business or Technology or Finance or World or Sports or Health or Travel or Science or Entertainment or Politics or Crypto or Forex or Stocks</category>\n"
-        "<image_keyword>specific 3-4 word Unsplash search term</image_keyword>\n"
+        "<image_keyword>VERY specific 3-4 word Unsplash photo search (e.g. 'currency exchange money', 'bitcoin crypto coins', 'stock market chart') — must visually match the article topic</image_keyword>\n"
         "<read_time>X min read</read_time>\n"
         "<excerpt>2-3 compelling sentences that hook the reader</excerpt>\n"
         "<tags>tag1,tag2,tag3,tag4,tag5</tags>\n"
@@ -919,12 +919,8 @@ def generate_toc(article_html):
         )
     
     # Build TOC HTML
-    toc_html = f'''<div class="toc-box" style="display:none;visibility:hidden;height:0;overflow:hidden" aria-hidden="true">
-<div>Table of Contents</div>
-<ol>
-{chr(10).join(toc_items)}
-</ol>
-</div>'''
+    # TOC is hidden from view but anchor IDs on headings still help SEO
+    toc_html = ""  # No visible TOC box — anchor IDs on headings are enough
     
     # Insert TOC after first paragraph
     first_p = soup.find('p')
@@ -1083,11 +1079,13 @@ def build_post(data, author, all_posts, now):
     
     # Inject internal links — before f-string
     linked_html = inject_internal_links(article_with_toc, slug, all_posts)
+    faq_schema_tag = f'<script type="application/ld+json">{faq_schema}</script>' if faq_schema else ""
 
     return f"""{head_html(data["title"] + " | " + SITE_NAME, data["meta_description"],
         SITE_URL + "/posts/" + slug + ".html", data["image_url"], "../")}
 <script type="application/ld+json">{schema}</script>
 <script type="application/ld+json">{breadcrumb}</script>
+{faq_schema_tag}
 {nav_html("../")}
 <div class="post-wrap"><div class="container post-grid">
 <article>
