@@ -41,5 +41,26 @@
     "author_id": "david-park",
     "date_iso": "2026-06-06T07:22:30.227667+00:00",
     "date_human": "June 06, 2026"
+  },
+  {
+    "slug": "value-investing-explained",
+    "title": "Value Investing Explained",
+    "meta_description": "Learn the basics of value investing, a strategy used by Warren Buffett, and how to apply it to your stock portfolio with a focus on Stocks.",
+    "excerpt": "Value investing is a proven strategy that involves buying undervalued stocks and holding them for the long term. This approach has been used by legendary investors like Warren Buffett to generate significant returns. By understanding the principles of value investing, you can make informed decisions and grow your wealth over time.",
+    "category": "Stocks",
+    "tags": [
+      "value investing",
+      "stocks",
+      "warren buffett",
+      "investing strategy"
+    ],
+    "image_url": "https://images.unsplash.com/photo-1607269910705-63c248ac5715?crop=entropy&cs=tinysrgb&fit=max&fm=webp&ixid=M3w5MzA5MzN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3ODA3MzI2MDh8&ixlib=rb-4.1.0&q=80&w=1080",
+    "read_time": "10 min read",
+    "author_name": "Lisa Wong",
+    "author_title": "Investment Reporter",
+    "author_avatar": "https://i.pravatar.cc/150?img=49",
+    "author_id": "lisa-wong",
+    "date_iso": "2026-06-06T07:56:48.548681+00:00",
+    "date_human": "June 06, 2026"
   }
 ]
