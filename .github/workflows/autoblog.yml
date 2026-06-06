@@ -5,14 +5,10 @@ on:
   #   - cron: "0 12 * * *"
   workflow_dispatch:
     inputs:
-      mode:
-        description: "articles"
-        required: false
-        default: "articles"
       articles_count:
         description: "Articles per run"
         required: false
-        default: "20"
+        default: "2"
       keywords:
         description: "Custom keywords (comma separated) — leave empty for auto"
         required: false
@@ -43,12 +39,12 @@ jobs:
 
       - name: Generate blog articles
         env:
-          CLAUDE_API_KEY:   ${{ secrets.CLAUDE_API_KEY }}
+          GROQ_API_KEY:     ${{ secrets.GROQ_API_KEY }}
           NEWS_API_KEY:     ${{ secrets.NEWS_API_KEY }}
           UNSPLASH_KEY:     ${{ secrets.UNSPLASH_KEY }}
           SITE_URL:         ${{ secrets.SITE_URL }}
           SITE_NAME:        ${{ secrets.SITE_NAME }}
-          ARTICLES_PER_RUN: ${{ github.event.inputs.articles_count || secrets.ARTICLES_PER_RUN || '20' }}
+          ARTICLES_PER_RUN: ${{ github.event.inputs.articles_count || '2' }}
           MANUAL_ROTATION:  ${{ github.event_name == 'workflow_dispatch' && 'true' || 'false' }}
           CUSTOM_KEYWORDS:  ${{ github.event.inputs.keywords }}
         run: python generate_articles.py
