@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 # ── CONFIG ──────────────────────────────────────────────────────────
-CLAUDE_API_KEY   = os.environ.get("CLAUDE_API_KEY", "")
+GROQ_API_KEY     = os.environ.get("GROQ_API_KEY", "")
 NEWS_API_KEY     = os.environ.get("NEWS_API_KEY", "")
 UNSPLASH_KEY     = os.environ.get("UNSPLASH_KEY", "")
 SITE_URL         = os.environ.get("SITE_URL", "https://marketsnewstoday.info")
@@ -375,14 +375,14 @@ def generate_informational_topics(category, count, published):
     )
     
     try:
-        r = requests.post("https://api.anthropic.com/v1/messages",
-            headers={"x-api-key": CLAUDE_API_KEY, "anthropic-version": "2023-06-01", "content-type": "application/json"},
-            json={"model": "claude-sonnet-4-6", "max_tokens": 1000,
+        r = requests.post("https://api.groq.com/openai/v1/chat/completions",
+            headers={"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"},
+            json={"model": "llama-3.3-70b-versatile", "max_tokens": 1000, "temperature": 0.7,
                   "messages": [{"role": "user", "content": prompt}]}, timeout=30)
         resp = r.json()
-        if "content" not in resp:
+        if "choices" not in resp:
             return []
-        raw = resp["content"][0]["text"].strip()
+        raw = resp["choices"][0]["message"]["content"].strip()
         # Parse JSON array
         import json as json_module
         # Clean up response
@@ -543,30 +543,41 @@ def write_article(topic, hint, related_posts=None, target_category=None):
                 if target_category else "")
 
     prompt = (
-        f"You are an expert human content writer with deep knowledge of SEO, user intent, and natural writing flow.\n"
-        f"Write a professional, in-depth article dated {now.strftime('%B %d, %Y')} about: {topic}\n"
+        f"You are a seasoned expert journalist and content strategist with 15+ years of experience writing for top-tier publications.\n"
+        f"Today is {now.strftime('%B %d, %Y')}. Write a comprehensive, deeply useful article about: {topic}\n"
         f"Background context: {hint}\n"
         f"{cat_hint}"
         "\n"
-        "CONTENT RULES:\n"
-        "1. Identify the EXACT search intent (informational, commercial, navigational) and write accordingly\n"
-        "2. Answer what the user is searching for in the FIRST paragraph — clearly and naturally\n"
-        "3. Write like a real human expert — casual, friendly, conversational tone. NO robotic language\n"
-        "4. NEVER use phrases like: In this guide, This article will, Era, It is worth noting, Delve\n"
-        "5. Each article MUST have a DIFFERENT structure — vary headings, intro style, and conclusion naturally\n"
-        "6. Use natural LSI keywords and semantic terms throughout for SEO without stuffing\n"
-        "7. Follow best on-page SEO: proper H2/H3 headings, short paragraphs, bullet points where needed\n"
-        "8. Optimize for Featured Snippets — use clear definitions, numbered steps, comparison tables where relevant\n"
-        "9. Write 1500 to 2000 words minimum — thorough, useful, intent-focused content\n"
-        "10. Where comparison is needed — use a proper HTML table with headers and rows\n"
-        "11. For product/service reviews — include: Overview, Key Features, Pros (list), Cons (list), Verdict\n"
-        "12. For how-to content — use numbered steps with clear explanations\n"
-        "13. Do NOT mention any news outlet, media brand, or publication by name\n"
-        "14. Any external links MUST have rel=\"noopener noreferrer\" and target=\"_blank\" attributes\n"
-        "15. Content must be FREE from AI detection patterns — write naturally like a human expert\n"
+        "YOUR GOLDEN RULE — ANSWER FIRST:\n"
+        "The very FIRST paragraph must directly solve/answer what the user came for. No buildup. No intro fluff.\n"
+        "If someone searches 'how to invest $500' — your first paragraph gives the actual answer immediately.\n"
+        "This is the #1 rule. Everything else follows.\n"
+        "\n"
+        "CONTENT QUALITY RULES:\n"
+        "1. FIRST PARAGRAPH = Direct answer to user's main question. Clear. Specific. Actionable. No fluff.\n"
+        "2. Write like a trusted expert friend — natural, confident, human. NOT like a textbook or AI.\n"
+        "3. FORBIDDEN words/phrases: 'In this guide', 'This article will', 'Delve', 'It is worth noting', 'Moreover', 'Furthermore', 'In conclusion', 'To summarize', 'Leverage', 'Utilize'\n"
+        "4. Every section must ADD VALUE — if a paragraph doesn't help the reader, cut it\n"
+        "5. Use SPECIFIC data, numbers, examples — not vague generalities\n"
+        "6. Vary sentence length naturally — mix short punchy sentences with longer explanatory ones\n"
+        "7. Write 1500-2000 words — thorough but never padded\n"
+        "\n"
+        "STRUCTURE RULES:\n"
+        "8. Use H2 for main sections, H3 for subsections — make headings outcome-focused (e.g. 'How to Cut Your Tax Bill by 30%' not 'Tax Tips')\n"
+        "9. SHORT paragraphs — max 3-4 sentences. White space is your friend.\n"
+        "10. Use bullet points/numbered lists when listing 3+ items — never write them as run-on sentences\n"
+        "11. For comparisons → HTML table with clear headers (always)\n"
+        "12. For step-by-step → numbered list with bold step titles + explanation\n"
+        "13. For reviews → Overview, Key Features, Pros <ul>, Cons <ul>, Bottom Line verdict\n"
+        "14. Add 1 relevant blockquote with expert insight (real-sounding, not attributed to anyone specific)\n"
+        "\n"
+        "SEO RULES:\n"
+        "15. Optimize for Featured Snippets — use clear definitions in first 100 words\n"
+        "16. Include natural LSI keywords — semantic variations, not keyword stuffing\n"
+        "17. Any links: rel='noopener noreferrer' target='_blank'\n"
         "\n"
         "HTML TAGS ALLOWED: h2, h3, p, ul, ol, li, strong, em, blockquote, a, table, thead, tbody, tr, th, td\n"
-        "NO hr tags. NO dashes (-- or —). NO markdown.\n"
+        "NO <hr> tags. NO markdown. NO dashes (-- or —). Pure HTML only.\n"
         "\n"
         "Respond with ONLY this XML format — no extra text before or after:\n"
         "<article>\n"
@@ -585,15 +596,15 @@ def write_article(topic, hint, related_posts=None, target_category=None):
         "</article>"
     )
     try:
-        r = requests.post("https://api.anthropic.com/v1/messages",
-            headers={"x-api-key": CLAUDE_API_KEY, "anthropic-version": "2023-06-01", "content-type": "application/json"},
-            json={"model": "claude-sonnet-4-6", "max_tokens": 3000,
+        r = requests.post("https://api.groq.com/openai/v1/chat/completions",
+            headers={"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"},
+            json={"model": "llama-3.3-70b-versatile", "max_tokens": 6000, "temperature": 0.72,
                   "messages": [{"role": "user", "content": prompt}]}, timeout=90)
         resp = r.json()
-        if "content" not in resp:
-            print(f"  Claude error: {resp}")
+        if "choices" not in resp:
+            print(f"  Groq error: {resp}")
             return None
-        raw = resp["content"][0]["text"].strip()
+        raw = resp["choices"][0]["message"]["content"].strip()
         def x(tag):
             m = re.search(f"<{tag}>(.*?)</{tag}>", raw, re.DOTALL)
             return m.group(1).strip() if m else ""
@@ -901,14 +912,14 @@ def generate_faq(topic, category, article_html):
     )
     
     try:
-        r = requests.post("https://api.anthropic.com/v1/messages",
-            headers={"x-api-key": CLAUDE_API_KEY, "anthropic-version": "2023-06-01", "content-type": "application/json"},
-            json={"model": "claude-sonnet-4-6", "max_tokens": 800,
+        r = requests.post("https://api.groq.com/openai/v1/chat/completions",
+            headers={"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"},
+            json={"model": "llama-3.3-70b-versatile", "max_tokens": 800, "temperature": 0.6,
                   "messages": [{"role": "user", "content": prompt}]}, timeout=30)
         resp = r.json()
-        if "content" not in resp:
+        if "choices" not in resp:
             return "", ""
-        raw = resp["content"][0]["text"].strip()
+        raw = resp["choices"][0]["message"]["content"].strip()
         # Clean markdown if any
         raw = re.sub(r"```.*?\n", "", raw).replace("```", "").strip()
         faqs = json_mod.loads(raw)
@@ -2077,8 +2088,24 @@ def main():
             print(f"  Removing duplicate from index: {p['slug']}")
     posts_index = deduped
 
-    print(f"Getting {ARTICLES_PER_RUN} topics (with category balancing)...")
-    topics = build_topics(ARTICLES_PER_RUN, published, posts_index)
+    # ── TOPIC SELECTION LOGIC ──────────────────────────────────────────
+    if CUSTOM_KEYWORDS:
+        # User provided keywords → 1 article per keyword, ignore ARTICLES_PER_RUN
+        print(f"Manual mode: {len(CUSTOM_KEYWORDS)} keyword(s) provided → generating {len(CUSTOM_KEYWORDS)} article(s)")
+        topics = []
+        for kw in CUSTOM_KEYWORDS:
+            kw = kw.strip()
+            if not kw:
+                continue
+            slug = slugify(kw)
+            if is_duplicate(slug, published):
+                print(f"  Skipping duplicate keyword: {kw}")
+                continue
+            topics.append({"title": kw, "hint": "", "_generated": True, "_target_category": None})
+    else:
+        # Auto mode → system picks topics based on category rotation
+        print(f"Auto mode: generating {ARTICLES_PER_RUN} article(s) with category balancing...")
+        topics = build_topics(ARTICLES_PER_RUN, published, posts_index)
 
     new_count = 0
     for i, t in enumerate(topics):
