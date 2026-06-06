@@ -10,6 +10,7 @@ SITE_URL         = os.environ.get("SITE_URL", "https://marketsnewstoday.info")
 SITE_NAME        = "Markets News Today"
 OUTPUT_DIR       = Path("output")
 POSTS_DIR        = OUTPUT_DIR / "posts"
+ROOT_POSTS_DIR   = Path("posts")
 AUTHORS_DIR      = OUTPUT_DIR / "authors"
 ARTICLES_PER_RUN = int(os.environ.get("ARTICLES_PER_RUN", "20"))
 CUSTOM_KEYWORDS  = [k.strip() for k in os.environ.get("CUSTOM_KEYWORDS", "").split(",") if k.strip()]
@@ -640,7 +641,6 @@ def nav_html(prefix=""):
   <a href="{prefix}category-science.html">Science</a>
   <a href="{prefix}category-travel.html">Travel</a>
   <a href="{prefix}category-entertainment.html">Entertainment</a>
-  <a href="{prefix}networth/index.html">Net Worth</a>
   <a href="{prefix}markets.html">Markets</a>
   <a href="{prefix}category-crypto.html">Crypto</a>
   <a href="{prefix}category-forex.html">Forex</a>
@@ -675,8 +675,7 @@ def foot_html(prefix=""):
   <div class="footer-col"><h4>Business</h4>
     <a href="{prefix}category-business.html">Business</a>
     <a href="{prefix}category-finance.html">Finance</a>
-    <a href="{prefix}category-technology.html">Technology</a>
-    <a href="{prefix}networth/index.html">Net Worth</a></div>
+    <a href="{prefix}category-technology.html">Technology</a></div>
   <div class="footer-col"><h4>Markets</h4>
     <a href="{prefix}markets.html">Live Markets</a>
     <a href="{prefix}category-crypto.html">Crypto</a>
@@ -1900,16 +1899,7 @@ def build_sitemap(posts):
         seen_slugs.add(p["slug"])
         post_date = p["date_iso"][:10]
         post_lines.append(f'  <url><loc>{SITE_URL}/posts/{p["slug"]}.html</loc><lastmod>{post_date}</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>')
-    nw_index = OUTPUT_DIR / "networth_index.json"
-    if nw_index.exists():
-        try:
-            for profile in json.loads(nw_index.read_text()):
-                nw_slug = profile.get("slug", "")
-                if nw_slug and nw_slug not in seen_slugs:
-                    seen_slugs.add(nw_slug)
-                    post_lines.append(f'  <url><loc>{SITE_URL}/networth/{nw_slug}.html</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>')
-        except Exception:
-            pass
+
     post_lines.append("</urlset>")
     (OUTPUT_DIR / "post-sitemap.xml").write_text("\n".join(post_lines))
 
@@ -1919,7 +1909,6 @@ def build_sitemap(posts):
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
         f'  <url><loc>{SITE_URL}/</loc><lastmod>{today}</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>',
         f'  <url><loc>{SITE_URL}/markets.html</loc><lastmod>{today}</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>',
-        f'  <url><loc>{SITE_URL}/networth/</loc><lastmod>{today}</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>',
     ]
     for cat in CATEGORIES:
         cat_lines.append(f'  <url><loc>{SITE_URL}/category-{cat.lower()}.html</loc><lastmod>{today}</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>')
@@ -2119,6 +2108,8 @@ def main():
         
         html = build_post(article, author, posts_index, now)
         (POSTS_DIR / f"{article['slug']}.html").write_text(html)
+        ROOT_POSTS_DIR.mkdir(exist_ok=True)
+        (ROOT_POSTS_DIR / f"{article['slug']}.html").write_text(html)
         
         posts_index.append({
             "slug": article["slug"], "title": article["title"],
