@@ -4,6 +4,25 @@ from pathlib import Path
 
 # ── CONFIG ──────────────────────────────────────────────────────────
 GROQ_API_KEY     = os.environ.get("GROQ_API_KEY", "")
+
+def groq_call(messages, max_tokens=1000, temperature=0.7, timeout=90):
+    """Central Groq API call — single attempt, no auto retry."""
+    try:
+        r = requests.post(
+            "https://api.groq.com/openai/v1/chat/completions",
+            headers={"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"},
+            json={"model": "llama-3.3-70b-versatile", "max_tokens": max_tokens,
+                  "temperature": temperature, "messages": messages},
+            timeout=timeout
+        )
+        resp = r.json()
+        if "choices" in resp:
+            return resp["choices"][0]["message"]["content"].strip()
+        print(f"  Groq error: {resp}")
+        return None
+    except Exception as e:
+        print(f"  Groq call error: {e}")
+        return None
 NEWS_API_KEY     = os.environ.get("NEWS_API_KEY", "")
 UNSPLASH_KEY     = os.environ.get("UNSPLASH_KEY", "")
 SITE_URL         = os.environ.get("SITE_URL", "https://marketsnewstoday.info")
@@ -12,7 +31,7 @@ OUTPUT_DIR       = Path("output")
 POSTS_DIR        = OUTPUT_DIR / "posts"
 ROOT_POSTS_DIR   = Path("posts")
 AUTHORS_DIR      = OUTPUT_DIR / "authors"
-ARTICLES_PER_RUN = int(os.environ.get("ARTICLES_PER_RUN", "20"))
+ARTICLES_PER_RUN = int(os.environ.get("ARTICLES_PER_RUN", "2"))
 CUSTOM_KEYWORDS  = [k.strip() for k in os.environ.get("CUSTOM_KEYWORDS", "").split(",") if k.strip()]
 
 CATEGORIES = ["Business","Technology","Finance","World","Sports","Health","Travel","Science","Entertainment","Politics","Crypto","Forex","Stocks"]
@@ -375,14 +394,9 @@ def generate_informational_topics(category, count, published):
     )
     
     try:
-        r = requests.post("https://api.groq.com/openai/v1/chat/completions",
-            headers={"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"},
-            json={"model": "llama-3.3-70b-versatile", "max_tokens": 1000, "temperature": 0.7,
-                  "messages": [{"role": "user", "content": prompt}]}, timeout=30)
-        resp = r.json()
-        if "choices" not in resp:
+        raw = groq_call([{"role": "user", "content": prompt}], max_tokens=1000, temperature=0.7, timeout=30)
+        if not raw:
             return []
-        raw = resp["choices"][0]["message"]["content"].strip()
         # Parse JSON array
         import json as json_module
         # Clean up response
@@ -599,15 +613,10 @@ def write_article(topic, hint, related_posts=None, target_category=None):
         "</article>"
     )
     try:
-        r = requests.post("https://api.groq.com/openai/v1/chat/completions",
-            headers={"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"},
-            json={"model": "llama-3.3-70b-versatile", "max_tokens": 6000, "temperature": 0.72,
-                  "messages": [{"role": "user", "content": prompt}]}, timeout=90)
-        resp = r.json()
-        if "choices" not in resp:
-            print(f"  Groq error: {resp}")
+        raw = groq_call([{"role": "user", "content": prompt}], max_tokens=6000, temperature=0.72, timeout=90)
+        if not raw:
+            print(f"  Groq error: no response")
             return None
-        raw = resp["choices"][0]["message"]["content"].strip()
         def x(tag):
             m = re.search(f"<{tag}>(.*?)</{tag}>", raw, re.DOTALL)
             return m.group(1).strip() if m else ""
@@ -915,14 +924,9 @@ def generate_faq(topic, category, article_html):
     )
     
     try:
-        r = requests.post("https://api.groq.com/openai/v1/chat/completions",
-            headers={"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"},
-            json={"model": "llama-3.3-70b-versatile", "max_tokens": 800, "temperature": 0.6,
-                  "messages": [{"role": "user", "content": prompt}]}, timeout=30)
-        resp = r.json()
-        if "choices" not in resp:
+        raw = groq_call([{"role": "user", "content": prompt}], max_tokens=800, temperature=0.6, timeout=30)
+        if not raw:
             return "", ""
-        raw = resp["choices"][0]["message"]["content"].strip()
         # Clean markdown if any
         raw = re.sub(r"```.*?\n", "", raw).replace("```", "").strip()
         faqs = json_mod.loads(raw)
