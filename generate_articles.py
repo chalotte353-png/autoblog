@@ -595,6 +595,75 @@ def build_topics(count, published, posts_index=None):
     return selected
 
 # ── WRITE ARTICLE ────────────────────────────────────────────────────
+def fetch_live_crypto_data():
+    """Fetch real-time crypto prices for article context."""
+    try:
+        r = requests.get(
+            "https://min-api.cryptocompare.com/data/pricemultifull",
+            params={"fsyms": "BTC,ETH,SOL,XRP,BNB,DOGE,ADA,AVAX,LINK,DOT", "tsyms": "USD"},
+            timeout=8
+        )
+        data = r.json().get("RAW", {})
+        result = {}
+        for sym, info in data.items():
+            usd = info.get("USD", {})
+            result[sym] = {
+                "price": usd.get("PRICE", 0),
+                "change24h": usd.get("CHANGEPCT24HOUR", 0),
+                "marketcap": usd.get("MKTCAP", 0),
+                "volume24h": usd.get("VOLUME24HOURTO", 0),
+                "high24h": usd.get("HIGH24HOUR", 0),
+                "low24h": usd.get("LOW24HOUR", 0),
+            }
+        return result
+    except Exception as e:
+        print(f"  Crypto data fetch failed: {e}")
+        return {}
+
+def format_crypto_context(crypto_data, title):
+    """Format live crypto data as context for article prompt."""
+    if not crypto_data:
+        return ""
+    
+    title_lower = title.lower()
+    coin_map = {
+        "bitcoin": "BTC", "btc": "BTC",
+        "ethereum": "ETH", "eth": "ETH",
+        "solana": "SOL", "sol": "SOL",
+        "xrp": "XRP", "ripple": "XRP",
+        "bnb": "BNB", "binance": "BNB",
+        "dogecoin": "DOGE", "doge": "DOGE",
+        "cardano": "ADA", "ada": "ADA",
+        "avalanche": "AVAX", "avax": "AVAX",
+        "chainlink": "LINK", "link": "LINK",
+        "polkadot": "DOT", "dot": "DOT",
+    }
+    
+    relevant_coins = []
+    for kw, sym in coin_map.items():
+        if kw in title_lower and sym in crypto_data:
+            relevant_coins.append(sym)
+    
+    if not relevant_coins:
+        # General crypto article — show top 3
+        for sym in ["BTC", "ETH", "SOL"]:
+            if sym in crypto_data:
+                relevant_coins.append(sym)
+    
+    if not relevant_coins:
+        return ""
+    
+    lines = ["\n=== LIVE MARKET DATA (use these EXACT numbers) ==="]
+    for sym in relevant_coins[:3]:
+        d = crypto_data[sym]
+        price = f"${d['price']:,.0f}" if d['price'] > 1 else f"${d['price']:.4f}"
+        chg = f"+{d['change24h']:.1f}%" if d['change24h'] >= 0 else f"{d['change24h']:.1f}%"
+        mcap = f"${d['marketcap']/1e9:.1f}B" if d['marketcap'] > 0 else "N/A"
+        lines.append(f"{sym}: Price={price}, 24h Change={chg}, Market Cap={mcap}")
+    lines.append("USE THESE EXACT prices and stats in your article. DO NOT invent different numbers.")
+    lines.append("For expert quotes: use 'analysts say', 'market watchers note', 'traders observe' — NEVER fake names.\n")
+    return "\n".join(lines)
+
 def write_article(topic, hint, related_posts=None, target_category=None):
     now = datetime.now()
 
@@ -606,6 +675,7 @@ def write_article(topic, hint, related_posts=None, target_category=None):
         f"Today is {now.strftime('%B %d, %Y')}. Write a comprehensive, deeply useful article about: {topic}\n"
         f"Background context: {hint}\n"
         f"{cat_hint}"
+        f"{live_context}\n"
         "\n"
         "=== YOUR ROLE ===\n"
         "You are a senior financial and technology journalist with 15+ years at top publications. "
@@ -672,7 +742,7 @@ def write_article(topic, hint, related_posts=None, target_category=None):
         "<slug>url-slug-from-title</slug>\n"
         "<meta_description>SEO meta description 150-158 chars with primary keyword</meta_description>\n"
         "<focus_keyword>primary keyword phrase</focus_keyword>\n"
-        "<category>Business or Technology or Finance or World or Sports or Health or Travel or Science or Entertainment or Politics or Crypto or Forex or Stocks</category>\n"
+        "<category>Crypto or AI or Stocks or Finance or Technology or Blockchain or Forex or Markets or Business or Investing or Economy or Web3 or DeFi</category>\n"
         "<image_keyword>VERY specific 3-4 word Unsplash photo search (e.g. 'currency exchange money', 'bitcoin crypto coins', 'stock market chart') — must visually match the article topic</image_keyword>\n"
         "<read_time>X min read</read_time>\n"
         "<excerpt>2-3 compelling sentences that hook the reader</excerpt>\n"
@@ -718,26 +788,35 @@ def nav_html(prefix=""):
     return f"""<div class="topbar"><div class="topbar-inner">
   <span class="topbar-left">{d}</span>
   <a href="{prefix}" class="topbar-logo">Markets <span class="accent">News</span> Today</a>
-  <span class="topbar-right">Business &middot; Finance &middot; Technology</span>
+  <span class="topbar-right">Crypto &middot; AI &middot; Stocks</span>
 </div></div>
 <nav class="navbar"><div class="navbar-wrap">
   <button class="navbar-arrow left" id="navLeft" onclick="scrollNav(-200)" aria-label="Scroll left">&#8249;</button>
   <div class="navbar-inner" id="navInner">
   <a href="{prefix}">Home</a>
-  <a href="{prefix}category-business.html">Business</a>
-  <a href="{prefix}category-technology.html">Technology</a>
-  <a href="{prefix}category-finance.html">Finance</a>
-  <a href="{prefix}category-world.html">World</a>
-  <a href="{prefix}category-politics.html">Politics</a>
-  <a href="{prefix}category-sports.html">Sports</a>
-  <a href="{prefix}category-health.html">Health</a>
-  <a href="{prefix}category-science.html">Science</a>
-  <a href="{prefix}category-travel.html">Travel</a>
-  <a href="{prefix}category-entertainment.html">Entertainment</a>
-  <a href="{prefix}markets.html">Markets</a>
   <a href="{prefix}category-crypto.html">Crypto</a>
-  <a href="{prefix}category-forex.html">Forex</a>
+  <a href="{prefix}bitcoin.html">Bitcoin</a>
+  <a href="{prefix}ethereum.html">Ethereum</a>
+  <a href="{prefix}solana.html">Solana</a>
+  <a href="{prefix}xrp.html">XRP</a>
+  <a href="{prefix}bnb.html">BNB</a>
+  <a href="{prefix}dogecoin.html">Dogecoin</a>
+  <a href="{prefix}cardano.html">Cardano</a>
+  <a href="{prefix}avalanche.html">Avalanche</a>
+  <a href="{prefix}chainlink.html">Chainlink</a>
+  <a href="{prefix}polkadot.html">Polkadot</a>
+  <a href="{prefix}category-ai.html">AI</a>
   <a href="{prefix}category-stocks.html">Stocks</a>
+  <a href="{prefix}category-finance.html">Finance</a>
+  <a href="{prefix}category-technology.html">Technology</a>
+  <a href="{prefix}category-blockchain.html">Blockchain</a>
+  <a href="{prefix}category-defi.html">DeFi</a>
+  <a href="{prefix}category-web3.html">Web3</a>
+  <a href="{prefix}category-forex.html">Forex</a>
+  <a href="{prefix}category-markets.html">Markets</a>
+  <a href="{prefix}category-investing.html">Investing</a>
+  <a href="{prefix}category-economy.html">Economy</a>
+  <a href="{prefix}markets.html">Live Markets</a>
   </div>
   <button class="navbar-arrow right" id="navRight" onclick="scrollNav(200)" aria-label="Scroll right">&#8250;</button>
 </div></nav>
@@ -763,31 +842,37 @@ def foot_html(prefix=""):
     return f"""<footer class="footer"><div class="footer-top"><div class="container"><div class="footer-grid">
   <div class="footer-brand">
     <div class="footer-logo">Markets <span class="accent">News</span> Today</div>
-    <p>Your trusted source for breaking news and in-depth analysis on business, finance and world affairs.</p>
+    <p>Your trusted source for crypto, AI, stocks and financial market analysis.</p>
   </div>
-  <div class="footer-col"><h4>Business</h4>
-    <a href="{prefix}category-business.html">Business</a>
-    <a href="{prefix}category-finance.html">Finance</a>
-    <a href="{prefix}category-technology.html">Technology</a></div>
+  <div class="footer-col"><h4>Crypto</h4>
+    <a href="{prefix}category-crypto.html">All Crypto</a>
+    <a href="{prefix}bitcoin.html">Bitcoin</a>
+    <a href="{prefix}ethereum.html">Ethereum</a>
+    <a href="{prefix}solana.html">Solana</a>
+    <a href="{prefix}xrp.html">XRP</a></div>
+  <div class="footer-col"><h4>Coins</h4>
+    <a href="{prefix}bnb.html">BNB</a>
+    <a href="{prefix}dogecoin.html">Dogecoin</a>
+    <a href="{prefix}cardano.html">Cardano</a>
+    <a href="{prefix}avalanche.html">Avalanche</a>
+    <a href="{prefix}polkadot.html">Polkadot</a></div>
   <div class="footer-col"><h4>Markets</h4>
     <a href="{prefix}markets.html">Live Markets</a>
-    <a href="{prefix}category-crypto.html">Crypto</a>
+    <a href="{prefix}category-stocks.html">Stocks</a>
     <a href="{prefix}category-forex.html">Forex</a>
-    <a href="{prefix}category-stocks.html">Stocks</a></div>
-  <div class="footer-col"><h4>World</h4>
-    <a href="{prefix}category-world.html">World</a>
-    <a href="{prefix}category-politics.html">Politics</a>
-    <a href="{prefix}category-sports.html">Sports</a>
-    <a href="{prefix}category-entertainment.html">Entertainment</a></div>
-  <div class="footer-col"><h4>More</h4>
-    <a href="{prefix}category-health.html">Health</a>
-    <a href="{prefix}category-science.html">Science</a>
-    <a href="{prefix}category-travel.html">Travel</a>
-    <a href="{prefix}sitemap.xml">Sitemap</a></div>
+    <a href="{prefix}category-finance.html">Finance</a>
+    <a href="{prefix}category-investing.html">Investing</a></div>
+  <div class="footer-col"><h4>Technology</h4>
+    <a href="{prefix}category-ai.html">AI</a>
+    <a href="{prefix}category-technology.html">Technology</a>
+    <a href="{prefix}category-blockchain.html">Blockchain</a>
+    <a href="{prefix}category-defi.html">DeFi</a>
+    <a href="{prefix}category-web3.html">Web3</a></div>
   <div class="footer-col"><h4>Company</h4>
     <a href="{prefix}about.html">About Us</a>
     <a href="{prefix}contact.html">Contact</a>
-    <a href="{prefix}privacy-policy.html">Privacy Policy</a></div>
+    <a href="{prefix}privacy-policy.html">Privacy Policy</a>
+    <a href="{prefix}sitemap.xml">Sitemap</a></div>
 </div></div></div>
 <div class="footer-btm"><div class="container">&copy; {y} Markets News Today. All rights reserved.</div></div>
 </footer>"""
