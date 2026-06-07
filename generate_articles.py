@@ -48,26 +48,42 @@ AUTHORS_DIR      = OUTPUT_DIR / "authors"
 ARTICLES_PER_RUN = int(os.environ.get("ARTICLES_PER_RUN", "1"))
 CUSTOM_KEYWORDS  = [k.strip() for k in os.environ.get("CUSTOM_KEYWORDS", "").split(",") if k.strip()]
 
-CATEGORIES = ["Business","Technology","Finance","World","Sports","Health","Travel","Science","Entertainment","Politics","Crypto","Forex","Stocks"]
+CATEGORIES = ["Crypto","AI","Stocks","Finance","Technology","Blockchain","Forex","Markets","Business","Investing","Economy","Web3","DeFi"]
+
+# Coin-specific tags — articles with these tags show ONLY on coin pages, NOT in /category-crypto.html
+COIN_TAGS = {
+    "Bitcoin":  "bitcoin",
+    "BTC":      "bitcoin",
+    "Ethereum": "ethereum",
+    "ETH":      "ethereum",
+    "Solana":   "solana",
+    "SOL":      "solana",
+    "XRP":      "xrp",
+    "Ripple":   "xrp",
+    "BNB":      "bnb",
+    "Binance":  "bnb",
+    "Dogecoin": "dogecoin",
+    "DOGE":     "dogecoin",
+}
 
 # ── CATEGORY BALANCE ─────────────────────────────────────────────────
 # Target distribution per 15 articles per run (4 runs/day = ~60 articles/day)
 # All 13 categories properly covered every day
 CATEGORY_TARGETS = {
-    "World":         2,   # broad international news
-    "Politics":      2,   # high traffic
-    "Finance":       2,   # core site focus
-    "Crypto":        2,   # core site focus
-    "Forex":         1,   # core site focus
-    "Stocks":        1,   # core site focus
-    "Technology":    1,
-    "Sports":        1,
-    "Entertainment": 1,
-    "Health":        1,
-    "Business":      1,
-    "Science":       1,   # was 0 — now properly covered every run
-    "Travel":        1,   # was 0 — now properly covered every run
-    # Total targets = 17 for 15 slots → healthy competition, balanced coverage
+    "Crypto":        3,   # #1 traffic driver — daily price + news + predictions
+    "AI":            3,   # #2 traffic driver — fastest growing topic
+    "Stocks":        2,   # high search volume — stock price today
+    "Finance":       2,   # core finance guides
+    "Technology":    1,   # tech news
+    "Blockchain":    1,   # blockchain specific
+    "Forex":         1,   # forex trading
+    "Markets":       1,   # market updates
+    "Business":      1,   # business news
+    "Investing":     1,   # investing guides
+    "Economy":       1,   # economy news
+    "Web3":          1,   # web3 / NFT
+    "DeFi":          1,   # defi specific
+    # Total targets = 19 → crypto+AI = 46% of all content
 }
 
 # Wiki topics balanced across underrepresented categories
@@ -83,6 +99,21 @@ AUTHORS = {
     "Finance":       [{"id":"david-park","name":"David Park","title":"Markets Editor","bio":"CFA charterholder with global finance expertise.","avatar":"https://i.pravatar.cc/150?img=13","twitter":"@davidpark_mkt"},
                       {"id":"lisa-wong","name":"Lisa Wong","title":"Investment Reporter","bio":"Covers hedge funds and capital markets.","avatar":"https://i.pravatar.cc/150?img=49","twitter":"@lisawong_inv"},
                       {"id":"mark-thompson","name":"Mark Thompson","title":"Crypto Correspondent","bio":"Blockchain technology expert since 2013.","avatar":"https://i.pravatar.cc/150?img=17","twitter":"@markthompson_crypto"}],
+    "AI":            [{"id":"maya-patel","name":"Maya Patel","title":"AI Editor","bio":"MIT graduate specializing in artificial intelligence and machine learning.","avatar":"https://i.pravatar.cc/150?img=48","twitter":"@mayapatel_ai"},
+                      {"id":"alex-rivera","name":"Alex Rivera","title":"AI Reporter","bio":"Silicon Valley insider covering AI breakthroughs and tech trends.","avatar":"https://i.pravatar.cc/150?img=12","twitter":"@alexrivera_tech"},
+                      {"id":"tom-bradley","name":"Tom Bradley","title":"Tech Analyst","bio":"Former Google engineer turned tech journalist.","avatar":"https://i.pravatar.cc/150?img=16","twitter":"@tombradley_tech"}],
+    "Blockchain":    [{"id":"mark-thompson","name":"Mark Thompson","title":"Blockchain Editor","bio":"Blockchain technology expert since Bitcoin's early days in 2013.","avatar":"https://i.pravatar.cc/150?img=17","twitter":"@markthompson_crypto"},
+                      {"id":"james-mitchell","name":"James Mitchell","title":"Web3 Reporter","bio":"DeFi and blockchain protocol specialist with 8 years experience.","avatar":"https://i.pravatar.cc/150?img=11","twitter":"@jmitchell_web3"}],
+    "Markets":       [{"id":"david-park","name":"David Park","title":"Markets Editor","bio":"CFA charterholder covering global equity and bond markets.","avatar":"https://i.pravatar.cc/150?img=13","twitter":"@davidpark_mkt"},
+                      {"id":"lisa-wong","name":"Lisa Wong","title":"Markets Reporter","bio":"Covers live market updates, indices and trading sessions.","avatar":"https://i.pravatar.cc/150?img=49","twitter":"@lisawong_mkt"}],
+    "Investing":     [{"id":"robert-hayes","name":"Robert Hayes","title":"Investing Editor","bio":"Oxford economics graduate, expert in value investing and portfolio management.","avatar":"https://i.pravatar.cc/150?img=15","twitter":"@roberthayes_inv"},
+                      {"id":"sarah-chen","name":"Sarah Chen","title":"Investment Reporter","bio":"Former Wall Street analyst covering ETFs, funds and investment strategies.","avatar":"https://i.pravatar.cc/150?img=47","twitter":"@sarahchen_inv"}],
+    "Economy":       [{"id":"elena-vasquez","name":"Elena Vasquez","title":"Economics Editor","bio":"Macroeconomics expert covering GDP, inflation and central bank policy.","avatar":"https://i.pravatar.cc/150?img=21","twitter":"@elenavasquez_econ"},
+                      {"id":"hassan-ahmed","name":"Hassan Ahmed","title":"Economy Reporter","bio":"Covers global economic trends, trade policy and emerging markets.","avatar":"https://i.pravatar.cc/150?img=52","twitter":"@hassan_economy"}],
+    "Web3":          [{"id":"mark-thompson","name":"Mark Thompson","title":"Web3 Editor","bio":"NFT, metaverse and Web3 ecosystem specialist since 2020.","avatar":"https://i.pravatar.cc/150?img=17","twitter":"@markthompson_web3"},
+                      {"id":"maya-patel","name":"Maya Patel","title":"Web3 Reporter","bio":"Covers NFTs, DAOs and the decentralized web.","avatar":"https://i.pravatar.cc/150?img=48","twitter":"@mayapatel_web3"}],
+    "DeFi":          [{"id":"david-park","name":"David Park","title":"DeFi Editor","bio":"Decentralized finance expert covering protocols, yield farming and liquidity.","avatar":"https://i.pravatar.cc/150?img=13","twitter":"@davidpark_defi"},
+                      {"id":"mark-thompson","name":"Mark Thompson","title":"DeFi Reporter","bio":"Covers Uniswap, Aave, Compound and the broader DeFi ecosystem.","avatar":"https://i.pravatar.cc/150?img=17","twitter":"@markthompson_defi"}],
     "World":         [{"id":"elena-vasquez","name":"Elena Vasquez","title":"World Affairs Editor","bio":"Award-winning foreign correspondent, 50+ countries.","avatar":"https://i.pravatar.cc/150?img=21","twitter":"@elenavasquez_world"},
                       {"id":"hassan-ahmed","name":"Hassan Ahmed","title":"Middle East Bureau Chief","bio":"20 years reporting from conflict zones worldwide.","avatar":"https://i.pravatar.cc/150?img=52","twitter":"@hassan_ahmed_me"},
                       {"id":"anna-kowalski","name":"Anna Kowalski","title":"Europe Correspondent","bio":"Brussels-based EU politics and diplomacy expert.","avatar":"https://i.pravatar.cc/150?img=25","twitter":"@annakowalski_eu"}],
@@ -577,8 +608,9 @@ def write_article(topic, hint, related_posts=None, target_category=None):
         f"{cat_hint}"
         "\n"
         "=== YOUR ROLE ===\n"
-        "You are an expert human content writer with 15+ years of experience in SEO, user intent, and natural writing. "
-        "You write for real people first, search engines second.\n"
+        "You are a senior financial and technology journalist with 15+ years at top publications. "
+        "Your articles are read by investors, traders, and tech professionals. "
+        "You write with authority, back every claim with data, and give readers REAL actionable insight — not generic summaries.\n"
         "\n"
         "=== RULE #1 — ANSWER FIRST, ALWAYS ===\n"
         "Your very FIRST paragraph must directly answer/solve what the user searched for. No buildup. No intro. Start with the answer.\n"
@@ -614,13 +646,18 @@ def write_article(topic, hint, related_posts=None, target_category=None):
         "- Easy to rank: clear, specific, genuinely useful content\n"
         "\n"
         "=== RULE #6 — STRUCTURE RULES ===\n"
-        "- Each article MUST have a different structure — vary intro style, headings, flow naturally\n"
-        "- Lists: use <ul>/<ol> for 3+ items — NEVER write as run-on sentences\n"
-        "- Comparisons → HTML <table> with clear headers (mandatory)\n"
-        "- Step-by-step → <ol> with <strong>Step Name</strong> then explanation\n"
-        "- Reviews → Overview, Key Features, Pros <ul>, Cons <ul>, Verdict\n"
-        "- Add 1 blockquote with a powerful insight (not attributed to anyone specific)\n"
+        "=== RULE #6 — STRUCTURE (Analytics Insight Level) ===\n"
+        "Start EVERY article with a 2-3 line overview summary wrapped in <div class=\"article-overview\">Overview text here</div>\n"
+        "Then: direct answer paragraph (no heading needed)\n"
+        "Price prediction articles: Bull Case section, Bear Case section, Key Price Levels table, Expert Outlook\n"
+        "How-to articles: numbered steps with pro tips\n"
+        "Comparison articles: HTML comparison table, then Verdict\n"
+        "News articles: What Happened, Why It Matters, What To Watch\n"
+        "- Lists: <ul>/<ol> for 3+ items ALWAYS\n"
+        "- 1 expert blockquote per article\n"
+        "- End with Key Takeaways section: <ul> with 3-5 bullet points\n"
         "- Word count: 1500-2000 words\n"
+        "- Crypto/Finance articles: add <p class=\"disclaimer\">This article is for informational purposes only and does not constitute financial advice. Always do your own research before investing.</p> at the very end\n"
         "\n"
         "=== STRICT HTML RULES ===\n"
         "Allowed: h2, h3, p, ul, ol, li, strong, em, blockquote, table, thead, tbody, tr, th, td, a\n"
@@ -831,13 +868,23 @@ def inject_internal_links(article_html, current_slug, all_posts):
     # Get current post category
     current_cat = next((p.get("category","") for p in all_posts if p["slug"] == current_slug), "")
 
-    # STRICT: same category ONLY — no cross-category linking
+    # STRICT: same category + same coin tag ONLY
     if not current_cat:
         return str(soup)
 
-    candidates = [p for p in all_posts
-                  if p["slug"] != current_slug
-                  and p.get("category","") == current_cat]
+    current_coin = next((p.get("coin_tag","") for p in all_posts if p["slug"] == current_slug), "")
+
+    if current_coin:
+        # Coin article: only link to same coin articles
+        candidates = [p for p in all_posts
+                      if p["slug"] != current_slug
+                      and p.get("coin_tag","") == current_coin]
+    else:
+        # Regular article: same category only
+        candidates = [p for p in all_posts
+                      if p["slug"] != current_slug
+                      and p.get("category","") == current_cat
+                      and not p.get("coin_tag","")]
 
     # Pre-screen: only keep posts whose title has at least one phrase in body
     viable = []
@@ -1055,16 +1102,56 @@ def build_post(data, author, all_posts, now):
         for p in [x for x in all_posts if x["slug"] != slug and x.get("image_url") and x["slug"] != "index"][:6]
     )
     
+    word_count = len(re.sub(r'<[^>]+>', '', data.get("article_html","")).split())
+    plain_text = re.sub(r'<[^>]+>', '', data.get("article_html",""))[:500].strip()
     schema = json.dumps({
-        "@context": "https://schema.org", "@type": "NewsArticle",
-        "headline": data["title"], "image": data["image_url"],
+        "@context": "https://schema.org",
+        "@type": "NewsArticle",
+        "headline": data["title"],
+        "description": data.get("meta_description",""),
+        "image": {
+            "@type": "ImageObject",
+            "url": data["image_url"],
+            "width": 1200,
+            "height": 630
+        },
         "datePublished": now.isoformat(),
         "dateModified": now.isoformat(),
+        "dateCreated": now.isoformat(),
         "articleSection": cat,
-        "wordCount": len(re.sub(r'<[^>]+>', '', data.get("article_html","")).split()),
-        "keywords": ", ".join(data.get("tags", [])),
-        "author": {"@type": "Person", "name": author["name"], "url": f"{SITE_URL}/authors/{author['id']}.html"},
-        "publisher": {"@type": "NewsMediaOrganization", "name": SITE_NAME, "url": SITE_URL}
+        "articleBody": plain_text,
+        "wordCount": word_count,
+        "inLanguage": "en-US",
+        "keywords": ", ".join(data.get("tags", [])) if data.get("tags") else cat,
+        "url": f"{SITE_URL}/posts/{slug}.html",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": f"{SITE_URL}/posts/{slug}.html"
+        },
+        "author": {
+            "@type": "Person",
+            "name": author["name"],
+            "url": f"{SITE_URL}/authors/{author['id']}.html",
+            "jobTitle": author.get("title","Writer"),
+            "worksFor": {"@type": "NewsMediaOrganization", "name": SITE_NAME}
+        },
+        "publisher": {
+            "@type": "NewsMediaOrganization",
+            "name": SITE_NAME,
+            "url": SITE_URL,
+            "logo": {
+                "@type": "ImageObject",
+                "url": f"{SITE_URL}/favicon.png",
+                "width": 512,
+                "height": 512
+            }
+        },
+        "isAccessibleForFree": True,
+        "isPartOf": {
+            "@type": "WebSite",
+            "name": SITE_NAME,
+            "url": SITE_URL
+        }
     })
 
     breadcrumb = json.dumps({
