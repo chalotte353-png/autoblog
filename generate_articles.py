@@ -670,6 +670,10 @@ def write_article(topic, hint, related_posts=None, target_category=None):
     cat_hint = (f"IMPORTANT: This article MUST be categorized as '{target_category}'. "
                 if target_category else "")
 
+    # Fetch live crypto data
+    _crypto_data = fetch_live_crypto_data()
+    live_context = format_crypto_context(_crypto_data, topic)
+
     prompt = (
         f"You are a seasoned expert journalist and content strategist with 15+ years of experience writing for top-tier publications.\n"
         f"Today is {now.strftime('%B %d, %Y')}. Write a comprehensive, deeply useful article about: {topic}\n"
