@@ -2256,7 +2256,22 @@ def main():
             if is_duplicate(slug, published):
                 print(f"  Skipping duplicate keyword: {kw}")
                 continue
-            topics.append({"title": kw, "hint": "", "_generated": True, "_target_category": None})
+        # Auto-detect category from keyword
+        kw_cat = None
+        kw_lower = kw.lower()
+        for coin_kw in COIN_TAGS:
+            if coin_kw.lower() in kw_lower:
+                kw_cat = "Crypto"
+                break
+        if not kw_cat:
+            for cat_kw, cat_name in [("stock","Stocks"),("invest","Investing"),("forex","Forex"),
+                ("trading","Finance"),("ai ","AI"),("artificial intel","AI"),
+                ("defi","DeFi"),("blockchain","Blockchain"),("web3","Web3"),
+                ("market","Markets"),("economy","Economy"),("tech","Technology")]:
+                if cat_kw in kw_lower:
+                    kw_cat = cat_name
+                    break
+        topics.append({"title": kw, "hint": "", "_generated": True, "_target_category": kw_cat})
     else:
         # Auto mode → system picks topics based on category rotation
         print(f"Auto mode: generating {ARTICLES_PER_RUN} article(s) with category balancing...")
@@ -2278,10 +2293,24 @@ def main():
         if is_duplicate(article["slug"], published):
             print(f"  Skipping duplicate: {article['slug']}")
             continue
-        # Use target_category as fallback if Claude picked wrong one
-        category = article.get("category", "World")
-        if target_cat and target_cat in CATEGORIES and category not in CATEGORIES:
-            category = target_cat
+        # Detect coin tag from title
+        coin_tag = ""
+        title_upper = article["title"]
+        for coin_kw, ctag in COIN_TAGS.items():
+            if coin_kw.lower() in title_upper.lower():
+                coin_tag = ctag
+                break
+
+        # Force Crypto category for coin articles
+        if coin_tag:
+            category = "Crypto"
+        else:
+            # Use target_category as fallback if AI picked wrong one
+            category = article.get("category", "World")
+            if target_cat and target_cat in CATEGORIES and category not in CATEGORIES:
+                category = target_cat
+            elif target_cat and target_cat in CATEGORIES:
+                category = target_cat
         author = get_author(category)
         img_kw = article.get("image_keyword") or " ".join(article["title"].split()[:4])
         image = get_image(img_kw, article["slug"])
@@ -2290,8 +2319,6 @@ def main():
         
         html = build_post(article, author, posts_index, now)
         (POSTS_DIR / f"{article['slug']}.html").write_text(html)
-        ROOT_POSTS_DIR.mkdir(exist_ok=True)
-        (ROOT_POSTS_DIR / f"{article['slug']}.html").write_text(html)
         
         posts_index.append({
             "slug": article["slug"], "title": article["title"],
@@ -2302,6 +2329,7 @@ def main():
             "author_name": author["name"], "author_title": author["title"],
             "author_avatar": author["avatar"], "author_id": author["id"],
             "date_iso": now.isoformat(), "date_human": now.strftime("%B %d, %Y"),
+            "coin_tag": coin_tag,
         })
         published.add(article["slug"])
         new_count += 1
