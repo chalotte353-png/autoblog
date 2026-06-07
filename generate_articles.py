@@ -2237,17 +2237,10 @@ def main():
                 m = re.search(r'<div class="post-body">(.*?)</div>\s*(?:<div class="post-related"|<div class="post-tags")', existing, re.DOTALL)
                 if m:
                     body = m.group(1).strip()
-                    # Strip any old TOC boxes from body
+                    # Strip old TOC boxes and empty divs
                     import re as _re2
-                    body = _re2.sub(
-                        r'<div[^>]*class=["']toc-box["'][^>]*>.*?</div>',
-                        '', body, flags=_re2.DOTALL
-                    )
-                    # Strip empty/blank divs (leftover boxes)
-                    body = _re2.sub(
-                        r'<div[^>]*>\s*</div>',
-                        '', body
-                    )
+                    body = _re2.sub(r"<div[^>]*toc-box[^>]*>.*?</div>", "", body, flags=_re2.DOTALL)
+                    body = _re2.sub(r"<div[^>]*>[\s]*</div>", "", body)
                     body = body.strip()
                     data = {**p, "article_html": body}
                     try:
