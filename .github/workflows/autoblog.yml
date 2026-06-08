@@ -53,8 +53,12 @@ jobs:
 
       - name: Generate coin pages
         env:
-          SITE_URL:  ${{ secrets.SITE_URL }}
-          SITE_NAME: ${{ secrets.SITE_NAME }}
+          GROQ_API_KEY_1:   ${{ secrets.GROQ_API_KEY_1 }}
+          GROQ_API_KEY_2:   ${{ secrets.GROQ_API_KEY_2 }}
+          GROQ_API_KEY_3:   ${{ secrets.GROQ_API_KEY_3 }}
+          GROQ_API_KEY_4:   ${{ secrets.GROQ_API_KEY_4 }}
+          SITE_URL:         ${{ secrets.SITE_URL }}
+          SITE_NAME:        ${{ secrets.SITE_NAME }}
         run: python generate_coins.py
 
       - name: Copy static assets
