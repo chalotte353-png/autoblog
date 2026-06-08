@@ -1315,7 +1315,7 @@ def build_post(data, author, all_posts, now):
         "@type": "BreadcrumbList",
         "itemListElement": [
             {"@type": "ListItem", "position": 1, "name": "Home", "item": SITE_URL + "/"},
-            {"@type": "ListItem", "position": 2, "name": cat, "item": f"{SITE_URL}/category-{cat.lower()}.html"},
+            {"@type": "ListItem", "position": 2, "name": cat, "item": f"{SITE_URL}/{cat.lower()}.html"},
             {"@type": "ListItem", "position": 3, "name": data["title"]}
         ]
     })
@@ -1333,7 +1333,7 @@ def build_post(data, author, all_posts, now):
 <div class="post-wrap"><div class="container post-grid">
 <article>
   <div class="post-hdr">
-    <a href="../category-{cat.lower()}.html" class="label">{cat}</a>
+    <a href="../{cat.lower()}.html" class="label">{cat}</a>
     <h1>{esc(data["title"])}</h1>
     <div class="desc">{esc(data.get("excerpt", data["meta_description"]))}</div>
     <div class="post-meta-bar">
@@ -2049,7 +2049,7 @@ def build_homepage(posts):
         cat_html += f"""<div class="cat-block">
   <div class="section-title">
     <h2>{cat}</h2><div class="line"></div>
-    <a href="category-{cat.lower()}.html">More {cat} &rarr;</a>
+    <a href="{cat.lower()}.html">More {cat} &rarr;</a>
   </div>
   <div class="cat-grid">
     <a href="posts/{lead["slug"]}.html" class="cat-lead">
@@ -2160,7 +2160,8 @@ def build_categories(posts):
 </div>
 {foot_html()}
 </body></html>"""
-        (OUTPUT_DIR / f"category-{cat.lower()}.html").write_text(html)
+        slug = cat.lower().replace(" ","-")
+        (OUTPUT_DIR / f"{slug}.html").write_text(html)
 
 # ── BUILD AUTHORS ─────────────────────────────────────────────────────
 def build_authors(posts):
