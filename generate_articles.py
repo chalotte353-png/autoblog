@@ -2120,7 +2120,8 @@ def build_homepage(posts):
 def build_categories(posts):
     sp = sorted(posts, key=lambda x: x["date_iso"], reverse=True)
     for cat in CATEGORIES:
-        cp = [p for p in sp if p.get("category","").lower() == cat.lower()]
+        # Exclude coin-tagged posts from category pages — they show on coin pages only
+        cp = [p for p in sp if p.get("category","").lower() == cat.lower() and not p.get("coin_tag","")]
         cards = ""
         for p in cp:
             cards += f"""<a href="posts/{p["slug"]}.html" class="cat-page-card">
@@ -2512,9 +2513,9 @@ def main():
     rebuilt = 0
     for p in posts_index:
         try:
-            cat = p.get("category", "World")
-            if cat not in CATEGORIES: cat = "World"
-            auth_list = AUTHORS.get(cat, AUTHORS["World"])
+            cat = p.get("category", "Crypto")
+            if cat not in AUTHORS: cat = "Crypto"
+            auth_list = AUTHORS.get(cat, list(AUTHORS.values())[0])
             author = next((a for a in auth_list if a["id"] == p.get("author_id", "")), auth_list[0])
             post_file = POSTS_DIR / f"{p['slug']}.html"
             if post_file.exists():
