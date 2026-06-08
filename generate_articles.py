@@ -50,7 +50,7 @@ CUSTOM_KEYWORDS  = [k.strip() for k in os.environ.get("CUSTOM_KEYWORDS", "").spl
 
 CATEGORIES = ["Crypto","AI","Stocks","Finance","Technology","Blockchain","Forex","Markets","Business","Investing","Economy","Web3","DeFi"]
 
-# Coin-specific tags — articles with these tags show ONLY on coin pages, NOT in /category-crypto.html
+# Coin-specific tags — articles with these tags show ONLY on coin pages, NOT in /crypto.html
 COIN_TAGS = {
     "Bitcoin":  "bitcoin",
     "BTC":      "bitcoin",
@@ -836,7 +836,7 @@ def nav_html(prefix=""):
     <a href="{prefix}" class="nav-link">Home</a>
 
     <div class="nav-dropdown">
-      <a href="{prefix}category-crypto.html" class="nav-link nav-dropdown-trigger">Crypto &#9662;</a>
+      <a href="{prefix}crypto.html" class="nav-link nav-dropdown-trigger">Crypto &#9662;</a>
       <div class="nav-dropdown-menu">
         <div class="nav-dropdown-col">
           <span class="nav-dropdown-head">Top Coins</span>
@@ -853,36 +853,36 @@ def nav_html(prefix=""):
         </div>
         <div class="nav-dropdown-col">
           <span class="nav-dropdown-head">Topics</span>
-          <a href="{prefix}category-crypto.html">All Crypto News</a>
-          <a href="{prefix}category-defi.html">DeFi</a>
-          <a href="{prefix}category-blockchain.html">Blockchain</a>
-          <a href="{prefix}category-web3.html">Web3</a>
+          <a href="{prefix}crypto.html">All Crypto News</a>
+          <a href="{prefix}defi.html">DeFi</a>
+          <a href="{prefix}blockchain.html">Blockchain</a>
+          <a href="{prefix}web3.html">Web3</a>
         </div>
       </div>
     </div>
 
     <div class="nav-dropdown">
-      <a href="{prefix}category-ai.html" class="nav-link nav-dropdown-trigger">AI &#9662;</a>
+      <a href="{prefix}ai.html" class="nav-link nav-dropdown-trigger">AI &#9662;</a>
       <div class="nav-dropdown-menu">
         <div class="nav-dropdown-col">
           <span class="nav-dropdown-head">AI Coverage</span>
-          <a href="{prefix}category-ai.html">All AI News</a>
-          <a href="{prefix}category-technology.html">Technology</a>
+          <a href="{prefix}ai.html">All AI News</a>
+          <a href="{prefix}technology.html">Technology</a>
         </div>
       </div>
     </div>
 
     <div class="nav-dropdown">
-      <a href="{prefix}category-stocks.html" class="nav-link nav-dropdown-trigger">Stocks &#9662;</a>
+      <a href="{prefix}stocks.html" class="nav-link nav-dropdown-trigger">Stocks &#9662;</a>
       <div class="nav-dropdown-menu">
         <div class="nav-dropdown-col">
           <span class="nav-dropdown-head">Markets</span>
-          <a href="{prefix}category-stocks.html">All Stocks</a>
-          <a href="{prefix}category-markets.html">Markets</a>
-          <a href="{prefix}category-forex.html">Forex</a>
-          <a href="{prefix}category-investing.html">Investing</a>
-          <a href="{prefix}category-economy.html">Economy</a>
-          <a href="{prefix}category-finance.html">Finance</a>
+          <a href="{prefix}stocks.html">All Stocks</a>
+          <a href="{prefix}markets-news.html">Markets</a>
+          <a href="{prefix}forex.html">Forex</a>
+          <a href="{prefix}investing.html">Investing</a>
+          <a href="{prefix}economy.html">Economy</a>
+          <a href="{prefix}finance.html">Finance</a>
         </div>
       </div>
     </div>
@@ -916,7 +916,7 @@ def foot_html(prefix=""):
     <p>Your trusted source for crypto, AI, stocks and financial market analysis.</p>
   </div>
   <div class="footer-col"><h4>Crypto</h4>
-    <a href="{prefix}category-crypto.html">All Crypto</a>
+    <a href="{prefix}crypto.html">All Crypto</a>
     <a href="{prefix}bitcoin.html">Bitcoin</a>
     <a href="{prefix}ethereum.html">Ethereum</a>
     <a href="{prefix}solana.html">Solana</a>
@@ -929,16 +929,16 @@ def foot_html(prefix=""):
     <a href="{prefix}polkadot.html">Polkadot</a></div>
   <div class="footer-col"><h4>Markets</h4>
     <a href="{prefix}markets.html">Live Markets</a>
-    <a href="{prefix}category-stocks.html">Stocks</a>
-    <a href="{prefix}category-forex.html">Forex</a>
-    <a href="{prefix}category-finance.html">Finance</a>
-    <a href="{prefix}category-investing.html">Investing</a></div>
+    <a href="{prefix}stocks.html">Stocks</a>
+    <a href="{prefix}forex.html">Forex</a>
+    <a href="{prefix}finance.html">Finance</a>
+    <a href="{prefix}investing.html">Investing</a></div>
   <div class="footer-col"><h4>Technology</h4>
-    <a href="{prefix}category-ai.html">AI</a>
-    <a href="{prefix}category-technology.html">Technology</a>
-    <a href="{prefix}category-blockchain.html">Blockchain</a>
-    <a href="{prefix}category-defi.html">DeFi</a>
-    <a href="{prefix}category-web3.html">Web3</a></div>
+    <a href="{prefix}ai.html">AI</a>
+    <a href="{prefix}technology.html">Technology</a>
+    <a href="{prefix}blockchain.html">Blockchain</a>
+    <a href="{prefix}defi.html">DeFi</a>
+    <a href="{prefix}web3.html">Web3</a></div>
   <div class="footer-col"><h4>Company</h4>
     <a href="{prefix}about.html">About Us</a>
     <a href="{prefix}contact.html">Contact</a>
@@ -1386,9 +1386,9 @@ def build_markets_ticker():
       <span class="mk-tick" id="tk-fg">Fear &amp; Greed: <span>—</span></span>
       <span class="mk-tick mk-sep-v">|</span>
       <span class="mk-tick mk-lnk"><a href="markets.html">Full Markets ›</a></span>
-      <span class="mk-tick mk-lnk"><a href="category-crypto.html">Crypto</a></span>
-      <span class="mk-tick mk-lnk"><a href="category-forex.html">Forex</a></span>
-      <span class="mk-tick mk-lnk"><a href="category-stocks.html">Stocks</a></span>
+      <span class="mk-tick mk-lnk"><a href="crypto.html">Crypto</a></span>
+      <span class="mk-tick mk-lnk"><a href="forex.html">Forex</a></span>
+      <span class="mk-tick mk-lnk"><a href="stocks.html">Stocks</a></span>
       <span class="mk-tick mk-sep-v">&nbsp;&nbsp;&nbsp;</span>
       <!-- Duplicate for seamless loop -->
       <span class="mk-tick">BTC/USD <span id="tk-btc2">—</span></span>
@@ -1404,9 +1404,9 @@ def build_markets_ticker():
       <span class="mk-tick">Fear &amp; Greed: <span id="tk-fg2">—</span></span>
       <span class="mk-tick mk-sep-v">|</span>
       <span class="mk-tick mk-lnk"><a href="markets.html">Full Markets ›</a></span>
-      <span class="mk-tick mk-lnk"><a href="category-crypto.html">Crypto</a></span>
-      <span class="mk-tick mk-lnk"><a href="category-forex.html">Forex</a></span>
-      <span class="mk-tick mk-lnk"><a href="category-stocks.html">Stocks</a></span>
+      <span class="mk-tick mk-lnk"><a href="crypto.html">Crypto</a></span>
+      <span class="mk-tick mk-lnk"><a href="forex.html">Forex</a></span>
+      <span class="mk-tick mk-lnk"><a href="stocks.html">Stocks</a></span>
       </div>
     </div>
   </div>
@@ -1710,10 +1710,10 @@ def build_markets_page():
     </div>
     <div class="mkp-sw">
       <div class="mkp-sw-title">📰 Markets News</div>
-      <a href="category-crypto.html" class="mkp-sw-link">Latest Crypto News →</a>
-      <a href="category-forex.html" class="mkp-sw-link">Latest Forex News →</a>
-      <a href="category-stocks.html" class="mkp-sw-link">Latest Stocks News →</a>
-      <a href="category-finance.html" class="mkp-sw-link">Finance Analysis →</a>
+      <a href="crypto.html" class="mkp-sw-link">Latest Crypto News →</a>
+      <a href="forex.html" class="mkp-sw-link">Latest Forex News →</a>
+      <a href="stocks.html" class="mkp-sw-link">Latest Stocks News →</a>
+      <a href="finance.html" class="mkp-sw-link">Finance Analysis →</a>
     </div>
     <div class="mkp-sw">
       <div class="mkp-sw-title">💡 Quick Converter</div>
@@ -2140,7 +2140,7 @@ def build_categories(posts):
         )
         html = f"""{head_html(cat + " News | " + SITE_NAME,
             f"Latest {cat} news, analysis and expert commentary.",
-            SITE_URL + "/category-" + cat.lower() + ".html", "", "")}
+            SITE_URL + "/" + cat.lower() + ".html", "", "")}
 {nav_html("/")}
 <div class="container">
   <div class="cat-page-hdr">
@@ -2246,7 +2246,7 @@ def build_sitemap(posts):
     # Category pages
     for cat in CATEGORIES:
         cat_slug = cat.lower().replace(" ", "-")
-        cat_lines.append(f'  <url><loc>{SITE_URL}/category-{cat_slug}.html</loc><lastmod>{today}</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>')
+        cat_lines.append(f'  <url><loc>{SITE_URL}/{cat_slug}.html</loc><lastmod>{today}</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>')
     # Static pages
     cat_lines += [
         f'  <url><loc>{SITE_URL}/about.html</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>',
