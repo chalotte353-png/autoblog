@@ -2208,32 +2208,45 @@ def build_sitemap(posts):
     seen_slugs = set()
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
-    # 1. POST SITEMAP
+    # Coins list for sitemap
+    coin_slugs = ["bitcoin","ethereum","solana","xrp","bnb","dogecoin","cardano","avalanche","chainlink","polkadot"]
+
+    # 1. POST SITEMAP — only current posts (not deleted ones)
     post_lines = [
         '<?xml version="1.0" encoding="UTF-8"?>',
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
     ]
     for p in posts:
-        if p["slug"] in seen_slugs:
+        slug = p["slug"]
+        if slug in seen_slugs or slug == "index":
             continue
-        if p["slug"] == "index":  # Skip index redirect page
+        # Only include if HTML file actually exists
+        html_file = OUTPUT_DIR / "posts" / f"{slug}.html"
+        if not html_file.exists():
             continue
-        seen_slugs.add(p["slug"])
-        post_date = p["date_iso"][:10]
-        post_lines.append(f'  <url><loc>{SITE_URL}/posts/{p["slug"]}.html</loc><lastmod>{post_date}</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>')
-
+        seen_slugs.add(slug)
+        post_date = p.get("date_iso","")[:10] or today
+        post_lines.append(f'  <url><loc>{SITE_URL}/posts/{slug}.html</loc><lastmod>{post_date}</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>')
     post_lines.append("</urlset>")
     (OUTPUT_DIR / "post-sitemap.xml").write_text("\n".join(post_lines))
 
-    # 2. CATEGORY SITEMAP
+    # 2. CATEGORY + PAGES SITEMAP — homepage, coins, categories, static pages
     cat_lines = [
         '<?xml version="1.0" encoding="UTF-8"?>',
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+        # Homepage — priority 1.0
         f'  <url><loc>{SITE_URL}/</loc><lastmod>{today}</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>',
+        # Markets page
         f'  <url><loc>{SITE_URL}/markets.html</loc><lastmod>{today}</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>',
     ]
+    # Coin pages — high priority
+    for coin_slug in coin_slugs:
+        cat_lines.append(f'  <url><loc>{SITE_URL}/{coin_slug}.html</loc><lastmod>{today}</lastmod><changefreq>hourly</changefreq><priority>0.9</priority></url>')
+    # Category pages
     for cat in CATEGORIES:
-        cat_lines.append(f'  <url><loc>{SITE_URL}/category-{cat.lower()}.html</loc><lastmod>{today}</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>')
+        cat_slug = cat.lower().replace(" ", "-")
+        cat_lines.append(f'  <url><loc>{SITE_URL}/category-{cat_slug}.html</loc><lastmod>{today}</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>')
+    # Static pages
     cat_lines += [
         f'  <url><loc>{SITE_URL}/about.html</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>',
         f'  <url><loc>{SITE_URL}/contact.html</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>',
@@ -2242,7 +2255,7 @@ def build_sitemap(posts):
     ]
     (OUTPUT_DIR / "category-sitemap.xml").write_text("\n".join(cat_lines))
 
-    # 3. SITEMAP INDEX
+    # 3. SITEMAP INDEX — 3 sitemaps
     index_lines = [
         '<?xml version="1.0" encoding="UTF-8"?>',
         '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
@@ -2251,6 +2264,7 @@ def build_sitemap(posts):
         '</sitemapindex>',
     ]
     (OUTPUT_DIR / "sitemap.xml").write_text("\n".join(index_lines))
+    print(f"  Sitemaps built: {len(seen_slugs)} posts, {len(CATEGORIES)} categories, {len(coin_slugs)} coin pages")
 
 def build_static_pages():
     """Rebuild About, Contact, Privacy pages with latest nav/footer every run."""
