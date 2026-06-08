@@ -10,7 +10,7 @@ on:
         required: false
         default: "2"
       keywords:
-        description: "Custom keywords (comma separated) — leave empty for auto"
+        description: "Custom keywords (comma separated)"
         required: false
         default: ""
 
@@ -34,8 +34,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Restore existing posts
-        run: |
-          mkdir -p output/posts
+        run: mkdir -p output/posts
 
       - name: Generate blog articles
         env:
@@ -51,6 +50,12 @@ jobs:
           MANUAL_ROTATION:  ${{ github.event_name == 'workflow_dispatch' && 'true' || 'false' }}
           CUSTOM_KEYWORDS:  ${{ github.event.inputs.keywords }}
         run: python generate_articles.py
+
+      - name: Generate coin pages
+        env:
+          SITE_URL:  ${{ secrets.SITE_URL }}
+          SITE_NAME: ${{ secrets.SITE_NAME }}
+        run: python generate_coins.py
 
       - name: Copy static assets
         run: |
