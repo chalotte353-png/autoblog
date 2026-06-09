@@ -401,7 +401,10 @@ def build_coin_page(coin, data, articles, all_coins_data=None):
 <link rel="stylesheet" href="../style.css">
 <script type="application/ld+json">{schema}</script>
 <script type="application/ld+json">{breadcrumb}</script>
-<script type="application/ld+json">{faq_schema}</script>
+"""
+    # Add faq_schema after html is built
+    html = html.replace("</head>", f'<script type="application/ld+json">{faq_schema}</script></head>')
+    html += """
 <style>
 .coin-hero {{ background: linear-gradient(135deg, {color}15 0%, #fff 60%); border-bottom: 1px solid #eee; padding: 40px 0 32px; }}
 .coin-hero-inner {{ max-width: 1200px; margin: 0 auto; padding: 0 20px; }}
