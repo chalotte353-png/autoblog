@@ -402,8 +402,6 @@ def build_coin_page(coin, data, articles, all_coins_data=None):
 <script type="application/ld+json">{schema}</script>
 <script type="application/ld+json">{breadcrumb}</script>
 """
-    # Add faq_schema after html is built
-    html = html.replace("</head>", f'<script type="application/ld+json">{faq_schema}</script></head>')
     html += """
 <style>
 .coin-hero {{ background: linear-gradient(135deg, {color}15 0%, #fff 60%); border-bottom: 1px solid #eee; padding: 40px 0 32px; }}
@@ -607,6 +605,33 @@ setInterval(refreshPrice, 60000);
 
 </body>
 </html>"""
+    # Build FAQ schema
+    chg24_str_faq = fmt_change(change24h)
+    verdict_obj = verdict  # already defined above
+    faq_schema = json.dumps({
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": f"What is the {name} price today?",
+                "acceptedAnswer": {"@type": "Answer", "text": f"{name} ({sym}) is trading at {price_str} today, {chg24_str_faq} in the last 24 hours. Market cap is {mcap_str}."}
+            },
+            {
+                "@type": "Question",
+                "name": f"Should I buy {name} today?",
+                "acceptedAnswer": {"@type": "Answer", "text": f"Our AI verdict for {name} today is: {verdict_obj.get('action','HOLD')} with {verdict_obj.get('confidence','Medium')} confidence. Risk level: {verdict_obj.get('risk','Medium')}. {verdict_obj.get('reason','')} This is not financial advice."}
+            },
+            {
+                "@type": "Question",
+                "name": f"What is the {name} market sentiment?",
+                "acceptedAnswer": {"@type": "Answer", "text": f"{name} sentiment score is {sentiment_score}/100 — {sentiment_label}. {sentiment_reason}"}
+            }
+        ]
+    })
+    # Inject faq_schema into head
+    html = html.replace("</head>", f'<script type="application/ld+json">{faq_schema}</script></head>')
+
     # Replace all placeholders
     verdict_action     = verdict.get("action", "HOLD")
     verdict_confidence = verdict.get("confidence", "Medium")
