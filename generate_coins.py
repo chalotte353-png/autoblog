@@ -361,6 +361,25 @@ def build_coin_page(coin, data, articles, all_coins_data=None):
           </div>
         </section>"""
 
+    # ── Generate ALL AI features BEFORE html template ──────
+    print(f"    Generating AI features for {name}...")
+    sentiment_score, sentiment_label, sentiment_reason = generate_sentiment(
+        name, sym, price, change24h, change7d, volume24h)
+    verdict    = generate_verdict(name, sym, price, change24h, change7d, high24h, low24h)
+    ai_analysis = generate_ai_analysis(
+        name, sym, price, change24h, change7d, marketcap, high24h, low24h, volume24h)
+
+    # Sentiment color
+    if sentiment_score >= 75:   s_color = "#16a34a"
+    elif sentiment_score >= 55: s_color = "#65a30d"
+    elif sentiment_score >= 45: s_color = "#ca8a04"
+    elif sentiment_score >= 25: s_color = "#ea580c"
+    else:                        s_color = "#dc2626"
+
+    # Verdict color
+    v_colors = {"BUY": "#16a34a", "HOLD": "#2563eb", "WAIT": "#ca8a04", "SELL": "#dc2626"}
+    v_color = v_colors.get(verdict.get("action", "HOLD"), "#2563eb")
+
     # Schema markup
     schema = json.dumps({
         "@context": "https://schema.org",
