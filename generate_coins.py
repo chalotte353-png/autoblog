@@ -7,33 +7,111 @@ GROQ_API_KEY = (os.environ.get("GROQ_API_KEY_1","") or
                 os.environ.get("GROQ_API_KEY_3","") or
                 os.environ.get("GROQ_API_KEY_4",""))
 
-def generate_ai_analysis(coin_name, sym, price, change24h, change7d, marketcap, high24h, low24h, volume24h):
-    """Generate daily AI technical analysis for coin page."""
+def groq_ask(prompt, max_tokens=300, temperature=0.6):
+    """Single Groq API call."""
     if not GROQ_API_KEY:
         return ""
     try:
-        chg24_word = "up" if change24h >= 0 else "down"
-        chg7d_word = "up" if change7d >= 0 else "down"
-        prompt = (
-            f"You are a professional crypto market analyst. Write a concise 120-150 word technical analysis for {coin_name} ({sym}).\n"
-            f"Current data: Price=${price:,.2f}, 24h change={change24h:+.2f}% ({chg24_word}), 7d change={change7d:+.2f}% ({chg7d_word}), "
-            f"Market cap=${marketcap/1e9:.1f}B, 24h High=${high24h:,.2f}, 24h Low=${low24h:,.2f}, Volume=${volume24h/1e9:.1f}B\n\n"
-            f"Include: current momentum, key support/resistance levels, short-term outlook (bullish/bearish/neutral).\n"
-            f"Write in plain text only — no markdown, no bullet points, no headings. Direct analyst voice. Start immediately with the analysis."
-        )
         r = requests.post(
             "https://api.groq.com/openai/v1/chat/completions",
             headers={"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"},
-            json={"model": "llama-3.3-70b-versatile", "max_tokens": 250, "temperature": 0.6,
-                  "messages": [{"role": "user", "content": prompt}]},
+            json={"model": "llama-3.3-70b-versatile", "max_tokens": max_tokens,
+                  "temperature": temperature, "messages": [{"role": "user", "content": prompt}]},
             timeout=30
         )
         resp = r.json()
         if "choices" in resp:
             return resp["choices"][0]["message"]["content"].strip()
     except Exception as e:
-        print(f"  AI analysis error: {e}")
+        print(f"  Groq error: {e}")
     return ""
+
+def generate_ai_analysis(coin_name, sym, price, change24h, change7d, marketcap, high24h, low24h, volume24h):
+    """Feature 1: Technical analysis paragraph."""
+    chg24_word = "up" if change24h >= 0 else "down"
+    chg7d_word = "up" if change7d >= 0 else "down"
+    prompt = (
+        f"You are a professional crypto market analyst. Write a concise 120-150 word technical analysis for {coin_name} ({sym}).\n"
+        f"Current data: Price=${price:,.2f}, 24h change={change24h:+.2f}% ({chg24_word}), 7d change={change7d:+.2f}% ({chg7d_word}), "
+        f"Market cap=${marketcap/1e9:.1f}B, 24h High=${high24h:,.2f}, 24h Low=${low24h:,.2f}, Volume=${volume24h/1e9:.1f}B\n\n"
+        f"Include: current momentum, key support/resistance levels, short-term outlook (bullish/bearish/neutral).\n"
+        f"Write plain text only. No markdown, no bullets, no headings. Direct analyst voice."
+    )
+    return groq_ask(prompt, max_tokens=250, temperature=0.6)
+
+def generate_sentiment(coin_name, sym, price, change24h, change7d, volume24h):
+    """Feature 2: Per-coin Fear vs Greed sentiment score."""
+    prompt = (
+        f"You are a crypto sentiment analyst. Based on this data for {coin_name} ({sym}):\n"
+        f"Price=${price:,.2f}, 24h change={change24h:+.2f}%, 7d change={change7d:+.2f}%, Volume=${volume24h/1e9:.1f}B\n\n"
+        f"Respond in EXACTLY this JSON format, nothing else:\n"
+        f'{{"score": <number 0-100>, "label": "<Extreme Fear|Fear|Neutral|Greed|Extreme Greed>", "reason": "<one sentence max 15 words>"}}'
+    )
+    raw = groq_ask(prompt, max_tokens=80, temperature=0.3)
+    try:
+        import json as _json
+        raw = raw.strip().strip('`').replace('json','').strip()
+        data = _json.loads(raw)
+        score = int(data.get("score", 50))
+        label = data.get("label", "Neutral")
+        reason = data.get("reason", "")
+        return score, label, reason
+    except:
+        # Fallback based on price change
+        if change24h > 5: return 75, "Greed", "Strong upward momentum detected"
+        elif change24h > 2: return 62, "Greed", "Positive price action"
+        elif change24h > 0: return 55, "Neutral", "Slight bullish bias"
+        elif change24h > -2: return 45, "Neutral", "Slight bearish pressure"
+        elif change24h > -5: return 35, "Fear", "Negative price action"
+        else: return 20, "Extreme Fear", "Heavy selling pressure"
+
+def generate_verdict(coin_name, sym, price, change24h, change7d, high24h, low24h):
+    """Feature 3: Should I Buy Today verdict."""
+    prompt = (
+        f"You are a crypto trading advisor. Give a daily trading verdict for {coin_name} ({sym}).\n"
+        f"Data: Price=${price:,.2f}, 24h={change24h:+.2f}%, 7d={change7d:+.2f}%, High=${high24h:,.2f}, Low=${low24h:,.2f}\n\n"
+        f"Respond in EXACTLY this JSON format, nothing else:\n"
+        f'{{"action": "<BUY|HOLD|WAIT|SELL>", "confidence": "<High|Medium|Low>", "risk": "<Low|Medium|High|Very High>", "reason": "<2 sentences max, plain text>", "target": "<price target>", "stop": "<stop loss level>"}}'
+    )
+    raw = groq_ask(prompt, max_tokens=120, temperature=0.4)
+    try:
+        import json as _json
+        raw = raw.strip().strip('`').replace('json','').strip()
+        return _json.loads(raw)
+    except:
+        action = "HOLD"
+        if change24h > 3: action = "BUY"
+        elif change24h < -3: action = "WAIT"
+        return {"action": action, "confidence": "Medium", "risk": "Medium",
+                "reason": f"{coin_name} is showing {'positive' if change24h >= 0 else 'negative'} momentum. Monitor key levels before entering.",
+                "target": fmt_price(price * 1.05), "stop": fmt_price(price * 0.95)}
+
+def generate_weekly_digest(coins_data, all_coins):
+    """Feature 4: Weekly digest — best/worst performers."""
+    performers = []
+    for coin in all_coins:
+        sym = coin["sym"]
+        d = coins_data.get(sym, {})
+        if d.get("change7d") is not None:
+            performers.append((coin["name"], sym, d.get("change7d", 0), d.get("price", 0)))
+    
+    performers.sort(key=lambda x: x[2], reverse=True)
+    best = performers[:3] if len(performers) >= 3 else performers
+    worst = performers[-3:] if len(performers) >= 3 else []
+    worst.reverse()
+    
+    best_str = ", ".join(f"{n} ({s}): {c:+.1f}%" for n,s,c,p in best)
+    worst_str = ", ".join(f"{n} ({s}): {c:+.1f}%" for n,s,c,p in worst)
+    
+    today = datetime.now(timezone.utc).strftime("%B %d, %Y")
+    prompt = (
+        f"You are a crypto market editor. Write a 150-word weekly crypto market digest for {today}.\n"
+        f"Top performers this week: {best_str}\n"
+        f"Worst performers: {worst_str}\n\n"
+        f"Write 3 short paragraphs: 1) Overall market mood, 2) Key movers analysis, 3) What to watch next week.\n"
+        f"Plain text only. No markdown. No headings. Professional tone."
+    )
+    return groq_ask(prompt, max_tokens=300, temperature=0.7)
 
 # ── CONFIG ──────────────────────────────────────────────────────────
 SITE_URL   = os.environ.get("SITE_URL", "https://marketsnewstoday.info")
@@ -213,8 +291,8 @@ def foot_html():
 <div class="footer-btm"><div class="container">&copy; {y} Markets News Today. All rights reserved.</div></div>
 </footer>"""
 
-def build_coin_page(coin, data, articles):
-    """Build a complete coin page with live data + articles."""
+def build_coin_page(coin, data, articles, all_coins_data=None):
+    """Build a complete coin page with live data + all AI features."""
     sym   = coin["sym"]
     name  = coin["name"]
     slug  = coin["slug"]
@@ -323,6 +401,7 @@ def build_coin_page(coin, data, articles):
 <link rel="stylesheet" href="../style.css">
 <script type="application/ld+json">{schema}</script>
 <script type="application/ld+json">{breadcrumb}</script>
+<script type="application/ld+json">{faq_schema}</script>
 <style>
 .coin-hero {{ background: linear-gradient(135deg, {color}15 0%, #fff 60%); border-bottom: 1px solid #eee; padding: 40px 0 32px; }}
 .coin-hero-inner {{ max-width: 1200px; margin: 0 auto; padding: 0 20px; }}
@@ -408,6 +487,55 @@ def build_coin_page(coin, data, articles):
   </div>
 </div>
 
+<!-- Sentiment + Verdict Row -->
+<div style="max-width:1200px;margin:24px auto 0;padding:0 20px;display:grid;grid-template-columns:1fr 1fr;gap:16px">
+
+  <!-- Fear vs Greed -->
+  <div style="background:#fff;border:1px solid #eee;border-radius:12px;padding:20px 24px">
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:#888;margin-bottom:12px">
+      {name} Sentiment Index
+    </div>
+    <div style="display:flex;align-items:center;gap:16px">
+      <div style="width:64px;height:64px;border-radius:50%;background:{s_color}20;border:3px solid {s_color};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <span style="font-size:20px;font-weight:800;color:{s_color}">{sentiment_score}</span>
+      </div>
+      <div>
+        <div style="font-size:18px;font-weight:700;color:{s_color}">{sentiment_label}</div>
+        <div style="font-size:13px;color:#666;margin-top:3px">{sentiment_reason}</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;height:6px;background:#f0f0f0;border-radius:3px;overflow:hidden">
+      <div style="width:{sentiment_score}%;height:100%;background:{s_color};border-radius:3px;transition:width 1s"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;color:#bbb;margin-top:4px">
+      <span>Extreme Fear</span><span>Neutral</span><span>Extreme Greed</span>
+    </div>
+  </div>
+
+  <!-- Should I Buy Today -->
+  <div style="background:#fff;border:2px solid {v_color};border-radius:12px;padding:20px 24px">
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:#888;margin-bottom:12px">
+      Should I Buy {name} Today?
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+      <div style="background:{v_color};color:#fff;font-size:22px;font-weight:800;padding:8px 20px;border-radius:8px;letter-spacing:1px">
+        {verdict_action}
+      </div>
+      <div>
+        <div style="font-size:13px;color:#333">Confidence: <strong>{verdict_confidence}</strong></div>
+        <div style="font-size:13px;color:#333">Risk: <strong style="color:{v_color}">{verdict_risk}</strong></div>
+      </div>
+    </div>
+    <p style="font-size:13px;color:#555;line-height:1.6;margin:0 0 10px">{verdict_reason}</p>
+    <div style="display:flex;gap:16px;font-size:12px">
+      <span style="color:#16a34a">🎯 Target: <strong>{verdict_target}</strong></span>
+      <span style="color:#dc2626">🛡 Stop: <strong>{verdict_stop}</strong></span>
+    </div>
+    <p style="font-size:10px;color:#bbb;margin:10px 0 0;font-style:italic">Not financial advice. For informational purposes only.</p>
+  </div>
+
+</div>
+
 <!-- TradingView Chart -->
 <div style="max-width:1200px;margin:32px auto;padding:0 20px">
   <div class="tradingview-widget-container" style="border:1px solid #eee;border-radius:10px;overflow:hidden">
@@ -476,25 +604,50 @@ setInterval(refreshPrice, 60000);
 
 </body>
 </html>"""
-    # Generate AI analysis
-    ai_text = generate_ai_analysis(name, sym, price, change24h, change7d, marketcap, high24h, low24h, volume24h)
-    if ai_text:
-        ai_box = f"""<div class="ai-analysis-box" style="max-width:1200px;margin:0 auto 32px;padding:0 20px">
-  <div style="background:linear-gradient(135deg,#fff8f8,#fff);border:1px solid #f0d0d0;border-left:5px solid {color};border-radius:10px;padding:24px 28px">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
-      <span style="font-size:20px">🤖</span>
-      <div>
-        <div style="font-size:13px;font-weight:700;color:{color};text-transform:uppercase;letter-spacing:0.5px">AI Market Analysis</div>
-        <div style="font-size:11px;color:#aaa">Updated {datetime.now(timezone.utc).strftime("%B %d, %Y %H:%M UTC")} · Markets News Today AI</div>
-      </div>
-    </div>
-    <p style="font-size:15px;line-height:1.8;color:#333;margin:0">{ai_text}</p>
-    <p style="font-size:11px;color:#bbb;margin:12px 0 0;font-style:italic">This analysis is generated by AI and is for informational purposes only. Not financial advice.</p>
-  </div>
-</div>"""
-        html = html.replace('{ai_analysis_box}', ai_box)
+    # Replace all placeholders
+    verdict_action     = verdict.get("action", "HOLD")
+    verdict_confidence = verdict.get("confidence", "Medium")
+    verdict_risk       = verdict.get("risk", "Medium")
+    verdict_reason     = verdict.get("reason", "")
+    verdict_target     = verdict.get("target", "N/A")
+    verdict_stop       = verdict.get("stop", "N/A")
+
+    replacements = {
+        "{name}":               name,
+        "{sym}":                sym,
+        "{s_color}":            s_color,
+        "{sentiment_score}":    str(sentiment_score),
+        "{sentiment_label}":    sentiment_label,
+        "{sentiment_reason}":   sentiment_reason,
+        "{v_color}":            v_color,
+        "{verdict_action}":     verdict_action,
+        "{verdict_confidence}": verdict_confidence,
+        "{verdict_risk}":       verdict_risk,
+        "{verdict_reason}":     verdict_reason,
+        "{verdict_target}":     str(verdict_target),
+        "{verdict_stop}":       str(verdict_stop),
+    }
+    for placeholder, value in replacements.items():
+        html = html.replace(placeholder, str(value))
+
+    # AI Analysis box
+    if ai_analysis:
+        now_utc = datetime.now(timezone.utc).strftime("%B %d, %Y %H:%M UTC")
+        ai_box = (
+            f'<div style="max-width:1200px;margin:0 auto 32px;padding:0 20px">' +
+            f'<div style="background:linear-gradient(135deg,#fff8f8,#fff);border:1px solid #f0d0d0;border-left:5px solid ' + color + ';border-radius:10px;padding:24px 28px">' +
+            f'<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">' +
+            f'<span style="font-size:20px">🤖</span>' +
+            f'<div><div style="font-size:13px;font-weight:700;color:' + color + ';text-transform:uppercase;letter-spacing:0.5px">AI Market Analysis</div>' +
+            f'<div style="font-size:11px;color:#aaa">Updated ' + now_utc + ' &middot; Markets News Today AI</div></div></div>' +
+            f'<p style="font-size:15px;line-height:1.8;color:#333;margin:0">' + ai_analysis + '</p>' +
+            f'<p style="font-size:11px;color:#bbb;margin:12px 0 0;font-style:italic">AI-generated analysis for informational purposes only. Not financial advice.</p>' +
+            f'</div></div>'
+        )
+        html = html.replace("{ai_analysis_box}", ai_box)
     else:
-        html = html.replace('{ai_analysis_box}', '')
+        html = html.replace("{ai_analysis_box}", "")
+
     return html
 
 def build_coins_sitemap(coins):
@@ -521,10 +674,10 @@ def main():
         except Exception:
             pass
 
-    print(f"Generating {len(COINS)} coin pages...")
+    print(f"Generating {len(COINS)} coin pages with AI features...")
     for coin in COINS:
         articles = get_coin_articles(coin["tag"], posts_index)
-        html = build_coin_page(coin, coin_data, articles)
+        html = build_coin_page(coin, coin_data, articles, coin_data)
         out_path = OUTPUT_DIR / f"{coin['slug']}.html"
         out_path.write_text(html, encoding="utf-8")
         sym = coin["sym"]
@@ -533,7 +686,30 @@ def main():
         chg   = fmt_change(d.get("change24h", 0))
         print(f"  ✓ {coin['name']} ({sym}) — {price} {chg} — {len(articles)} articles")
 
-    print("Done! All coin pages generated.")
+    # Weekly digest article in posts
+    print("Generating weekly crypto digest...")
+    digest_text = generate_weekly_digest(coin_data, COINS)
+    if digest_text:
+        today_slug = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        digest_path = OUTPUT_DIR / "posts" / f"weekly-crypto-digest-{today_slug}.html"
+        if not digest_path.exists():
+            digest_html = f"""<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Weekly Crypto Digest — {datetime.now(timezone.utc).strftime("%B %d, %Y")} | Markets News Today</title>
+<link rel="stylesheet" href="../../style.css">
+</head><body>
+<article style="max-width:800px;margin:40px auto;padding:0 20px">
+<span style="color:#E24B4A;font-size:12px;font-weight:700;text-transform:uppercase">Crypto</span>
+<h1 style="font-size:32px;margin:12px 0">Weekly Crypto Digest — {datetime.now(timezone.utc).strftime("%B %d, %Y")}</h1>
+<p style="color:#888;font-size:13px">By Markets News Today AI · {datetime.now(timezone.utc).strftime("%B %d, %Y")}</p>
+<div style="font-size:17px;line-height:1.9;color:#333;margin-top:24px">{digest_text}</div>
+<p style="font-size:11px;color:#bbb;margin-top:32px;font-style:italic">This digest is AI-generated for informational purposes only. Not financial advice.</p>
+</article>
+</body></html>"""
+            digest_path.write_text(digest_html, encoding="utf-8")
+            print(f"  ✓ Weekly digest saved")
+
+    print("Done! All coin pages + weekly digest generated.")
 
 if __name__ == "__main__":
     main()
