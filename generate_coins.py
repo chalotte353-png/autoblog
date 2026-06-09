@@ -686,30 +686,86 @@ def main():
         chg   = fmt_change(d.get("change24h", 0))
         print(f"  ✓ {coin['name']} ({sym}) — {price} {chg} — {len(articles)} articles")
 
-    # Weekly digest article in posts
-    print("Generating weekly crypto digest...")
-    digest_text = generate_weekly_digest(coin_data, COINS)
-    if digest_text:
-        today_slug = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-        digest_path = OUTPUT_DIR / "posts" / f"weekly-crypto-digest-{today_slug}.html"
-        if not digest_path.exists():
-            digest_html = f"""<!DOCTYPE html><html lang="en"><head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Weekly Crypto Digest — {datetime.now(timezone.utc).strftime("%B %d, %Y")} | Markets News Today</title>
-<link rel="stylesheet" href="../../style.css">
-</head><body>
-<article style="max-width:800px;margin:40px auto;padding:0 20px">
-<span style="color:#E24B4A;font-size:12px;font-weight:700;text-transform:uppercase">Crypto</span>
-<h1 style="font-size:32px;margin:12px 0">Weekly Crypto Digest — {datetime.now(timezone.utc).strftime("%B %d, %Y")}</h1>
-<p style="color:#888;font-size:13px">By Markets News Today AI · {datetime.now(timezone.utc).strftime("%B %d, %Y")}</p>
-<div style="font-size:17px;line-height:1.9;color:#333;margin-top:24px">{digest_text}</div>
-<p style="font-size:11px;color:#bbb;margin-top:32px;font-style:italic">This digest is AI-generated for informational purposes only. Not financial advice.</p>
-</article>
-</body></html>"""
-            digest_path.write_text(digest_html, encoding="utf-8")
-            print(f"  ✓ Weekly digest saved")
+    # Weekly digest — only on Mondays OR if forced
+    now_utc = datetime.now(timezone.utc)
+    is_monday = now_utc.weekday() == 0
+    today_slug = now_utc.strftime("%Y-%m-%d")
+    digest_slug = f"weekly-crypto-digest-{today_slug}"
+    digest_path = OUTPUT_DIR / "posts" / f"{digest_slug}.html"
 
-    print("Done! All coin pages + weekly digest generated.")
+    if is_monday and not digest_path.exists():
+        print("Generating weekly crypto digest (Monday)...")
+        digest_text = generate_weekly_digest(coin_data, COINS)
+        if digest_text:
+            date_human = now_utc.strftime("%B %d, %Y")
+            date_iso   = now_utc.isoformat()
+
+            # Build proper HTML
+            digest_html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Weekly Crypto Digest {date_human} | Markets News Today</title>
+<meta name="description" content="Weekly crypto market digest for {date_human}. Top performers, key movers and what to watch next week.">
+<link rel="canonical" href="{SITE_URL}/posts/{digest_slug}.html">
+<link rel="stylesheet" href="../style.css">
+<script type="application/ld+json">{json.dumps({
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    "headline": f"Weekly Crypto Digest — {date_human}",
+    "datePublished": date_iso,
+    "dateModified": date_iso,
+    "articleSection": "Crypto",
+    "url": f"{SITE_URL}/posts/{digest_slug}.html",
+    "publisher": {{"@type": "NewsMediaOrganization", "name": SITE_NAME, "url": SITE_URL}}
+})}</script>
+</head>
+<body>
+<article class="post-wrap" style="max-width:860px;margin:40px auto;padding:0 20px">
+  <a href="../crypto.html" class="label" style="color:#E24B4A;font-size:12px;font-weight:700;text-transform:uppercase;text-decoration:none">Crypto</a>
+  <h1 style="font-size:32px;font-weight:800;margin:12px 0 8px;line-height:1.3">Weekly Crypto Digest — {date_human}</h1>
+  <p style="color:#888;font-size:13px;margin-bottom:28px">By Markets News Today AI &middot; {date_human} &middot; 3 min read</p>
+  <div class="post-body" style="font-size:17px;line-height:1.9;color:#333">{digest_text}</div>
+  <p style="font-size:11px;color:#bbb;margin-top:32px;padding-top:16px;border-top:1px solid #eee;font-style:italic">
+    This digest is AI-generated using live market data for informational purposes only. Not financial advice.
+  </p>
+</article>
+</body>
+</html>"""
+            digest_path.write_text(digest_html, encoding="utf-8")
+
+            # Add to posts_index.json
+            pi_path = OUTPUT_DIR / "posts_index.json"
+            posts_index = json.loads(pi_path.read_text()) if pi_path.exists() else []
+
+            # Only add if not already in index
+            existing_slugs = {p["slug"] for p in posts_index}
+            if digest_slug not in existing_slugs:
+                posts_index.insert(0, {
+                    "slug":             digest_slug,
+                    "title":            f"Weekly Crypto Digest — {date_human}",
+                    "meta_description": f"Weekly crypto market digest for {date_human}. Top performers, key movers and what to watch next week.",
+                    "excerpt":          digest_text[:200] + "...",
+                    "category":         "Crypto",
+                    "coin_tag":         "",
+                    "tags":             ["crypto", "weekly", "digest", "market"],
+                    "image_url":        "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1200&q=80",
+                    "read_time":        "3 min read",
+                    "author_name":      "Markets News Today AI",
+                    "author_title":     "AI Market Analyst",
+                    "author_avatar":    "https://i.pravatar.cc/150?img=33",
+                    "author_id":        "dr-james-wu",
+                    "date_iso":         date_iso,
+                    "date_human":       date_human,
+                })
+                pi_path.write_text(json.dumps(posts_index, indent=2))
+                print(f"  ✓ Weekly digest saved + added to posts_index")
+    else:
+        if not is_monday:
+            print("  Weekly digest skipped (not Monday)")
+
+    print("Done! All coin pages generated.")
 
 if __name__ == "__main__":
     main()
