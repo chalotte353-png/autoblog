@@ -2257,16 +2257,48 @@ def build_sitemap(posts):
     ]
     (OUTPUT_DIR / "category-sitemap.xml").write_text("\n".join(cat_lines))
 
-    # 3. SITEMAP INDEX — 3 sitemaps
+    # 3. PAGES SITEMAP — coin pages + categories + static
+    pages_lines = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+        f'  <url><loc>{SITE_URL}/</loc><lastmod>{today}</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>',
+        f'  <url><loc>{SITE_URL}/markets.html</loc><lastmod>{today}</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>',
+    ]
+    for coin_slug in coin_slugs:
+        pages_lines.append(f'  <url><loc>{SITE_URL}/{coin_slug}.html</loc><lastmod>{today}</lastmod><changefreq>hourly</changefreq><priority>0.9</priority></url>')
+    for cat in CATEGORIES:
+        cat_slug = cat.lower().replace(" ", "-")
+        pages_lines.append(f'  <url><loc>{SITE_URL}/{cat_slug}.html</loc><lastmod>{today}</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>')
+    pages_lines += [
+        f'  <url><loc>{SITE_URL}/about.html</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>',
+        f'  <url><loc>{SITE_URL}/contact.html</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>',
+        f'  <url><loc>{SITE_URL}/privacy-policy.html</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>0.3</priority></url>',
+        f'  <url><loc>{SITE_URL}/authors.html</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>0.4</priority></url>',
+        "</urlset>"
+    ]
+    (OUTPUT_DIR / "pages-sitemap.xml").write_text("\n".join(pages_lines))
+
+    # 4. SITEMAP INDEX — 3 sitemaps
+    # ── AUTHORS SITEMAP (noindex pages — crawl only) ────
+    authors_lines = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+    authors_dir = OUTPUT_DIR / 'authors'
+    if authors_dir.exists():
+        for af in sorted(authors_dir.glob('*.html')):
+            if af.stem != 'index':
+                authors_lines.append(f'  <url><loc>{SITE_URL}/authors/{af.name}</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>0.3</priority></url>')
+    authors_lines.append('</urlset>')
+    (OUTPUT_DIR / 'authors-sitemap.xml').write_text('\n'.join(authors_lines))
+
     index_lines = [
         '<?xml version="1.0" encoding="UTF-8"?>',
         '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
         f'  <sitemap><loc>{SITE_URL}/post-sitemap.xml</loc><lastmod>{today}</lastmod></sitemap>',
-        f'  <sitemap><loc>{SITE_URL}/category-sitemap.xml</loc><lastmod>{today}</lastmod></sitemap>',
+        f'  <sitemap><loc>{SITE_URL}/pages-sitemap.xml</loc><lastmod>{today}</lastmod></sitemap>',
+        f'  <sitemap><loc>{SITE_URL}/authors-sitemap.xml</loc><lastmod>{today}</lastmod></sitemap>',
         '</sitemapindex>',
     ]
     (OUTPUT_DIR / "sitemap.xml").write_text("\n".join(index_lines))
-    print(f"  Sitemaps built: {len(seen_slugs)} posts, {len(CATEGORIES)} categories, {len(coin_slugs)} coin pages")
+    print(f"  Sitemaps: {len(seen_slugs)} posts | {len(coin_slugs)} coins | {len(CATEGORIES)} categories")
 
 def build_static_pages():
     """Rebuild About, Contact, Privacy pages with latest nav/footer every run."""
@@ -2277,7 +2309,7 @@ def build_static_pages():
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{title}</title>
 <meta name="description" content="{desc}">
-<meta name="robots" content="index,follow">
+<meta name="robots" content="noindex,follow">
 <link rel="canonical" href="{canonical}">
 <link rel="icon" href="favicon.ico" type="image/x-icon">
 <link rel="apple-touch-icon" href="favicon.png">
@@ -2297,35 +2329,24 @@ def build_static_pages():
 <script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());gtag('config','G-YC4REN62D0');</script>
 </head><body>"""
 
-    about_body = """<div class="container" style="max-width:800px;margin:48px auto;padding:0 20px">
-  <div class="label" style="margin-bottom:12px">About</div>
-  <h1 style="font-size:clamp(28px,4vw,42px);font-weight:800;line-height:1.15;margin-bottom:20px">About Markets News Today</h1>
-  <div style="width:60px;height:4px;background:var(--red);margin-bottom:32px"></div>
-  <div style="font-size:17px;line-height:1.8;color:var(--dark)">
-    <p style="margin-bottom:20px">Markets News Today is an independent digital news publication dedicated to delivering fast, accurate, and insightful reporting on the stories that shape the global economy and society.</p>
-    <h2 style="font-size:22px;font-weight:700;margin:32px 0 14px">Our Mission</h2>
-    <p style="margin-bottom:20px">Our mission is simple: to keep you informed. We focus on clarity, accuracy, and depth. Every article is written to give you the context you need to understand not just what happened — but why it matters.</p>
-    <h2 style="font-size:22px;font-weight:700;margin:32px 0 14px">What We Cover</h2>
-    <ul style="margin-bottom:20px;padding-left:24px;line-height:2">
-      <li><strong>Business &amp; Finance</strong> — Markets, earnings, economic policy, and corporate strategy</li>
-      <li><strong>Technology</strong> — AI, cybersecurity, startups, and the companies shaping our digital future</li>
-      <li><strong>Crypto &amp; Forex</strong> — Live markets, analysis, and trading insights</li>
-      <li><strong>World Affairs</strong> — International politics, diplomacy, and global events</li>
-      <li><strong>Sports</strong> — Breaking news and results from major leagues worldwide</li>
-      <li><strong>Health &amp; Science</strong> — Medical breakthroughs and research</li>
-      <li><strong>Entertainment</strong> — Film, music, television, and popular culture</li>
-    </ul>
-    <h2 style="font-size:22px;font-weight:700;margin:32px 0 14px">Our Team</h2>
-    <p style="margin-bottom:20px">Powered by experienced journalists and analysts from across the globe. Read more on our <a href="authors/" style="color:var(--red)">author profile pages</a>.</p>
-    <h2 style="font-size:22px;font-weight:700;margin:32px 0 14px">Contact Us</h2>
-    <p style="margin-bottom:20px">Have a tip or question? Visit our <a href="contact.html" style="color:var(--red)">Contact page</a>.</p>
-    <div style="background:var(--gray);border-left:4px solid var(--red);padding:20px 24px;margin:32px 0;border-radius:4px">
-      <p style="margin:0;font-size:15px;color:var(--muted)"><strong style="color:var(--dark)">Markets News Today</strong><br>
-      Email: <a href="mailto:contact@marketsnewstoday.info" style="color:var(--red)">contact@marketsnewstoday.info</a></p>
+    about_body = """<div class="container" style="max-width:860px;margin:48px auto;padding:0 20px">
+    <div style="text-align:center;margin-bottom:48px">
+      <h1 style="font-family:var(--serif);font-size:2.6rem;margin-bottom:16px">About Markets News Today</h1>
+      <p style="font-size:1.15rem;color:#666;max-width:600px;margin:0 auto;line-height:1.8">Your trusted source for crypto market analysis, AI industry news, and stock market insights.</p>
     </div>
-  </div>
-</div>"""
-
+    <h2 style="font-family:var(--serif);font-size:1.8rem;margin:0 0 16px">Our Mission</h2>
+    <p style="font-size:1.05rem;line-height:1.9;color:#444;margin-bottom:24px">Markets News Today was built to give everyday investors and crypto enthusiasts the same quality of analysis previously only available to institutional traders. We combine real-time market data with AI-powered insights to deliver content that is genuinely useful.</p>
+    <h2 style="font-family:var(--serif);font-size:1.8rem;margin:0 0 16px">What Makes Us Different</h2>
+    <ul style="font-size:1.05rem;line-height:2.2;color:#444;padding-left:1.5rem;margin-bottom:24px">
+      <li><strong>Live coin pages</strong> — Real-time prices, charts, sentiment scores and daily AI verdicts</li>
+      <li><strong>AI Market Analysis</strong> — Fresh AI-generated technical analysis daily for every coin</li>
+      <li><strong>"Should I Buy Today?"</strong> — Daily AI verdict with confidence level and risk rating</li>
+      <li><strong>Weekly Crypto Digest</strong> — Every Monday, a full recap of the week's market action</li>
+      <li><strong>No sponsored content</strong> — Our analysis is independent and data-driven</li>
+    </ul>
+    <p>Meet our <a href="authors.html" style="color:var(--red);font-weight:600">full editorial team</a> or <a href="contact.html" style="color:var(--red);font-weight:600">contact us</a>.</p>
+    <div style="background:#f8f9fa;border-radius:12px;padding:20px;margin-top:24px"><p style="font-size:13px;color:#888;margin:0;font-style:italic"><strong>Disclaimer:</strong> Nothing on this site constitutes financial advice. Always do your own research.</p></div>
+    </div>"""
     contact_body = """<div class="container" style="max-width:800px;margin:48px auto;padding:0 20px">
   <div class="label" style="margin-bottom:12px">Contact</div>
   <h1 style="font-size:clamp(28px,4vw,42px);font-weight:800;line-height:1.15;margin-bottom:20px">Contact Us</h1>
