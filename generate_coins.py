@@ -507,7 +507,7 @@ def build_coin_page(coin, coin_data, articles):
     # Live refresh JS
     parts.append('<script>')
     parts.append('function refreshPrice(){fetch("https://min-api.cryptocompare.com/data/pricemultifull?fsyms='+sym+'&tsyms=USD").then(function(r){return r.json()}).then(function(data){var d=data.RAW&&data.RAW.'+sym+'&&data.RAW.'+sym+'.USD;if(!d)return;var p=d.PRICE;var fmt=p>=1000?"$"+p.toLocaleString("en",{minimumFractionDigits:2,maximumFractionDigits:2}):"$"+p.toFixed(p>=1?4:6);document.getElementById("cp-price").textContent=fmt;var c24=d.CHANGEPCT24HOUR;var s24=(c24>=0?"+":"")+c24.toFixed(2)+"% (24h)";var el24=document.getElementById("cp-24h");el24.textContent=s24;el24.className="coin-change "+(c24>=0?"coin-up":"coin-dn");var mcap=d.MKTCAP>=1e12?"$"+(d.MKTCAP/1e12).toFixed(2)+"T":"$"+(d.MKTCAP/1e9).toFixed(2)+"B";var vol=d.VOLUME24HOURTO>=1e9?"$"+(d.VOLUME24HOURTO/1e9).toFixed(2)+"B":"$"+(d.VOLUME24HOURTO/1e6).toFixed(2)+"M";document.getElementById("cp-mcap").textContent=mcap;document.getElementById("cp-vol").textContent=vol;document.getElementById("cp-updated").textContent="Last updated: "+new Date().toUTCString()}).catch(function(){})}')
-    parts.append('setInterval(refreshPrice,60000);')
+    parts.append('refreshPrice();setInterval(refreshPrice,60000);')
     parts.append('</script>')
 
     parts.append(foot_html())
