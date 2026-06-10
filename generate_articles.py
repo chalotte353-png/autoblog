@@ -48,7 +48,7 @@ AUTHORS_DIR      = OUTPUT_DIR / "authors"
 ARTICLES_PER_RUN = int(os.environ.get("ARTICLES_PER_RUN", "1"))
 CUSTOM_KEYWORDS  = [k.strip() for k in os.environ.get("CUSTOM_KEYWORDS", "").split(",") if k.strip()]
 
-CATEGORIES = ["Crypto","AI","Stocks","Finance","Technology","Blockchain","Forex","Markets","Business","Investing","Economy","Web3","DeFi"]
+CATEGORIES = ["Crypto","AI","Stocks","Finance","Technology","Blockchain","Forex","Market News","Business","Investing","Economy","Web3","DeFi"]
 
 # Coin-specific tags — articles with these tags show ONLY on coin pages, NOT in /crypto.html
 COIN_TAGS = {
@@ -118,7 +118,7 @@ AUTHORS = {
     "Forex":         [{"id":"michael-hartley","name":"Michael Hartley","title":"Forex Markets Editor","bio":"Michael traded FX professionally for a decade before moving into financial journalism. He covers major and exotic currency pairs with technical and fundamental precision.","avatar":"https://i.pravatar.cc/150?img=11","twitter":"@mhartley_forex"},
                       {"id":"lisa-wong","name":"Lisa Wong","title":"Currency Strategy Reporter","bio":"Lisa covers central bank policy, interest rate decisions and their impact on global currency markets. Former Goldman Sachs FX strategist.","avatar":"https://i.pravatar.cc/150?img=23","twitter":"@lisawong_fx"},
                       {"id":"omar-hassan","name":"Omar Hassan","title":"Emerging Markets FX Correspondent","bio":"Omar specializes in emerging market currencies — covering PKR, INR, TRY, BRL and other high-volatility currency pairs.","avatar":"https://i.pravatar.cc/150?img=52","twitter":"@omarhassan_emfx"}],
-    "Markets":       [{"id":"michael-hartley","name":"Michael Hartley","title":"Global Markets Editor","bio":"Michael covers daily market movements across equities, bonds, commodities and currencies. CFA charterholder with 18 years of financial markets experience.","avatar":"https://i.pravatar.cc/150?img=11","twitter":"@mhartley_markets"},
+    "Market News":   [{"id":"michael-hartley","name":"Michael Hartley","title":"Global Markets Editor","bio":"Michael covers daily market movements across equities, bonds, commodities and currencies. CFA charterholder with 18 years of financial markets experience.","avatar":"https://i.pravatar.cc/150?img=11","twitter":"@mhartley_markets"},
                       {"id":"rachel-moore","name":"Rachel Moore","title":"Market Data Reporter","bio":"Rachel specializes in market microstructure, trading volumes and technical analysis. She covers pre-market movers, earnings reactions and sector trends.","avatar":"https://i.pravatar.cc/150?img=26","twitter":"@rachelmoore_data"}],
     "Investing":     [{"id":"robert-hayes","name":"Robert Hayes","title":"Investing Editor","bio":"Robert covers long-term investing strategies, portfolio construction and wealth building. Oxford-trained economist and CFP with a passion for helping retail investors beat the market.","avatar":"https://i.pravatar.cc/150?img=15","twitter":"@roberthayes_inv"},
                       {"id":"david-kim","name":"David Kim","title":"ETF & Fund Reporter","bio":"David covers ETFs, index funds, mutual funds and passive investing strategies. He helps readers cut through fee structures and find the best vehicles for their goals.","avatar":"https://i.pravatar.cc/150?img=13","twitter":"@davidkim_etf"},
@@ -140,7 +140,7 @@ AUTHORS = {
                       {"id":"tom-bradley","name":"Tom Bradley","title":"Tech Analyst","bio":"Former Google engineer turned tech journalist.","avatar":"https://i.pravatar.cc/150?img=16","twitter":"@tombradley_tech"}],
     "Blockchain":    [{"id":"mark-thompson","name":"Mark Thompson","title":"Blockchain Editor","bio":"Blockchain technology expert since Bitcoin's early days in 2013.","avatar":"https://i.pravatar.cc/150?img=17","twitter":"@markthompson_crypto"},
                       {"id":"james-mitchell","name":"James Mitchell","title":"Web3 Reporter","bio":"DeFi and blockchain protocol specialist with 8 years experience.","avatar":"https://i.pravatar.cc/150?img=11","twitter":"@jmitchell_web3"}],
-    "Markets":       [{"id":"david-park","name":"David Park","title":"Markets Editor","bio":"CFA charterholder covering global equity and bond markets.","avatar":"https://i.pravatar.cc/150?img=13","twitter":"@davidpark_mkt"},
+    "Market News":   [{"id":"david-park","name":"David Park","title":"Markets Editor","bio":"CFA charterholder covering global equity and bond markets.","avatar":"https://i.pravatar.cc/150?img=13","twitter":"@davidpark_mkt"},
                       {"id":"lisa-wong","name":"Lisa Wong","title":"Markets Reporter","bio":"Covers live market updates, indices and trading sessions.","avatar":"https://i.pravatar.cc/150?img=49","twitter":"@lisawong_mkt"}],
     "Investing":     [{"id":"robert-hayes","name":"Robert Hayes","title":"Investing Editor","bio":"Oxford economics graduate, expert in value investing and portfolio management.","avatar":"https://i.pravatar.cc/150?img=15","twitter":"@roberthayes_inv"},
                       {"id":"sarah-chen","name":"Sarah Chen","title":"Investment Reporter","bio":"Former Wall Street analyst covering ETFs, funds and investment strategies.","avatar":"https://i.pravatar.cc/150?img=47","twitter":"@sarahchen_inv"}],
@@ -878,7 +878,7 @@ def nav_html(prefix=""):
         <div class="nav-dropdown-col">
           <span class="nav-dropdown-head">Markets</span>
           <a href="{prefix}stocks.html">All Stocks</a>
-          <a href="{prefix}markets-news.html">Markets</a>
+          <a href="{prefix}market-news.html">Markets</a>
           <a href="{prefix}forex.html">Forex</a>
           <a href="{prefix}investing.html">Investing</a>
           <a href="{prefix}economy.html">Economy</a>
