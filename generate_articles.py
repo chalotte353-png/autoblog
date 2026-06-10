@@ -1816,7 +1816,7 @@ def build_markets_page():
         if(!d)return;
         var price=d.PRICE||0;
         var chg=d.CHANGEPCT24HOUR||0;
-        var vol=d.TOTALVOLUME24HTO||0;
+        var vol=d.VOLUME24HOURTO||0;
         var mcap=d.MKTCAP||0;
         cryptoPrices[c.sym]={{price:price,chg:chg}};
         coins_data.push({{name:c.name,short:c.sym,price:price,chg:chg,vol:vol,mcap:mcap}});
@@ -1877,7 +1877,7 @@ def build_markets_page():
       }});
       set('trending-list',tHtml);
 
-    }}catch(e){{set('crypto-tbody','<tr><td colspan="7" style="text-align:center;padding:20px;color:#999">Refreshing data...</td></tr>');}}
+    }}catch(e){{console.error('Crypto fetch error:',e);set('crypto-tbody','<tr><td colspan="7" style="text-align:center;padding:20px;color:#999">Refreshing data...</td></tr>');}}
   }}
 
   async function fetchGlobal(){{}}
