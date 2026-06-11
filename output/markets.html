@@ -458,7 +458,7 @@
         if(!d)return;
         var price=d.PRICE||0;
         var chg=d.CHANGEPCT24HOUR||0;
-        var vol=d.VOLUME24HOURTO||0;
+        var vol=d.TOTALVOLUME24HTO||d.VOLUME24HOURTO||0;
         var mcap=d.MKTCAP||0;
         cryptoPrices[c.sym]={price:price,chg:chg};
         coins_data.push({name:c.name,short:c.sym,price:price,chg:chg,vol:vol,mcap:mcap});
@@ -519,7 +519,30 @@
       });
       set('trending-list',tHtml);
 
-    }catch(e){console.error('Crypto fetch error:',e);set('crypto-tbody','<tr><td colspan="7" style="text-align:center;padding:20px;color:#999">Refreshing data...</td></tr>');}
+    }catch(e){
+      // Fallback to Binance API
+      try{
+        var syms=['BTCUSDT','ETHUSDT','SOLUSDT','XRPUSDT','BNBUSDT','DOGEUSDT','ADAUSDT','AVAXUSDT','LINKUSDT','DOTUSDT'];
+        var rb=await fetch('https://api.binance.com/api/v3/ticker/24hr?symbols=[%22'+syms.join('%22,%22')+'%22]');
+        var db=await rb.json();
+        var nameMap={'BTCUSDT':['Bitcoin','BTC'],'ETHUSDT':['Ethereum','ETH'],'SOLUSDT':['Solana','SOL'],'XRPUSDT':['XRP','XRP'],'BNBUSDT':['BNB','BNB'],'DOGEUSDT':['Dogecoin','DOGE'],'ADAUSDT':['Cardano','ADA'],'AVAXUSDT':['Avalanche','AVAX'],'LINKUSDT':['Chainlink','LINK'],'DOTUSDT':['Polkadot','DOT']};
+        var tbody2='';
+        db.forEach(function(d,i){
+          var info=nameMap[d.symbol];if(!info)return;
+          var price=parseFloat(d.lastPrice)||0;
+          var chg=parseFloat(d.priceChangePercent)||0;
+          var vol=parseFloat(d.quoteVolume)||0;
+          cryptoPrices[info[1]]={price:price,chg:chg};
+          tbody2+='<tr><td class="mkp-rank">'+(i+1)+'</td>'
+            +'<td class="mkp-name"><strong>'+info[0]+'</strong> <span class="mkp-sym">'+info[1]+'</span></td>'
+            +'<td class="mkp-price">'+fmt(price,price<1?4:2)+'</td>'
+            +'<td>'+badge(chg)+'</td>'
+            +'<td>—</td><td>—</td>'
+            +'<td class="mkp-vol">'+fmt(vol)+'</td></tr>';
+        });
+        set('crypto-tbody',tbody2||'<tr><td colspan="7" style="text-align:center;padding:20px">No data</td></tr>');
+      }catch(e2){set('crypto-tbody','<tr><td colspan="7" style="text-align:center;padding:20px;color:#999">Refreshing data...</td></tr>');}
+    }
   }
 
   async function fetchGlobal(){}
@@ -569,7 +592,22 @@
 
       // Currency converter
       convert();
-    }catch(e){}
+    }catch(e){
+      try{
+        var rb=await fetch('https://api.binance.com/api/v3/ticker/24hr?symbols=[%22BTCUSDT%22,%22ETHUSDT%22,%22SOLUSDT%22,%22XRPUSDT%22]');
+        var db=await rb.json();
+        var sm={'BTCUSDT':'BTC','ETHUSDT':'ETH','SOLUSDT':'SOL','XRPUSDT':'XRP'};
+        db.forEach(function(d){
+          var s=sm[d.symbol];if(!s)return;
+          var p=parseFloat(d.lastPrice),c=parseFloat(d.priceChangePercent);
+          var ps=p>=1000?'$'+p.toLocaleString('en',{minimumFractionDigits:2,maximumFractionDigits:2}):'$'+p.toFixed(p>=1?4:6);
+          var sign=c>=0?'+':'';
+          var html=ps+' <span style="color:'+(c>=0?'#4ade80':'#f87171')+'">'+sign+c.toFixed(2)+'%</span>';
+          var el=document.getElementById('tk-'+s.toLowerCase());if(el)el.innerHTML=html;
+          var el2=document.getElementById('tk-'+s.toLowerCase()+'2');if(el2)el2.innerHTML=html;
+        });
+      }catch(e2){}
+    }
   }
 
   /* ── FEAR & GREED ── */
@@ -599,7 +637,22 @@
       // Ticker
       var tk=document.getElementById('tk-fg');
       if(tk){var s=tk.querySelector('span');if(s)s.textContent=today.value+' ('+today.value_classification+')';}
-    }catch(e){}
+    }catch(e){
+      try{
+        var rb=await fetch('https://api.binance.com/api/v3/ticker/24hr?symbols=[%22BTCUSDT%22,%22ETHUSDT%22,%22SOLUSDT%22,%22XRPUSDT%22]');
+        var db=await rb.json();
+        var sm={'BTCUSDT':'BTC','ETHUSDT':'ETH','SOLUSDT':'SOL','XRPUSDT':'XRP'};
+        db.forEach(function(d){
+          var s=sm[d.symbol];if(!s)return;
+          var p=parseFloat(d.lastPrice),c=parseFloat(d.priceChangePercent);
+          var ps=p>=1000?'$'+p.toLocaleString('en',{minimumFractionDigits:2,maximumFractionDigits:2}):'$'+p.toFixed(p>=1?4:6);
+          var sign=c>=0?'+':'';
+          var html=ps+' <span style="color:'+(c>=0?'#4ade80':'#f87171')+'">'+sign+c.toFixed(2)+'%</span>';
+          var el=document.getElementById('tk-'+s.toLowerCase());if(el)el.innerHTML=html;
+          var el2=document.getElementById('tk-'+s.toLowerCase()+'2');if(el2)el2.innerHTML=html;
+        });
+      }catch(e2){}
+    }
   }
 
   /* ── CONVERTER ── */
