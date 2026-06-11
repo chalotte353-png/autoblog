@@ -506,26 +506,34 @@ def build_coin_page(coin, coin_data, articles):
 
     # Live refresh JS
     parts.append('<script>')
-    _js = (
-        "function refreshPrice(){"
-        "fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=" + sym + "USDT')"
-        ".then(function(r){return r.json()})"
-        ".then(function(d){"
-        "if(!d||!d.lastPrice)return;"
-        "var p=parseFloat(d.lastPrice);"
-        "var f=p>=1000?'$'+p.toLocaleString('en',{minimumFractionDigits:2,maximumFractionDigits:2}):'$'+p.toFixed(p>=1?4:6);"
-        "document.getElementById('cp-price').textContent=f;"
-        "var c=parseFloat(d.priceChangePercent);"
-        "var s=(c>=0?'+':'')+c.toFixed(2)+'% (24h)';"
-        "var e=document.getElementById('cp-24h');"
-        "e.textContent=s;e.className='coin-change '+(c>=0?'coin-up':'coin-dn');"
-        "var v=parseFloat(d.quoteVolume);"
-        "var vs=v>=1e9?'$'+(v/1e9).toFixed(2)+'B':'$'+(v/1e6).toFixed(2)+'M';"
-        "document.getElementById('cp-vol').textContent=vs;"
-        "document.getElementById('cp-updated').textContent='Last updated: '+new Date().toUTCString();"
-        "}).catch(function(){});}"
-    )
-    parts.append(_js)
+    # Live price refresh using CryptoCompare
+    parts.append('<script>')
+    parts.append('async function refreshPrice(){')
+    parts.append('try{')
+    parts.append('var r=await fetch("https://min-api.cryptocompare.com/data/pricemultifull?fsyms='+sym+'&tsyms=USD");')
+    parts.append('var j=await r.json();')
+    parts.append('var d=j.RAW&&j.RAW.'+sym+'&&j.RAW.'+sym+'.USD;')
+    parts.append('if(!d)return;')
+    parts.append('var p=d.PRICE;')
+    parts.append('var f=p>=1000?"$"+p.toLocaleString("en",{minimumFractionDigits:2,maximumFractionDigits:2}):"$"+p.toFixed(p>=1?4:6);')
+    parts.append('document.getElementById("cp-price").textContent=f;')
+    parts.append('var c=d.CHANGEPCT24HOUR;')
+    parts.append('var s=(c>=0?"+":"")+c.toFixed(2)+"% (24h)";')
+    parts.append('var e=document.getElementById("cp-24h");e.textContent=s;e.className="coin-change "+(c>=0?"coin-up":"coin-dn");')
+    parts.append('var c7=d.CHANGEPCT7D||0;')
+    parts.append('var s7=(c7>=0?"+":"")+c7.toFixed(2)+"% (7d)";')
+    parts.append('var e7=document.getElementById("cp-7d");if(e7){e7.textContent=s7;e7.className="coin-change "+(c7>=0?"coin-up":"coin-dn");}')
+    parts.append('var mc=d.MKTCAP>=1e12?"$"+(d.MKTCAP/1e12).toFixed(2)+"T":"$"+(d.MKTCAP/1e9).toFixed(2)+"B";')
+    parts.append('var vo=d.VOLUME24HOURTO>=1e9?"$"+(d.VOLUME24HOURTO/1e9).toFixed(2)+"B":"$"+(d.VOLUME24HOURTO/1e6).toFixed(2)+"M";')
+    parts.append('var hi=p>=1000?"$"+d.HIGH24HOUR.toLocaleString("en",{minimumFractionDigits:2,maximumFractionDigits:2}):"$"+d.HIGH24HOUR.toFixed(4);')
+    parts.append('var lo=p>=1000?"$"+d.LOW24HOUR.toLocaleString("en",{minimumFractionDigits:2,maximumFractionDigits:2}):"$"+d.LOW24HOUR.toFixed(4);')
+    parts.append('var em=document.getElementById("cp-mcap");if(em)em.textContent=mc;')
+    parts.append('var ev=document.getElementById("cp-vol");if(ev)ev.textContent=vo;')
+    parts.append('var eh=document.getElementById("cp-high");if(eh)eh.textContent=hi;')
+    parts.append('var el=document.getElementById("cp-low");if(el)el.textContent=lo;')
+    parts.append('document.getElementById("cp-updated").textContent="Last updated: "+new Date().toUTCString();')
+    parts.append('}catch(e){}')
+    parts.append('}')
     parts.append('refreshPrice();setInterval(refreshPrice,60000);')
     parts.append('</script>')
 
