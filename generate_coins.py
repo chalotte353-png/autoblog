@@ -504,83 +504,54 @@ def build_coin_page(coin, coin_data, articles):
     # Articles
     parts.append(art_html)
 
-    # Live refresh JS
-    parts.append('<script>')
-    # Live price refresh using CryptoCompare
-    parts.append('<script>')
-    parts.append('<script>')
-    parts.append('async function refreshPrice(){')
-    parts.append('  try{')
-    parts.append('    var r=await fetch("https://min-api.cryptocompare.com/data/pricemultifull?fsyms='+sym+'&tsyms=USD");')
-    parts.append('    var j=await r.json();')
-    parts.append('    var d=j.RAW&&j.RAW.'+sym+'&&j.RAW.'+sym+'.USD;')
-    parts.append('    if(!d||!d.PRICE)throw new Error("no data");')
-    parts.append('    var p=d.PRICE;')
-    parts.append('    var f=p>=1000?"$"+p.toLocaleString("en",{minimumFractionDigits:2,maximumFractionDigits:2}):"$"+p.toFixed(p>=1?4:6);')
-    parts.append('    document.getElementById("cp-price").textContent=f;')
-    parts.append('    var c=d.CHANGEPCT24HOUR||0;')
-    parts.append('    var s=(c>=0?"+":"")+c.toFixed(2)+"% (24h)";')
-    parts.append('    var e24=document.getElementById("cp-24h");if(e24){e24.textContent=s;e24.className="coin-change "+(c>=0?"coin-up":"coin-dn");}')
-    parts.append('    var c7=d.CHANGEPCT7D||0;var s7=(c7>=0?"+":"")+c7.toFixed(2)+"% (7d)";')
-    parts.append('    var e7=document.getElementById("cp-7d");if(e7){e7.textContent=s7;e7.className="coin-change "+(c7>=0?"coin-up":"coin-dn");}')
-    parts.append('    var mc=d.MKTCAP>=1e12?"$"+(d.MKTCAP/1e12).toFixed(2)+"T":d.MKTCAP>=1e9?"$"+(d.MKTCAP/1e9).toFixed(2)+"B":"$"+(d.MKTCAP/1e6).toFixed(2)+"M";')
-    parts.append('    var vo=d.TOTALVOLUME24HTO>=1e9?"$"+(d.TOTALVOLUME24HTO/1e9).toFixed(2)+"B":"$"+(d.TOTALVOLUME24HTO/1e6).toFixed(2)+"M";')
-    parts.append('    var hi=p>=1000?"$"+d.HIGH24HOUR.toLocaleString("en",{minimumFractionDigits:2,maximumFractionDigits:2}):"$"+d.HIGH24HOUR.toFixed(4);')
-    parts.append('    var lo=p>=1000?"$"+d.LOW24HOUR.toLocaleString("en",{minimumFractionDigits:2,maximumFractionDigits:2}):"$"+d.LOW24HOUR.toFixed(4);')
-    parts.append('    var em=document.getElementById("cp-mcap");if(em)em.textContent=mc;')
-    parts.append('    var ev=document.getElementById("cp-vol");if(ev)ev.textContent=vo;')
-    parts.append('    var eh=document.getElementById("cp-high");if(eh)eh.textContent=hi;')
-    parts.append('    var el2=document.getElementById("cp-low");if(el2)el2.textContent=lo;')
-    parts.append('    document.getElementById("cp-updated").textContent="Last updated: "+new Date().toUTCString();')
-    parts.append('  }catch(e){')
-    parts.append('    try{')
-    parts.append('      var r2=await fetch("https://api.binance.com/api/v3/ticker/24hr?symbol='+sym+'USDT");')
-    parts.append('      var d2=await r2.json();')
-    parts.append('      if(!d2.lastPrice)return;')
-    parts.append('      var p2=parseFloat(d2.lastPrice);')
-    parts.append('      var f2=p2>=1000?"$"+p2.toLocaleString("en",{minimumFractionDigits:2,maximumFractionDigits:2}):"$"+p2.toFixed(p2>=1?4:6);')
-    parts.append('      document.getElementById("cp-price").textContent=f2;')
-    parts.append('      var c2=parseFloat(d2.priceChangePercent)||0;')
-    parts.append('      var s2=(c2>=0?"+":"")+c2.toFixed(2)+"% (24h)";')
-    parts.append('      var e2=document.getElementById("cp-24h");if(e2){e2.textContent=s2;e2.className="coin-change "+(c2>=0?"coin-up":"coin-dn");}')
-    parts.append('      var v2=parseFloat(d2.quoteVolume);var vs2=v2>=1e9?"$"+(v2/1e9).toFixed(2)+"B":"$"+(v2/1e6).toFixed(2)+"M";')
-    parts.append('      var ev2=document.getElementById("cp-vol");if(ev2)ev2.textContent=vs2;')
-    parts.append('      var h2=parseFloat(d2.highPrice);var l2=parseFloat(d2.lowPrice);')
-    parts.append('      var eh2=document.getElementById("cp-high");if(eh2)eh2.textContent=h2>=1000?"$"+h2.toLocaleString("en",{minimumFractionDigits:2,maximumFractionDigits:2}):"$"+h2.toFixed(4);')
-    parts.append('      var el3=document.getElementById("cp-low");if(el3)el3.textContent=l2>=1000?"$"+l2.toLocaleString("en",{minimumFractionDigits:2,maximumFractionDigits:2}):"$"+l2.toFixed(4);')
-    parts.append('      document.getElementById("cp-updated").textContent="Last updated: "+new Date().toUTCString();')
-    parts.append('    }catch(e2){}')
-    parts.append('  }')
-    parts.append('}')
-    parts.append('refreshPrice();setInterval(refreshPrice,30000);')
-    parts.append('</script>')
-    parts.append('try{')
-    parts.append('var r=await fetch("https://min-api.cryptocompare.com/data/pricemultifull?fsyms='+sym+'&tsyms=USD");')
-    parts.append('var j=await r.json();')
-    parts.append('var d=j.RAW&&j.RAW.'+sym+'&&j.RAW.'+sym+'.USD;')
-    parts.append('if(!d)return;')
-    parts.append('var p=d.PRICE;')
-    parts.append('var f=p>=1000?"$"+p.toLocaleString("en",{minimumFractionDigits:2,maximumFractionDigits:2}):"$"+p.toFixed(p>=1?4:6);')
-    parts.append('document.getElementById("cp-price").textContent=f;')
-    parts.append('var c=d.CHANGEPCT24HOUR;')
-    parts.append('var s=(c>=0?"+":"")+c.toFixed(2)+"% (24h)";')
-    parts.append('var e=document.getElementById("cp-24h");e.textContent=s;e.className="coin-change "+(c>=0?"coin-up":"coin-dn");')
-    parts.append('var c7=d.CHANGEPCT7D||0;')
-    parts.append('var s7=(c7>=0?"+":"")+c7.toFixed(2)+"% (7d)";')
-    parts.append('var e7=document.getElementById("cp-7d");if(e7){e7.textContent=s7;e7.className="coin-change "+(c7>=0?"coin-up":"coin-dn");}')
-    parts.append('var mc=d.MKTCAP>=1e12?"$"+(d.MKTCAP/1e12).toFixed(2)+"T":"$"+(d.MKTCAP/1e9).toFixed(2)+"B";')
-    parts.append('var vo=d.VOLUME24HOURTO>=1e9?"$"+(d.VOLUME24HOURTO/1e9).toFixed(2)+"B":"$"+(d.VOLUME24HOURTO/1e6).toFixed(2)+"M";')
-    parts.append('var hi=p>=1000?"$"+d.HIGH24HOUR.toLocaleString("en",{minimumFractionDigits:2,maximumFractionDigits:2}):"$"+d.HIGH24HOUR.toFixed(4);')
-    parts.append('var lo=p>=1000?"$"+d.LOW24HOUR.toLocaleString("en",{minimumFractionDigits:2,maximumFractionDigits:2}):"$"+d.LOW24HOUR.toFixed(4);')
-    parts.append('var em=document.getElementById("cp-mcap");if(em)em.textContent=mc;')
-    parts.append('var ev=document.getElementById("cp-vol");if(ev)ev.textContent=vo;')
-    parts.append('var eh=document.getElementById("cp-high");if(eh)eh.textContent=hi;')
-    parts.append('var el=document.getElementById("cp-low");if(el)el.textContent=lo;')
-    parts.append('document.getElementById("cp-updated").textContent="Last updated: "+new Date().toUTCString();')
-    parts.append('}catch(e){}')
-    parts.append('}')
-    parts.append('refreshPrice();setInterval(refreshPrice,60000);')
-    parts.append('</script>')
+    # Live price refresh JS
+    js = [
+        '<script>',
+        'async function refreshPrice(){',
+        '  try{',
+        '    var r=await fetch("https://min-api.cryptocompare.com/data/pricemultifull?fsyms='+sym+'&tsyms=USD");',
+        '    var j=await r.json();',
+        '    var d=j.RAW&&j.RAW.'+sym+'&&j.RAW.'+sym+'.USD;',
+        '    if(!d||!d.PRICE)throw new Error("no data");',
+        '    var p=d.PRICE;',
+        '    var f=p>=1000?"$"+p.toLocaleString("en",{minimumFractionDigits:2,maximumFractionDigits:2}):"$"+p.toFixed(p>=1?4:6);',
+        '    document.getElementById("cp-price").textContent=f;',
+        '    var c=d.CHANGEPCT24HOUR||0;var s=(c>=0?"+":"")+c.toFixed(2)+"% (24h)";',
+        '    var e24=document.getElementById("cp-24h");if(e24){e24.textContent=s;e24.className="coin-change "+(c>=0?"coin-up":"coin-dn");}',
+        '    var c7=d.CHANGEPCT7D||0;var s7=(c7>=0?"+":"")+c7.toFixed(2)+"% (7d)";',
+        '    var e7=document.getElementById("cp-7d");if(e7){e7.textContent=s7;e7.className="coin-change "+(c7>=0?"coin-up":"coin-dn");}',
+        '    var mc=d.MKTCAP>=1e12?"$"+(d.MKTCAP/1e12).toFixed(2)+"T":d.MKTCAP>=1e9?"$"+(d.MKTCAP/1e9).toFixed(2)+"B":"$"+(d.MKTCAP/1e6).toFixed(2)+"M";',
+        '    var vo=d.TOTALVOLUME24HTO>=1e9?"$"+(d.TOTALVOLUME24HTO/1e9).toFixed(2)+"B":"$"+(d.TOTALVOLUME24HTO/1e6).toFixed(2)+"M";',
+        '    var hi=p>=1000?"$"+d.HIGH24HOUR.toLocaleString("en",{minimumFractionDigits:2,maximumFractionDigits:2}):"$"+d.HIGH24HOUR.toFixed(4);',
+        '    var lo=p>=1000?"$"+d.LOW24HOUR.toLocaleString("en",{minimumFractionDigits:2,maximumFractionDigits:2}):"$"+d.LOW24HOUR.toFixed(4);',
+        '    var em=document.getElementById("cp-mcap");if(em)em.textContent=mc;',
+        '    var ev=document.getElementById("cp-vol");if(ev)ev.textContent=vo;',
+        '    var eh=document.getElementById("cp-high");if(eh)eh.textContent=hi;',
+        '    var el2=document.getElementById("cp-low");if(el2)el2.textContent=lo;',
+        '    document.getElementById("cp-updated").textContent="Last updated: "+new Date().toUTCString();',
+        '  }catch(e){',
+        '    try{',
+        '      var r2=await fetch("https://api.binance.com/api/v3/ticker/24hr?symbol='+sym+'USDT");',
+        '      var d2=await r2.json();if(!d2.lastPrice)return;',
+        '      var p2=parseFloat(d2.lastPrice);',
+        '      var f2=p2>=1000?"$"+p2.toLocaleString("en",{minimumFractionDigits:2,maximumFractionDigits:2}):"$"+p2.toFixed(p2>=1?4:6);',
+        '      document.getElementById("cp-price").textContent=f2;',
+        '      var c2=parseFloat(d2.priceChangePercent)||0;',
+        '      var s2=(c2>=0?"+":"")+c2.toFixed(2)+"% (24h)";',
+        '      var e2=document.getElementById("cp-24h");if(e2){e2.textContent=s2;e2.className="coin-change "+(c2>=0?"coin-up":"coin-dn");}',
+        '      var v2=parseFloat(d2.quoteVolume);var vs2=v2>=1e9?"$"+(v2/1e9).toFixed(2)+"B":"$"+(v2/1e6).toFixed(2)+"M";',
+        '      var ev2=document.getElementById("cp-vol");if(ev2)ev2.textContent=vs2;',
+        '      var h2=parseFloat(d2.highPrice);var l2=parseFloat(d2.lowPrice);',
+        '      var eh2=document.getElementById("cp-high");if(eh2)eh2.textContent=h2>=1000?"$"+h2.toLocaleString("en",{minimumFractionDigits:2,maximumFractionDigits:2}):"$"+h2.toFixed(4);',
+        '      var el3=document.getElementById("cp-low");if(el3)el3.textContent=l2>=1000?"$"+l2.toLocaleString("en",{minimumFractionDigits:2,maximumFractionDigits:2}):"$"+l2.toFixed(4);',
+        '      document.getElementById("cp-updated").textContent="Last updated: "+new Date().toUTCString();',
+        '    }catch(e2){}',
+        '  }',
+        '}',
+        'refreshPrice();setInterval(refreshPrice,30000);',
+        '</script>',
+    ]
+    parts.extend(js)
 
     parts.append(foot_html())
     parts.append('</body></html>')
