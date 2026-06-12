@@ -1895,7 +1895,8 @@ def build_markets_page():
             +'<td class="mkp-name"><strong>'+info[0]+'</strong> <span class="mkp-sym">'+info[1]+'</span></td>'
             +'<td class="mkp-price">'+fmt(price,price<1?4:2)+'</td>'
             +'<td>'+badge(chg)+'</td>'
-            +'<td>—</td><td>—</td>'
+            +'<td>—</td>'
+            +'<td class="mkp-mcap">—</td>'
             +'<td class="mkp-vol">'+fmt(vol)+'</td></tr>';
         }});
         set('crypto-tbody',tbody2||'<tr><td colspan="7" style="text-align:center;padding:20px">No data</td></tr>');
