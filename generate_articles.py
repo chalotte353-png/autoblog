@@ -1470,6 +1470,30 @@ def build_markets_ticker():
 
 # ── BUILD MARKETS PAGE (CNBC-style full data) ─────────────────────────
 def build_markets_page():
+    # Generate daily market commentary via Groq
+    from datetime import datetime, timezone
+    today_str = datetime.now(timezone.utc).strftime("%B %d, %Y")
+    if GROQ_API_KEY:
+        import requests as _req
+        try:
+            _r = _req.post(
+                "https://api.groq.com/openai/v1/chat/completions",
+                headers={"Authorization": "Bearer " + GROQ_API_KEY, "Content-Type": "application/json"},
+                json={"model": "llama-3.3-70b-versatile", "max_tokens": 120, "temperature": 0.6,
+                      "messages": [{"role": "user", "content":
+                          "Write a 2-sentence daily crypto market commentary for " + today_str + ". "
+                          "Cover overall market mood and what traders should watch today. Plain text only, no markdown."}]},
+                timeout=20
+            )
+            _data = _r.json()
+            daily_commentary = _data["choices"][0]["message"]["content"].strip() if "choices" in _data else ""
+        except:
+            daily_commentary = ""
+    else:
+        daily_commentary = ""
+    if not daily_commentary:
+        daily_commentary = "Crypto markets continue to see active trading as investors weigh macroeconomic signals and on-chain data. Watch Bitcoin's key levels for directional cues across the broader altcoin market today."
+
     html = f"""{head_html(
         "Live Markets — Crypto, Forex, Stocks & Commodities | " + SITE_NAME,
         "Real-time cryptocurrency prices, forex rates, market indices, Fear & Greed Index. Bitcoin, Ethereum, EUR/USD, USD/PKR and 50+ markets.",
@@ -1700,6 +1724,13 @@ def build_markets_page():
       </div>
     </div>
 
+    <!-- AI Daily Commentary -->
+    <div style="background:#fff;border:1px solid #eee;border-radius:10px;padding:20px 24px;margin-bottom:24px">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:#888;margin-bottom:10px">🤖 Daily Market Commentary</div>
+      <p id="daily-commentary" style="font-size:15px;line-height:1.8;color:#333;margin:0">{daily_commentary}</p>
+      <p style="font-size:11px;color:#bbb;margin:10px 0 0;font-style:italic">AI-generated. Not financial advice. Updated daily.</p>
+    </div>
+
   </div>
 
   <!-- SIDEBAR -->
@@ -1816,6 +1847,7 @@ def build_markets_page():
         if(!d)return;
         var price=d.PRICE||0;
         var chg=d.CHANGEPCT24HOUR||0;
+        var chg7=d.CHANGEPCT7D||0;
         var vol=d.TOTALVOLUME24HTO||d.VOLUME24HOURTO||0;
         var mcap=d.MKTCAP||0;
         cryptoPrices[c.sym]={{price:price,chg:chg}};
@@ -1825,7 +1857,7 @@ def build_markets_page():
           +'<td class="mkp-name"><strong>'+c.name+'</strong> <span class="mkp-sym">'+c.sym+'</span></td>'
           +'<td class="mkp-price">'+fmt(price,price<1?4:2)+'</td>'
           +'<td>'+badge(chg)+'</td>'
-          +'<td>—</td>'
+          +'<td>'+badge(chg7)+'</td>'
           +'<td class="mkp-mcap">'+fmt(mcap)+'</td>'
           +'<td class="mkp-vol">'+fmt(vol)+'</td>'
           +'</tr>';
