@@ -333,6 +333,38 @@ def build_coin_page(coin, coin_data, articles):
         ]
     })
 
+    # ── WHY IS [COIN] UP/DOWN TODAY — SEO Section ────────────────────
+    why_prompt = (
+        "In exactly 3 bullet points (max 12 words each), explain what likely moved "
+        + name + " (" + sym + ") today. Price: " + price_s + ", 24h change: " + chg24_s
+        + ", High: " + high_s + ", Low: " + low_s + ". "
+        "Focus on macro news, technical levels, or market sentiment. Plain text. No markdown. No intro sentence."
+    )
+    why_text = groq_ask(why_prompt, max_tokens=120, temp=0.5)
+    if not why_text:
+        if chg24 > 3:
+            why_text = "• Strong buying momentum pushed " + name + " above key resistance\n• Positive macro sentiment boosted crypto broadly\n• Trading volume above average signals strong demand"
+        elif chg24 < -3:
+            why_text = "• Profit-taking pressure pulled " + name + " lower today\n• Broader crypto market saw risk-off selling\n• Low volume suggests consolidation phase ahead"
+        else:
+            why_text = "• " + name + " consolidating within tight range today\n• Mixed signals from broader crypto market\n• Traders await next catalyst before committing direction"
+    why_lines = [l.strip().lstrip("•-– ").strip() for l in why_text.replace("\\n","\n").split("\n") if l.strip()][:3]
+    why_items = "".join(
+        '<li style="padding:9px 0;border-bottom:1px solid #f5f5f5;font-size:15px;color:#333;line-height:1.6">'
+        '<span style="color:' + color + ';font-weight:700;margin-right:8px">&#10148;</span>' + l + '</li>'
+        for l in why_lines
+    )
+    direction = "Up" if chg24 >= 0 else "Down"
+    why_box = (
+        '<div style="max-width:1200px;margin:0 auto 28px;padding:0 20px">'
+        '<div style="background:#fff;border:1px solid #eee;border-radius:10px;padding:22px 26px">'
+        '<h2 style="font-size:18px;font-weight:700;color:var(--dark);margin:0 0 14px;border-left:4px solid ' + color + ';padding-left:12px">'
+        '📰 Why Is ' + name + ' ' + direction + ' Today?</h2>'
+        '<ul style="list-style:none;margin:0;padding:0">' + why_items + '</ul>'
+        '<p style="font-size:11px;color:#bbb;margin:12px 0 0;font-style:italic">AI-generated summary. Not financial advice.</p>'
+        '</div></div>'
+    )
+
     # ── ARTICLES HTML ────────────────────────────────────────────────
     if articles:
         cards = []
@@ -363,15 +395,6 @@ def build_coin_page(coin, coin_data, articles):
         )
 
     # ── AI ANALYSIS BOX ──────────────────────────────────────────────
-    if not analysis:
-        analysis = (
-            name + " (" + sym + ") is currently trading at " + price_s + ", " + chg24_s + " over the past 24 hours. "
-            "The 24-hour trading range spans from " + low_s + " to " + high_s + ", with a market capitalization of " + mcap_s + ". "
-            "Trading volume over the last 24 hours stands at " + vol_s + ". "
-            "Investors should monitor key support and resistance levels and consider broader market sentiment before making any decisions. "
-            "Past performance is not indicative of future results."
-        )
-
     if analysis:
         ai_box = (
             '<div style="max-width:1200px;margin:0 auto 32px;padding:0 20px">'
@@ -385,7 +408,22 @@ def build_coin_page(coin, coin_data, articles):
             '</div></div>'
         )
     else:
-        ai_box = ""
+        analysis = (
+            name + " (" + sym + ") is currently trading at " + price_s + ", " + chg24_s + " over the past 24 hours. "
+            "The 24-hour range spans from " + low_s + " to " + high_s + ", with a market cap of " + mcap_s + ". "
+            "24-hour trading volume stands at " + vol_s + ". Monitor key support and resistance levels carefully."
+        )
+        ai_box = (
+            '<div style="max-width:1200px;margin:0 auto 32px;padding:0 20px">'
+            '<div style="background:linear-gradient(135deg,#fff8f8,#fff);border:1px solid #f0d0d0;border-left:5px solid '+color+';border-radius:10px;padding:24px 28px">'
+            '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">'
+            '<span style="font-size:20px">🤖</span>'
+            '<div><div style="font-size:13px;font-weight:700;color:'+color+';text-transform:uppercase;letter-spacing:0.5px">AI Market Analysis</div>'
+            '<div style="font-size:11px;color:#aaa">Updated '+now_s+' &middot; Markets News Today AI</div></div></div>'
+            '<p style="font-size:15px;line-height:1.8;color:#333;margin:0">'+analysis+'</p>'
+            '<p style="font-size:11px;color:#bbb;margin:12px 0 0;font-style:italic">AI-generated for informational purposes only. Not financial advice.</p>'
+            '</div></div>'
+        )
 
     # ── ASSEMBLE PAGE ────────────────────────────────────────────────
     parts = []
@@ -510,39 +548,8 @@ def build_coin_page(coin, coin_data, articles):
     if ai_box:
         parts.append(ai_box)
 
-    # "What Moved Today" — SEO feature
-    moved_prompt = (
-        "In 3 bullet points (max 12 words each), explain what moved " + name + " (" + sym + ") today. "
-        "Price: " + price_s + ", 24h change: " + chg24_s + ", High: " + high_s + ", Low: " + low_s + ". "
-        "Focus on likely reasons: macro news, technical levels, market sentiment. Plain text, no markdown, no intro."
-    )
-    moved_text = groq_ask(moved_prompt, max_tokens=120, temp=0.5)
-    if not moved_text:
-        if chg24 > 3:
-            moved_text = "• Strong buying momentum pushed " + name + " above key resistance\n• Positive market sentiment boosted crypto broadly\n• Trading volume above average signaling strong interest"
-        elif chg24 < -3:
-            moved_text = "• Profit-taking pressure pulled " + name + " lower today\n• Broader crypto market saw risk-off selling\n• Low volume suggests consolidation phase"
-        else:
-            moved_text = "• " + name + " consolidating within tight range today\n• Mixed signals from broader crypto market\n• Traders await next catalyst before committing direction"
-
-    moved_lines = [l.strip().lstrip("•-").strip() for l in moved_text.split("\n") if l.strip()][:3]
-    moved_html_items = "".join(
-        '<li style="padding:8px 0;border-bottom:1px solid #f5f5f5;font-size:15px;color:#333;line-height:1.6">'
-        '<span style="color:' + color + ';font-weight:700;margin-right:8px">&#10148;</span>' + l + '</li>'
-        for l in moved_lines
-    )
-    moved_box = (
-        '<div style="max-width:1200px;margin:0 auto 32px;padding:0 20px">'
-        '<div style="background:#fff;border:1px solid #eee;border-radius:10px;padding:24px 28px">'
-        '<h2 style="font-size:18px;font-weight:700;color:var(--dark);margin-bottom:16px;border-left:4px solid ' + color + ';padding-left:12px">'
-        '📰 Why Is ' + name + ' ' + ('Up' if chg24 >= 0 else 'Down') + ' Today?</h2>'
-        '<ul style="list-style:none;margin:0;padding:0">' + moved_html_items + '</ul>'
-        '<p style="font-size:11px;color:#bbb;margin:14px 0 0;font-style:italic">AI-generated summary. Not financial advice.</p>'
-        '</div></div>'
-    )
-
-    # What Moved Today box
-    parts.append(moved_box)
+    # Why Is Coin Up/Down Today
+    parts.append(why_box)
 
     # Articles
     parts.append(art_html)
@@ -571,7 +578,7 @@ def build_coin_page(coin, coin_data, articles):
         '    var ev=document.getElementById("cp-vol");if(ev)ev.textContent=vo;',
         '    var eh=document.getElementById("cp-high");if(eh)eh.textContent=hi;',
         '    var el2=document.getElementById("cp-low");if(el2)el2.textContent=lo;',
-        '    var sup=d.SUPPLY||0;if(sup>0){var es=document.getElementById("cp-supply");if(es)es.textContent=sup>=1e9?(sup/1e9).toFixed(2)+"B Coins":sup>=1e6?(sup/1e6).toFixed(2)+"M Coins":sup.toLocaleString()+" Coins";}',
+        '    var sup=d.SUPPLY||0;var es=document.getElementById("cp-supply");if(es&&sup>0)es.textContent=sup>=1e9?(sup/1e9).toFixed(2)+"B":sup>=1e6?(sup/1e6).toFixed(2)+"M":sup.toLocaleString();',
         '    document.getElementById("cp-updated").textContent="Last updated: "+new Date().toUTCString();',
         '  }catch(e){',
         '    try{',
