@@ -363,6 +363,15 @@ def build_coin_page(coin, coin_data, articles):
         )
 
     # ── AI ANALYSIS BOX ──────────────────────────────────────────────
+    if not analysis:
+        analysis = (
+            name + " (" + sym + ") is currently trading at " + price_s + ", " + chg24_s + " over the past 24 hours. "
+            "The 24-hour trading range spans from " + low_s + " to " + high_s + ", with a market capitalization of " + mcap_s + ". "
+            "Trading volume over the last 24 hours stands at " + vol_s + ". "
+            "Investors should monitor key support and resistance levels and consider broader market sentiment before making any decisions. "
+            "Past performance is not indicative of future results."
+        )
+
     if analysis:
         ai_box = (
             '<div style="max-width:1200px;margin:0 auto 32px;padding:0 20px">'
@@ -446,9 +455,9 @@ def build_coin_page(coin, coin_data, articles):
     parts.append('<div class="coin-stats-grid">')
     parts.append('<div class="coin-stat"><div class="coin-stat-label">Market Cap</div><div class="coin-stat-value" id="cp-mcap">'+mcap_s+'</div></div>')
     parts.append('<div class="coin-stat"><div class="coin-stat-label">24h Volume</div><div class="coin-stat-value" id="cp-vol">'+vol_s+'</div></div>')
-    parts.append('<div class="coin-stat"><div class="coin-stat-label">24h High</div><div class="coin-stat-value">'+high_s+'</div></div>')
-    parts.append('<div class="coin-stat"><div class="coin-stat-label">24h Low</div><div class="coin-stat-value">'+low_s+'</div></div>')
-    parts.append('<div class="coin-stat"><div class="coin-stat-label">Circulating Supply</div><div class="coin-stat-value">'+supply_s+'</div></div>')
+    parts.append('<div class="coin-stat"><div class="coin-stat-label">24h High</div><div class="coin-stat-value" id="cp-high">'+high_s+'</div></div>')
+    parts.append('<div class="coin-stat"><div class="coin-stat-label">24h Low</div><div class="coin-stat-value" id="cp-low">'+low_s+'</div></div>')
+    parts.append('<div class="coin-stat"><div class="coin-stat-label">Circulating Supply</div><div class="coin-stat-value" id="cp-supply">'+supply_s+'</div></div>')
     parts.append('</div>')
     parts.append('</div></div>')
 
@@ -501,6 +510,40 @@ def build_coin_page(coin, coin_data, articles):
     if ai_box:
         parts.append(ai_box)
 
+    # "What Moved Today" — SEO feature
+    moved_prompt = (
+        "In 3 bullet points (max 12 words each), explain what moved " + name + " (" + sym + ") today. "
+        "Price: " + price_s + ", 24h change: " + chg24_s + ", High: " + high_s + ", Low: " + low_s + ". "
+        "Focus on likely reasons: macro news, technical levels, market sentiment. Plain text, no markdown, no intro."
+    )
+    moved_text = groq_ask(moved_prompt, max_tokens=120, temp=0.5)
+    if not moved_text:
+        if chg24 > 3:
+            moved_text = "• Strong buying momentum pushed " + name + " above key resistance\n• Positive market sentiment boosted crypto broadly\n• Trading volume above average signaling strong interest"
+        elif chg24 < -3:
+            moved_text = "• Profit-taking pressure pulled " + name + " lower today\n• Broader crypto market saw risk-off selling\n• Low volume suggests consolidation phase"
+        else:
+            moved_text = "• " + name + " consolidating within tight range today\n• Mixed signals from broader crypto market\n• Traders await next catalyst before committing direction"
+
+    moved_lines = [l.strip().lstrip("•-").strip() for l in moved_text.split("\n") if l.strip()][:3]
+    moved_html_items = "".join(
+        '<li style="padding:8px 0;border-bottom:1px solid #f5f5f5;font-size:15px;color:#333;line-height:1.6">'
+        '<span style="color:' + color + ';font-weight:700;margin-right:8px">&#10148;</span>' + l + '</li>'
+        for l in moved_lines
+    )
+    moved_box = (
+        '<div style="max-width:1200px;margin:0 auto 32px;padding:0 20px">'
+        '<div style="background:#fff;border:1px solid #eee;border-radius:10px;padding:24px 28px">'
+        '<h2 style="font-size:18px;font-weight:700;color:var(--dark);margin-bottom:16px;border-left:4px solid ' + color + ';padding-left:12px">'
+        '📰 Why Is ' + name + ' ' + ('Up' if chg24 >= 0 else 'Down') + ' Today?</h2>'
+        '<ul style="list-style:none;margin:0;padding:0">' + moved_html_items + '</ul>'
+        '<p style="font-size:11px;color:#bbb;margin:14px 0 0;font-style:italic">AI-generated summary. Not financial advice.</p>'
+        '</div></div>'
+    )
+
+    # What Moved Today box
+    parts.append(moved_box)
+
     # Articles
     parts.append(art_html)
 
@@ -528,6 +571,7 @@ def build_coin_page(coin, coin_data, articles):
         '    var ev=document.getElementById("cp-vol");if(ev)ev.textContent=vo;',
         '    var eh=document.getElementById("cp-high");if(eh)eh.textContent=hi;',
         '    var el2=document.getElementById("cp-low");if(el2)el2.textContent=lo;',
+        '    var sup=d.SUPPLY||0;if(sup>0){var es=document.getElementById("cp-supply");if(es)es.textContent=sup>=1e9?(sup/1e9).toFixed(2)+"B Coins":sup>=1e6?(sup/1e6).toFixed(2)+"M Coins":sup.toLocaleString()+" Coins";}',
         '    document.getElementById("cp-updated").textContent="Last updated: "+new Date().toUTCString();',
         '  }catch(e){',
         '    try{',
