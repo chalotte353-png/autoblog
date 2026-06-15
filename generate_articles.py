@@ -1470,29 +1470,29 @@ def build_markets_ticker():
 
 # ── BUILD MARKETS PAGE (CNBC-style full data) ─────────────────────────
 def build_markets_page():
-    # Generate daily market commentary via Groq
+    # ── Generate daily market commentary ──
     from datetime import datetime, timezone
-    today_str = datetime.now(timezone.utc).strftime("%B %d, %Y")
-    if GROQ_API_KEY:
-        import requests as _req
+    _today = datetime.now(timezone.utc).strftime("%B %d, %Y")
+    _commentary = ""
+    if GROQ_KEYS:
         try:
-            _r = _req.post(
+            _resp = requests.post(
                 "https://api.groq.com/openai/v1/chat/completions",
-                headers={"Authorization": "Bearer " + GROQ_API_KEY, "Content-Type": "application/json"},
-                json={"model": "llama-3.3-70b-versatile", "max_tokens": 120, "temperature": 0.6,
+                headers={"Authorization": "Bearer " + GROQ_KEYS[0], "Content-Type": "application/json"},
+                json={"model": "llama-3.3-70b-versatile", "max_tokens": 100, "temperature": 0.6,
                       "messages": [{"role": "user", "content":
-                          "Write a 2-sentence daily crypto market commentary for " + today_str + ". "
-                          "Cover overall market mood and what traders should watch today. Plain text only, no markdown."}]},
+                          "Write 2 sentences of daily crypto market commentary for " + _today + ". "
+                          "Cover market mood and what traders should watch. Plain text only."}]},
                 timeout=20
             )
-            _data = _r.json()
-            daily_commentary = _data["choices"][0]["message"]["content"].strip() if "choices" in _data else ""
+            _d = _resp.json()
+            if "choices" in _d:
+                _commentary = _d["choices"][0]["message"]["content"].strip()
         except:
-            daily_commentary = ""
-    else:
-        daily_commentary = ""
-    if not daily_commentary:
-        daily_commentary = "Crypto markets continue to see active trading as investors weigh macroeconomic signals and on-chain data. Watch Bitcoin's key levels for directional cues across the broader altcoin market today."
+            pass
+    if not _commentary:
+        _commentary = ("Crypto markets remain active as investors monitor macroeconomic signals and on-chain data. "
+                       "Watch Bitcoin key levels closely for directional cues across the broader altcoin market.")
 
     html = f"""{head_html(
         "Live Markets — Crypto, Forex, Stocks & Commodities | " + SITE_NAME,
@@ -1724,11 +1724,13 @@ def build_markets_page():
       </div>
     </div>
 
-    <!-- AI Daily Commentary -->
-    <div style="background:#fff;border:1px solid #eee;border-radius:10px;padding:20px 24px;margin-bottom:24px">
-      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:#888;margin-bottom:10px">🤖 Daily Market Commentary</div>
-      <p id="daily-commentary" style="font-size:15px;line-height:1.8;color:#333;margin:0">{daily_commentary}</p>
-      <p style="font-size:11px;color:#bbb;margin:10px 0 0;font-style:italic">AI-generated. Not financial advice. Updated daily.</p>
+  </div>
+
+    <!-- Daily AI Commentary -->
+    <div style="background:#fff;border:1px solid #eee;border-radius:10px;padding:20px 24px;margin:0 0 24px">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:#888;margin-bottom:8px">🤖 Today's Market Commentary</div>
+      <p style="font-size:15px;line-height:1.8;color:#333;margin:0">{_commentary}</p>
+      <p style="font-size:11px;color:#bbb;margin:8px 0 0;font-style:italic">AI-generated. Not financial advice.</p>
     </div>
 
   </div>
