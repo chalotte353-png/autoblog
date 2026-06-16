@@ -347,7 +347,7 @@
   <!-- Daily AI Commentary -->
   <div style="grid-column:1/-1;background:#fff;border:1px solid #eee;border-radius:10px;padding:18px 22px;margin-bottom:4px">
     <div style="font-size:10px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:#888;border-bottom:2px solid #0d0d0d;padding-bottom:8px;margin-bottom:10px">🤖 Today's Market Commentary</div>
-    <p style="font-size:14px;line-height:1.8;color:#333;margin:0">The crypto market is experiencing a cautious mood today as traders await the outcome of the upcoming Federal Reserve meeting, which may influence the direction of Bitcoin and other major cryptocurrencies. Traders should keep a close eye on the price movements of Ethereum and other altcoins, as any significant fluctuations could be a key indicator of the overall market trend in the coming days.</p>
+    <p style="font-size:14px;line-height:1.8;color:#333;margin:0">The crypto market is experiencing a cautious mood today as traders await the upcoming monetary policy decisions from major central banks, which could significantly impact market volatility. Traders should keep a close eye on Bitcoin's price movement around the $30,000 level, as a break above or below this key resistance could set the tone for the rest of the week.</p>
     <p style="font-size:11px;color:#bbb;margin:8px 0 0;font-style:italic">AI-generated. Not financial advice.</p>
   </div>
 
@@ -369,15 +369,29 @@
       <div class="mkp-conv">
         <input type="number" id="conv-amt" value="1" class="mkp-conv-input" oninput="convert()">
         <select id="conv-from" class="mkp-conv-sel" onchange="convert()">
-          <option value="usd">USD</option><option value="eur">EUR</option>
-          <option value="gbp">GBP</option><option value="pkr">PKR</option>
-          <option value="inr">INR</option><option value="jpy">JPY</option>
+          <optgroup label="Crypto">
+            <option value="BTC">BTC</option><option value="ETH">ETH</option>
+            <option value="SOL">SOL</option><option value="XRP">XRP</option>
+            <option value="BNB">BNB</option><option value="DOGE">DOGE</option>
+          </optgroup>
+          <optgroup label="Fiat">
+            <option value="usd">USD</option><option value="eur">EUR</option>
+            <option value="gbp">GBP</option><option value="pkr">PKR</option>
+            <option value="inr">INR</option><option value="jpy">JPY</option>
+          </optgroup>
         </select>
         <div class="mkp-conv-arrow">→</div>
         <select id="conv-to" class="mkp-conv-sel" onchange="convert()">
-          <option value="pkr">PKR</option><option value="usd">USD</option>
-          <option value="eur">EUR</option><option value="gbp">GBP</option>
-          <option value="inr">INR</option><option value="jpy">JPY</option>
+          <optgroup label="Fiat">
+            <option value="usd">USD</option><option value="pkr">PKR</option>
+            <option value="eur">EUR</option><option value="gbp">GBP</option>
+            <option value="inr">INR</option><option value="jpy">JPY</option>
+          </optgroup>
+          <optgroup label="Crypto">
+            <option value="BTC">BTC</option><option value="ETH">ETH</option>
+            <option value="SOL">SOL</option><option value="XRP">XRP</option>
+            <option value="BNB">BNB</option><option value="DOGE">DOGE</option>
+          </optgroup>
         </select>
         <div class="mkp-conv-result" id="conv-result">—</div>
       </div>
@@ -447,13 +461,17 @@
       var batch1=['BTC','ETH','BNB','SOL','XRP','ADA','DOGE','AVAX','DOT','MATIC'];
       var batch2=['LINK','UNI','LTC','ATOM','ETC','XLM','TRX','NEAR','ALGO','FTM'];
 
-      var r1=await fetch('https://min-api.cryptocompare.com/data/pricemultifull?fsyms='+batch1.join(',')+'&tsyms=USD');
-      var res1=await r1.json();
-      var raw1=res1.RAW||{};
-
-      var r2=await fetch('https://min-api.cryptocompare.com/data/pricemultifull?fsyms='+batch2.join(',')+'&tsyms=USD');
-      var res2=await r2.json();
-      var raw2=res2.RAW||{};
+      var raw1={}, raw2={};
+      try{
+        var r1=await fetch('https://min-api.cryptocompare.com/data/pricemultifull?fsyms='+batch1.join(',')+'&tsyms=USD');
+        var res1=await r1.json();
+        raw1=res1.RAW||{};
+      }catch(eb1){}
+      try{
+        var r2=await fetch('https://min-api.cryptocompare.com/data/pricemultifull?fsyms='+batch2.join(',')+'&tsyms=USD');
+        var res2=await r2.json();
+        raw2=res2.RAW||{};
+      }catch(eb2){}
 
       var raw=Object.assign({},raw1,raw2);
       if(!Object.keys(raw).length)throw new Error('no data');
@@ -526,6 +544,7 @@
         tHtml+='<div class="mkp-trend-item"><span class="mkp-trend-rank">'+(i+1)+'</span><span>'+c.name+' <small>'+c.short+'</small></span><span class="mkp-trend-score">'+(c.chg>=0?'🔥':'❄️')+'</span></div>';
       });
       set('trending-list',tHtml);
+      if(typeof window.convert==='function')window.convert();
 
     }catch(e){
       // Fallback to Binance API
@@ -535,12 +554,14 @@
         var db=await rb.json();
         var nameMap={'BTCUSDT':['Bitcoin','BTC'],'ETHUSDT':['Ethereum','ETH'],'SOLUSDT':['Solana','SOL'],'XRPUSDT':['XRP','XRP'],'BNBUSDT':['BNB','BNB'],'DOGEUSDT':['Dogecoin','DOGE'],'ADAUSDT':['Cardano','ADA'],'AVAXUSDT':['Avalanche','AVAX'],'LINKUSDT':['Chainlink','LINK'],'DOTUSDT':['Polkadot','DOT']};
         var tbody2='';
+        var coins_data2=[];
         db.forEach(function(d,i){
           var info=nameMap[d.symbol];if(!info)return;
           var price=parseFloat(d.lastPrice)||0;
           var chg=parseFloat(d.priceChangePercent)||0;
           var vol=parseFloat(d.quoteVolume)||0;
           cryptoPrices[info[1]]={price:price,chg:chg};
+          coins_data2.push({name:info[0],short:info[1],price:price,chg:chg,vol:vol,mcap:0});
           tbody2+='<tr><td class="mkp-rank">'+(i+1)+'</td>'
             +'<td class="mkp-name"><strong>'+info[0]+'</strong> <span class="mkp-sym">'+info[1]+'</span></td>'
             +'<td class="mkp-price">'+fmt(price,price<1?4:2)+'</td>'
@@ -550,6 +571,44 @@
             +'<td class="mkp-vol">'+fmt(vol)+'</td></tr>';
         });
         set('crypto-tbody',tbody2||'<tr><td colspan="7" style="text-align:center;padding:20px">No data</td></tr>');
+
+        // Overview cards (Binance fallback path)
+        var btc2=cryptoPrices['BTC'],eth2=cryptoPrices['ETH'];
+        if(btc2){set('ov-btc-p',fmt(btc2.price));set('ov-btc-c',badge(btc2.chg));}
+        if(eth2){set('ov-eth-p',fmt(eth2.price));set('ov-eth-c',badge(eth2.chg));}
+        window.updatePickedCoin=function(){
+          var sym=document.getElementById('ov-coin-sel').value;
+          var d=cryptoPrices[sym];
+          if(!d)return;
+          document.getElementById('ov-picked-p').textContent=fmt(d.price,d.price<1?4:2);
+          document.getElementById('ov-picked-c').innerHTML=badge(d.chg);
+        };
+        updatePickedCoin();
+
+        var totalVol2=coins_data2.reduce(function(s,c){return s+(c.vol||0);},0);
+        var btcMcap2=btc2?btc2.price*19800000:0;
+        set('ov-vol',fmt(totalVol2));set('ov-vol2',fmt(totalVol2));
+        set('ov-mcap',fmt(btcMcap2*4));set('ov-mcap2',fmt(btcMcap2*4));
+        setText('idx-active','20,000+');
+
+        // Gainers & Losers (Binance fallback path)
+        var sorted2=[...coins_data2].sort(function(a,b){return b.chg-a.chg;});
+        var gHtml2='',lHtml2='';
+        sorted2.slice(0,5).forEach(function(c){
+          gHtml2+='<div class="mkp-gl-item"><span>'+c.short+' <small>'+c.name+'</small></span>'+badge(c.chg)+'</div>';
+        });
+        sorted2.slice(-5).reverse().forEach(function(c){
+          lHtml2+='<div class="mkp-gl-item"><span>'+c.short+' <small>'+c.name+'</small></span>'+badge(c.chg)+'</div>';
+        });
+        set('gainers-list',gHtml2);set('losers-list',lHtml2);
+
+        // Trending (Binance fallback path)
+        var trending2=[...coins_data2].sort(function(a,b){return Math.abs(b.chg)-Math.abs(a.chg);}).slice(0,7);
+        var tHtml2='';
+        trending2.forEach(function(c,i){
+          tHtml2+='<div class="mkp-trend-item"><span class="mkp-trend-rank">'+(i+1)+'</span><span>'+c.name+' <small>'+c.short+'</small></span><span class="mkp-trend-score">'+(c.chg>=0?'🔥':'❄️')+'</span></div>';
+        });
+        set('trending-list',tHtml2);
       }catch(e2){set('crypto-tbody','<tr><td colspan="7" style="text-align:center;padding:20px;color:#999">Refreshing data...</td></tr>');}
     }
   }
@@ -665,19 +724,47 @@
   }
 
   /* ── CONVERTER ── */
+  var CRYPTO_SYMS=['BTC','ETH','SOL','XRP','BNB','DOGE'];
+  function toUsd(code,amt){
+    if(CRYPTO_SYMS.indexOf(code)!==-1){
+      var cp=cryptoPrices[code];
+      if(!cp)return null;
+      return amt*cp.price;
+    }
+    var c=code.toLowerCase();
+    if(c==='usd')return amt;
+    if(c==='eur')return amt*fxRates.EUR;
+    if(c==='gbp')return amt*fxRates.GBP;
+    if(c==='jpy')return amt/fxRates.JPY;
+    var r=fxRates[code.toUpperCase()];
+    return r?amt/r:null;
+  }
+  function fromUsd(code,usdAmt){
+    if(CRYPTO_SYMS.indexOf(code)!==-1){
+      var cp=cryptoPrices[code];
+      if(!cp||!cp.price)return null;
+      return usdAmt/cp.price;
+    }
+    var c=code.toLowerCase();
+    if(c==='usd')return usdAmt;
+    if(c==='eur')return usdAmt/fxRates.EUR;
+    if(c==='gbp')return usdAmt/fxRates.GBP;
+    if(c==='jpy')return usdAmt*fxRates.JPY;
+    var r=fxRates[code.toUpperCase()];
+    return r?usdAmt*r:null;
+  }
   window.convert=function(){
     var amt=parseFloat(document.getElementById('conv-amt').value)||1;
     var from=document.getElementById('conv-from').value;
     var to=document.getElementById('conv-to').value;
     if(!fxRates.PKR){set('conv-result','Loading...');return;}
-    var rates=Object.assign({},fxRates,{usd:1});
-    var fromRate=from==='usd'?1:from==='eur'?(1/fxRates.EUR):from==='gbp'?(1/fxRates.GBP):from==='jpy'?(1/fxRates.JPY):(1/(fxRates[from.toUpperCase()]||1));
-    var toRate=to==='usd'?1:fxRates[to.toUpperCase()]||1;
-    if(to==='eur')toRate=1/fxRates.EUR;
-    if(to==='gbp')toRate=1/fxRates.GBP;
-    var result=amt*fromRate*toRate;
-    var label=to.toUpperCase();
-    set('conv-result','<strong>'+(result>=1?result.toFixed(2):result.toFixed(4))+' '+label+'</strong>');
+    var usdVal=toUsd(from,amt);
+    if(usdVal===null){set('conv-result','Loading price...');return;}
+    var result=fromUsd(to,usdVal);
+    if(result===null){set('conv-result','Loading price...');return;}
+    var label=CRYPTO_SYMS.indexOf(to)!==-1?to:to.toUpperCase();
+    var decimals=result>=1?2:(result>=0.01?4:8);
+    set('conv-result','<strong>'+result.toFixed(decimals)+' '+label+'</strong>');
   };
 
   /* ── TIMESTAMP & INIT ── */
