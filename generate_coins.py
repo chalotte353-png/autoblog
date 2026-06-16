@@ -126,13 +126,22 @@ def get_weekly_digest(coins_data, all_coins):
     return groq_ask(prompt, max_tokens=300, temp=0.7)
 
 # ── DATA FETCH ───────────────────────────────────────────────────────
+# CoinGecko ID map (free API, no key needed)
+COINGECKO_IDS = {
+    "BTC":"bitcoin","ETH":"ethereum","SOL":"solana","XRP":"ripple",
+    "BNB":"binancecoin","DOGE":"dogecoin","ADA":"cardano",
+    "AVAX":"avalanche-2","LINK":"chainlink","DOT":"polkadot",
+}
+
 def fetch_coins():
     syms = ",".join(c["sym"] for c in COINS)
+    out = {}
+
+    # ── Step 1: CryptoCompare for price/high/low/vol (fast, CORS-friendly) ──
     try:
         r = requests.get("https://min-api.cryptocompare.com/data/pricemultifull",
                          params={"fsyms":syms,"tsyms":"USD"}, timeout=10)
         raw = r.json().get("RAW",{})
-        out = {}
         for sym, info in raw.items():
             u = info.get("USD",{})
             out[sym] = {
@@ -145,10 +154,48 @@ def fetch_coins():
                 "low24h":   u.get("LOW24HOUR",0),
                 "supply":   u.get("SUPPLY",0),
             }
-        return out
     except Exception as e:
-        print("  Fetch error:", e)
-        return {}
+        print("  CryptoCompare fetch error:", e)
+
+    # ── Step 2: CoinGecko for market_cap + circulating_supply + 7d (free, no key) ──
+    try:
+        cg_ids = ",".join(COINGECKO_IDS.values())
+        cg = requests.get(
+            "https://api.coingecko.com/api/v3/coins/markets",
+            params={
+                "vs_currency":"usd",
+                "ids": cg_ids,
+                "order":"market_cap_desc",
+                "per_page":"20",
+                "price_change_percentage":"7d",
+            },
+            headers={"Accept":"application/json"},
+            timeout=15
+        )
+        cg_data = cg.json()
+        # Build reverse map: coingecko_id -> sym
+        rev = {v:k for k,v in COINGECKO_IDS.items()}
+        for item in cg_data:
+            sym = rev.get(item.get("id",""), "")
+            if not sym:
+                continue
+            if sym not in out:
+                out[sym] = {"price":0,"change24h":0,"change7d":0,"marketcap":0,"volume24h":0,"high24h":0,"low24h":0,"supply":0}
+            # Override with CoinGecko data (more reliable)
+            out[sym]["marketcap"] = item.get("market_cap") or out[sym]["marketcap"]
+            out[sym]["supply"]    = item.get("circulating_supply") or out[sym]["supply"]
+            # Use CoinGecko 7d if CryptoCompare gave 0
+            cg7 = item.get("price_change_percentage_7d_in_currency") or 0
+            if out[sym]["change7d"] == 0 and cg7:
+                out[sym]["change7d"] = cg7
+            # Use CoinGecko price if CryptoCompare gave 0
+            if out[sym]["price"] == 0:
+                out[sym]["price"] = item.get("current_price") or 0
+        print("  CoinGecko: market cap + supply + 7d updated for", len(cg_data), "coins")
+    except Exception as e:
+        print("  CoinGecko fetch error:", e)
+
+    return out
 
 def get_articles(tag, posts_index):
     arts = [p for p in posts_index if p.get("coin_tag","") == tag]
@@ -333,21 +380,22 @@ def build_coin_page(coin, coin_data, articles):
         ]
     })
 
-    # ── WHY IS [COIN] UP/DOWN TODAY — SEO Section ────────────────────
+    # ── WHY IS [COIN] UP/DOWN TODAY — SEO feature ────────────────────
     why_prompt = (
         "In exactly 3 bullet points (max 12 words each), explain what likely moved "
-        + name + " (" + sym + ") today. Price: " + price_s + ", 24h change: " + chg24_s
+        + name + " (" + sym + ") today. "
+        "Price: " + price_s + ", 24h change: " + chg24_s
         + ", High: " + high_s + ", Low: " + low_s + ". "
-        "Focus on macro news, technical levels, or market sentiment. Plain text. No markdown. No intro sentence."
+        "Focus on macro news, technical levels, or market sentiment. Plain text only. No intro sentence."
     )
     why_text = groq_ask(why_prompt, max_tokens=120, temp=0.5)
     if not why_text:
         if chg24 > 3:
-            why_text = "• Strong buying momentum pushed " + name + " above key resistance\n• Positive macro sentiment boosted crypto broadly\n• Trading volume above average signals strong demand"
+            why_text = "Strong buying momentum pushed " + name + " above key resistance.\nPositive macro sentiment boosted crypto broadly.\nTrading volume above average signals strong demand."
         elif chg24 < -3:
-            why_text = "• Profit-taking pressure pulled " + name + " lower today\n• Broader crypto market saw risk-off selling\n• Low volume suggests consolidation phase ahead"
+            why_text = "Profit-taking pressure pulled " + name + " lower today.\nBroader crypto market saw risk-off selling.\nLow volume suggests consolidation phase ahead."
         else:
-            why_text = "• " + name + " consolidating within tight range today\n• Mixed signals from broader crypto market\n• Traders await next catalyst before committing direction"
+            why_text = name + " consolidating within tight range today.\nMixed signals from broader crypto market.\nTraders await next catalyst before committing direction."
     why_lines = [l.strip().lstrip("•-– ").strip() for l in why_text.replace("\\n","\n").split("\n") if l.strip()][:3]
     why_items = "".join(
         '<li style="padding:9px 0;border-bottom:1px solid #f5f5f5;font-size:15px;color:#333;line-height:1.6">'
@@ -409,9 +457,10 @@ def build_coin_page(coin, coin_data, articles):
         )
     else:
         analysis = (
-            name + " (" + sym + ") is currently trading at " + price_s + ", " + chg24_s + " over the past 24 hours. "
-            "The 24-hour range spans from " + low_s + " to " + high_s + ", with a market cap of " + mcap_s + ". "
-            "24-hour trading volume stands at " + vol_s + ". Monitor key support and resistance levels carefully."
+            name + " (" + sym + ") is currently trading at " + price_s + ", " + chg24_s + " in the last 24 hours. "
+            "The 24-hour trading range spans from " + low_s + " to " + high_s + ", "
+            "with a market capitalization of " + mcap_s + ". 24-hour volume is " + vol_s + ". "
+            "Monitor key support and resistance levels and broader market sentiment before making any decisions."
         )
         ai_box = (
             '<div style="max-width:1200px;margin:0 auto 32px;padding:0 20px">'
