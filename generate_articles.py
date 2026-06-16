@@ -2168,7 +2168,7 @@ def build_homepage(posts):
         for p in [x for x in sp if x.get("image_url") and x["slug"] != "index"][:7]
     )
     sw_cats = "".join(
-        f'<a href="category-{c.lower()}.html" class="sw-cat"><span>{c}</span><span>&rarr;</span></a>'
+        f'<a href="{c.lower().replace(" ", "-")}.html" class="sw-cat"><span>{c}</span><span>&rarr;</span></a>'
         for c in CATEGORIES
     )
 
@@ -2229,7 +2229,7 @@ def build_categories(posts):
 </a>"""
         empty = '<div class="empty-state">No articles yet. Check back soon!</div>' if not cp else ""
         sw_cats = "".join(
-            f'<a href="category-{c.lower()}.html" class="sw-cat{"" if c!=cat else ""}" style="{"color:var(--red)" if c==cat else ""}"><span>{c}</span><span>&rarr;</span></a>'
+            f'<a href="{c.lower().replace(" ", "-")}.html" class="sw-cat{"" if c!=cat else ""}" style="{"color:var(--red)" if c==cat else ""}"><span>{c}</span><span>&rarr;</span></a>'
             for c in CATEGORIES
         )
         html = f"""{head_html(cat + " News | " + SITE_NAME,
