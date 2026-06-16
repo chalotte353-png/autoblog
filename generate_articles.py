@@ -948,12 +948,12 @@ def foot_html(prefix=""):
 <div class="footer-btm"><div class="container">&copy; {y} Markets News Today. All rights reserved.</div></div>
 </footer>"""
 
-def head_html(title, desc, canonical, image="", prefix="", og_type="article"):
+def head_html(title, desc, canonical, image="", prefix="", og_type="article", robots="index,follow"):
     return f"""<!DOCTYPE html><html lang="en"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{esc(title)}</title>
 <meta name="description" content="{esc(desc)}">
-<meta name="robots" content="index,follow">
+<meta name="robots" content="{robots}">
 <link rel="canonical" href="{canonical}">
 <link rel="icon" href="{prefix}favicon.ico" type="image/x-icon">
 <link rel="apple-touch-icon" href="{prefix}favicon.png">
@@ -2279,7 +2279,7 @@ def build_authors(posts):
             "url":f"{SITE_URL}/authors/{aid}.html",
             "worksFor":{"@type":"Organization","name":SITE_NAME}})
         html = f"""{head_html(author["name"] + " — " + author["title"] + " | " + SITE_NAME,
-            author["bio"], SITE_URL + "/authors/" + aid + ".html", author["avatar"], "../")}
+            author["bio"], SITE_URL + "/authors/" + aid + ".html", author["avatar"], "../", robots="noindex,follow")}
 <script type="application/ld+json">{schema}</script>
 {nav_html("../")}
 <div class="container author-profile">
