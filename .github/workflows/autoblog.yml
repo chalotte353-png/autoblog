@@ -1,8 +1,9 @@
 name: AutoBlog Generator
 
 on:
+  # schedule disabled — run manually
   # schedule:
-  #   - cron: "0 6 * * *"
+  #   - cron: "0 12 * * *"
   workflow_dispatch:
     inputs:
       articles_count:
