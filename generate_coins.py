@@ -381,21 +381,41 @@ def build_coin_page(coin, coin_data, articles):
     })
 
     # ── WHY IS [COIN] UP/DOWN TODAY — SEO feature ────────────────────
+    # Compute precise range position so AI has concrete numbers to reason about
+    _range = max(high - low, 0.0001)
+    _pos_pct = round(((price - low) / _range) * 100, 1)
+    _vol_to_mcap = round((vol / mcap) * 100, 2) if mcap > 0 else 0
+
     why_prompt = (
-        "In exactly 3 bullet points (max 12 words each), explain what likely moved "
-        + name + " (" + sym + ") today. "
-        "Price: " + price_s + ", 24h change: " + chg24_s
-        + ", High: " + high_s + ", Low: " + low_s + ". "
-        "Focus on macro news, technical levels, or market sentiment. Plain text only. No intro sentence."
+        "You are a crypto market analyst. Write exactly 3 bullet points (max 14 words each) "
+        "explaining today's price action for " + name + " (" + sym + "), using ONLY the numbers below — "
+        "do not invent news events.\n"
+        "Current price: " + price_s + "\n"
+        "24h change: " + chg24_s + "\n"
+        "7d change: " + chg7_s + "\n"
+        "24h range: " + low_s + " to " + high_s + " (price is at " + str(_pos_pct) + "% of that range)\n"
+        "24h volume: " + vol_s + "\n"
+        "Market cap: " + mcap_s + "\n"
+        "Volume/Market-cap ratio: " + str(_vol_to_mcap) + "%\n\n"
+        "Each bullet must reference a specific number from above (e.g. exact % change, where price sits in its range, "
+        "or the volume/mcap ratio and what it implies about conviction). "
+        "Do not say generic things like 'no significant news' or 'sentiment neutral' — instead interpret the actual numbers. "
+        "Plain text only, no markdown, no intro sentence."
     )
-    why_text = groq_ask(why_prompt, max_tokens=120, temp=0.5)
+    why_text = groq_ask(why_prompt, max_tokens=150, temp=0.4)
     if not why_text:
         if chg24 > 3:
-            why_text = "Strong buying momentum pushed " + name + " above key resistance.\nPositive macro sentiment boosted crypto broadly.\nTrading volume above average signals strong demand."
+            why_text = (name + " gained " + chg24_s + " in 24h, trading near the top of its $" + f"{low:,.2f}" + "–$" + f"{high:,.2f}" + " range.\n"
+                       "Volume of " + vol_s + " versus " + mcap_s + " market cap suggests active buying interest.\n"
+                       "7-day trend of " + chg7_s + " supports the short-term bullish move.")
         elif chg24 < -3:
-            why_text = "Profit-taking pressure pulled " + name + " lower today.\nBroader crypto market saw risk-off selling.\nLow volume suggests consolidation phase ahead."
+            why_text = (name + " fell " + chg24_s + " in 24h, now trading near the lower end of its $" + f"{low:,.2f}" + "–$" + f"{high:,.2f}" + " range.\n"
+                       "Volume of " + vol_s + " relative to " + mcap_s + " market cap points to active selling pressure.\n"
+                       "7-day change of " + chg7_s + " shows how this fits the broader weekly trend.")
         else:
-            why_text = name + " consolidating within tight range today.\nMixed signals from broader crypto market.\nTraders await next catalyst before committing direction."
+            why_text = (name + " is roughly flat at " + chg24_s + " over 24h, holding within a $" + f"{low:,.2f}" + "–$" + f"{high:,.2f}" + " range.\n"
+                       "Volume of " + vol_s + " against " + mcap_s + " market cap indicates below-average conviction either way.\n"
+                       "7-day change of " + chg7_s + " suggests the asset is consolidating rather than trending.")
     why_lines = [l.strip().lstrip("•-– ").strip() for l in why_text.replace("\\n","\n").split("\n") if l.strip()][:3]
     why_items = "".join(
         '<li style="padding:9px 0;border-bottom:1px solid #f5f5f5;font-size:15px;color:#333;line-height:1.6">'
