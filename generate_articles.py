@@ -1778,6 +1778,28 @@ def build_markets_page():
         <div class="mkp-conv-result" id="conv-result">—</div>
       </div>
     </div>
+    <div class="mkp-sw" id="portfolio-widget">
+      <div class="mkp-sw-title">💼 My Portfolio</div>
+      <div id="portfolio-add">
+        <div class="mkp-conv" style="grid-template-columns:1fr 1fr;gap:8px">
+          <select id="pf-coin" class="mkp-conv-sel">
+            <option value="BTC">BTC</option><option value="ETH">ETH</option>
+            <option value="SOL">SOL</option><option value="XRP">XRP</option>
+            <option value="BNB">BNB</option><option value="DOGE">DOGE</option>
+            <option value="ADA">ADA</option><option value="AVAX">AVAX</option>
+            <option value="DOT">DOT</option><option value="LINK">LINK</option>
+          </select>
+          <input type="number" id="pf-qty" placeholder="Qty" step="any" class="mkp-conv-input" style="grid-column:auto">
+        </div>
+        <button onclick="pfAdd()" style="width:100%;margin-top:8px;background:#0d0d0d;color:#fff;border:none;border-radius:6px;padding:9px;font-size:12px;font-weight:700;cursor:pointer">+ Add Holding</button>
+      </div>
+      <div id="portfolio-list" style="margin-top:12px"></div>
+      <div id="portfolio-total" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid #ebebeb;font-size:13px;font-weight:700;display:flex;justify-content:space-between">
+        <span>Total Value</span><span id="pf-total-val">$0.00</span>
+      </div>
+      <button id="pf-reset-btn" onclick="pfReset()" style="display:none;width:100%;margin-top:8px;background:transparent;color:#999;border:1px solid #e8e8e8;border-radius:6px;padding:6px;font-size:11px;cursor:pointer">Clear All</button>
+      <p style="font-size:10px;color:#bbb;margin:8px 0 0">Saved in your browser only. Not sent anywhere.</p>
+    </div>
   </aside>
 </div>
 </div>
@@ -1927,6 +1949,7 @@ def build_markets_page():
       }});
       set('trending-list',tHtml);
       if(typeof window.convert==='function')window.convert();
+      if(typeof pfRender==='function')pfRender();
 
     }}catch(e){{
       // Fallback to Binance API
@@ -1991,6 +2014,7 @@ def build_markets_page():
           tHtml2+='<div class="mkp-trend-item"><span class="mkp-trend-rank">'+(i+1)+'</span><span>'+c.name+' <small>'+c.short+'</small></span><span class="mkp-trend-score">'+(c.chg>=0?'🔥':'❄️')+'</span></div>';
         }});
         set('trending-list',tHtml2);
+        if(typeof pfRender==='function')pfRender();
       }}catch(e2){{set('crypto-tbody','<tr><td colspan="7" style="text-align:center;padding:20px;color:#999">Refreshing data...</td></tr>');}}
     }}
   }}
@@ -2149,6 +2173,65 @@ def build_markets_page():
     set('conv-result','<strong>'+result.toFixed(decimals)+' '+label+'</strong>');
   }};
 
+  /* ── PORTFOLIO TRACKER (localStorage only, never sent anywhere) ── */
+  var PF_KEY='mnt_portfolio_v1';
+  function pfLoad(){{
+    try{{var raw=localStorage.getItem(PF_KEY);return raw?JSON.parse(raw):[];}}catch(e){{return [];}}
+  }}
+  function pfSave(list){{
+    try{{localStorage.setItem(PF_KEY,JSON.stringify(list));}}catch(e){{}}
+  }}
+  window.pfAdd=function(){{
+    var coin=document.getElementById('pf-coin').value;
+    var qty=parseFloat(document.getElementById('pf-qty').value);
+    if(!qty||qty<=0)return;
+    var list=pfLoad();
+    var existing=list.find(function(h){{return h.coin===coin;}});
+    if(existing){{existing.qty+=qty;}}else{{list.push({{coin:coin,qty:qty}});}}
+    pfSave(list);
+    document.getElementById('pf-qty').value='';
+    pfRender();
+  }};
+  window.pfRemove=function(coin){{
+    var list=pfLoad().filter(function(h){{return h.coin!==coin;}});
+    pfSave(list);
+    pfRender();
+  }};
+  window.pfReset=function(){{
+    pfSave([]);
+    pfRender();
+  }};
+  function pfRender(){{
+    var list=pfLoad();
+    var listEl=document.getElementById('portfolio-list');
+    var totalEl=document.getElementById('portfolio-total');
+    var resetBtn=document.getElementById('pf-reset-btn');
+    if(!listEl)return;
+    if(!list.length){{
+      listEl.innerHTML='<p style="font-size:12px;color:#999;margin:0">No holdings added yet.</p>';
+      totalEl.style.display='none';
+      resetBtn.style.display='none';
+      return;
+    }}
+    var total=0;
+    var html='';
+    list.forEach(function(h){{
+      var cp=cryptoPrices[h.coin];
+      var price=cp?cp.price:0;
+      var val=price*h.qty;
+      total+=val;
+      html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #f5f5f5;font-size:12px">'
+        +'<span>'+h.qty+' <strong>'+h.coin+'</strong></span>'
+        +'<span style="display:flex;align-items:center;gap:6px">'+(price?'$'+val.toLocaleString('en-US',{{maximumFractionDigits:2}}):'—')
+        +'<span onclick="pfRemove(\''+h.coin+'\')" style="cursor:pointer;color:#ccc;font-size:14px" title="Remove">&times;</span></span>'
+        +'</div>';
+    }});
+    listEl.innerHTML=html;
+    totalEl.style.display='flex';
+    resetBtn.style.display='block';
+    document.getElementById('pf-total-val').textContent='$'+total.toLocaleString('en-US',{{maximumFractionDigits:2}});
+  }}
+
   /* ── TIMESTAMP & INIT ── */
   function updateTime(){{
     var e=document.getElementById('mkp-time');
@@ -2160,6 +2243,7 @@ def build_markets_page():
     updateTime();
   }}
 
+  if(typeof pfRender==='function')pfRender();
   fetchAll();
   setInterval(fetchAll,30000);
 }})();
