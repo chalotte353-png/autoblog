@@ -347,7 +347,7 @@
   <!-- Daily AI Commentary -->
   <div style="grid-column:1/-1;background:#fff;border:1px solid #eee;border-radius:10px;padding:18px 22px;margin-bottom:4px">
     <div style="font-size:10px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:#888;border-bottom:2px solid #0d0d0d;padding-bottom:8px;margin-bottom:10px">🤖 Today's Market Commentary</div>
-    <p style="font-size:14px;line-height:1.8;color:#333;margin:0">The crypto market is experiencing a cautious mood today as traders await the upcoming Federal Reserve meeting, with many expecting a potential interest rate hike that could impact investor sentiment. Traders should keep a close eye on Bitcoin's price movement around the $30,000 level, as a break above or below this key resistance point could dictate the market's direction for the rest of the week.</p>
+    <p style="font-size:14px;line-height:1.8;color:#333;margin:0">The crypto market is experiencing a cautious mood today as traders await the Federal Reserve's interest rate decision, which could significantly impact market volatility and investor sentiment. Traders should keep a close eye on Bitcoin's price movement around the $30,000 level, as a break above or below this key resistance could trigger a significant trend reversal in the market.</p>
     <p style="font-size:11px;color:#bbb;margin:8px 0 0;font-style:italic">AI-generated. Not financial advice.</p>
   </div>
 
@@ -363,60 +363,6 @@
       <a href="forex.html" class="mkp-sw-link">Latest Forex News →</a>
       <a href="stocks.html" class="mkp-sw-link">Latest Stocks News →</a>
       <a href="finance.html" class="mkp-sw-link">Finance Analysis →</a>
-    </div>
-    <div class="mkp-sw">
-      <div class="mkp-sw-title">💡 Quick Converter</div>
-      <div class="mkp-conv">
-        <input type="number" id="conv-amt" value="1" class="mkp-conv-input" oninput="convert()">
-        <select id="conv-from" class="mkp-conv-sel" onchange="convert()">
-          <optgroup label="Crypto">
-            <option value="BTC">BTC</option><option value="ETH">ETH</option>
-            <option value="SOL">SOL</option><option value="XRP">XRP</option>
-            <option value="BNB">BNB</option><option value="DOGE">DOGE</option>
-          </optgroup>
-          <optgroup label="Fiat">
-            <option value="usd">USD</option><option value="eur">EUR</option>
-            <option value="gbp">GBP</option><option value="pkr">PKR</option>
-            <option value="inr">INR</option><option value="jpy">JPY</option>
-          </optgroup>
-        </select>
-        <div class="mkp-conv-arrow">→</div>
-        <select id="conv-to" class="mkp-conv-sel" onchange="convert()">
-          <optgroup label="Fiat">
-            <option value="usd">USD</option><option value="pkr">PKR</option>
-            <option value="eur">EUR</option><option value="gbp">GBP</option>
-            <option value="inr">INR</option><option value="jpy">JPY</option>
-          </optgroup>
-          <optgroup label="Crypto">
-            <option value="BTC">BTC</option><option value="ETH">ETH</option>
-            <option value="SOL">SOL</option><option value="XRP">XRP</option>
-            <option value="BNB">BNB</option><option value="DOGE">DOGE</option>
-          </optgroup>
-        </select>
-        <div class="mkp-conv-result" id="conv-result">—</div>
-      </div>
-    </div>
-    <div class="mkp-sw" id="portfolio-widget">
-      <div class="mkp-sw-title">💼 My Portfolio</div>
-      <div id="portfolio-add">
-        <div class="mkp-conv" style="grid-template-columns:1fr 1fr;gap:8px">
-          <select id="pf-coin" class="mkp-conv-sel">
-            <option value="BTC">BTC</option><option value="ETH">ETH</option>
-            <option value="SOL">SOL</option><option value="XRP">XRP</option>
-            <option value="BNB">BNB</option><option value="DOGE">DOGE</option>
-            <option value="ADA">ADA</option><option value="AVAX">AVAX</option>
-            <option value="DOT">DOT</option><option value="LINK">LINK</option>
-          </select>
-          <input type="number" id="pf-qty" placeholder="Qty" step="any" class="mkp-conv-input" style="grid-column:auto">
-        </div>
-        <button onclick="pfAdd()" style="width:100%;margin-top:8px;background:#0d0d0d;color:#fff;border:none;border-radius:6px;padding:9px;font-size:12px;font-weight:700;cursor:pointer">+ Add Holding</button>
-      </div>
-      <div id="portfolio-list" style="margin-top:12px"></div>
-      <div id="portfolio-total" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid #ebebeb;font-size:13px;font-weight:700;display:flex;justify-content:space-between">
-        <span>Total Value</span><span id="pf-total-val">$0.00</span>
-      </div>
-      <button id="pf-reset-btn" onclick="pfReset()" style="display:none;width:100%;margin-top:8px;background:transparent;color:#999;border:1px solid #e8e8e8;border-radius:6px;padding:6px;font-size:11px;cursor:pointer">Clear All</button>
-      <p style="font-size:10px;color:#bbb;margin:8px 0 0">Saved in your browser only. Not sent anywhere.</p>
     </div>
   </aside>
 </div>
@@ -566,8 +512,6 @@
         tHtml+='<div class="mkp-trend-item"><span class="mkp-trend-rank">'+(i+1)+'</span><span>'+c.name+' <small>'+c.short+'</small></span><span class="mkp-trend-score">'+(c.chg>=0?'🔥':'❄️')+'</span></div>';
       });
       set('trending-list',tHtml);
-      if(typeof window.convert==='function')window.convert();
-      if(typeof pfRender==='function')pfRender();
 
     }catch(e){
       // Fallback to Binance API
@@ -632,7 +576,6 @@
           tHtml2+='<div class="mkp-trend-item"><span class="mkp-trend-rank">'+(i+1)+'</span><span>'+c.name+' <small>'+c.short+'</small></span><span class="mkp-trend-score">'+(c.chg>=0?'🔥':'❄️')+'</span></div>';
         });
         set('trending-list',tHtml2);
-        if(typeof pfRender==='function')pfRender();
       }catch(e2){set('crypto-tbody','<tr><td colspan="7" style="text-align:center;padding:20px;color:#999">Refreshing data...</td></tr>');}
     }
   }
@@ -682,8 +625,6 @@
       set('forex-major',fxRows(major));
       set('forex-emerging',fxRows(emerging));
 
-      // Currency converter
-      convert();
     }catch(e){
       try{
         var rb=await fetch('https://api.binance.com/api/v3/ticker/24hr?symbols=[%22BTCUSDT%22,%22ETHUSDT%22,%22SOLUSDT%22,%22XRPUSDT%22]');
@@ -747,109 +688,6 @@
     }
   }
 
-  /* ── CONVERTER ── */
-  var CRYPTO_SYMS=['BTC','ETH','SOL','XRP','BNB','DOGE'];
-  function toUsd(code,amt){
-    if(CRYPTO_SYMS.indexOf(code)!==-1){
-      var cp=cryptoPrices[code];
-      if(!cp)return null;
-      return amt*cp.price;
-    }
-    var c=code.toLowerCase();
-    if(c==='usd')return amt;
-    if(c==='eur')return amt*fxRates.EUR;
-    if(c==='gbp')return amt*fxRates.GBP;
-    if(c==='jpy')return amt/fxRates.JPY;
-    var r=fxRates[code.toUpperCase()];
-    return r?amt/r:null;
-  }
-  function fromUsd(code,usdAmt){
-    if(CRYPTO_SYMS.indexOf(code)!==-1){
-      var cp=cryptoPrices[code];
-      if(!cp||!cp.price)return null;
-      return usdAmt/cp.price;
-    }
-    var c=code.toLowerCase();
-    if(c==='usd')return usdAmt;
-    if(c==='eur')return usdAmt/fxRates.EUR;
-    if(c==='gbp')return usdAmt/fxRates.GBP;
-    if(c==='jpy')return usdAmt*fxRates.JPY;
-    var r=fxRates[code.toUpperCase()];
-    return r?usdAmt*r:null;
-  }
-  window.convert=function(){
-    var amt=parseFloat(document.getElementById('conv-amt').value)||1;
-    var from=document.getElementById('conv-from').value;
-    var to=document.getElementById('conv-to').value;
-    if(!fxRates.PKR){set('conv-result','Loading...');return;}
-    var usdVal=toUsd(from,amt);
-    if(usdVal===null){set('conv-result','Loading price...');return;}
-    var result=fromUsd(to,usdVal);
-    if(result===null){set('conv-result','Loading price...');return;}
-    var label=CRYPTO_SYMS.indexOf(to)!==-1?to:to.toUpperCase();
-    var decimals=result>=1?2:(result>=0.01?4:8);
-    set('conv-result','<strong>'+result.toFixed(decimals)+' '+label+'</strong>');
-  };
-
-  /* ── PORTFOLIO TRACKER (localStorage only, never sent anywhere) ── */
-  var PF_KEY='mnt_portfolio_v1';
-  function pfLoad(){
-    try{var raw=localStorage.getItem(PF_KEY);return raw?JSON.parse(raw):[];}catch(e){return [];}
-  }
-  function pfSave(list){
-    try{localStorage.setItem(PF_KEY,JSON.stringify(list));}catch(e){}
-  }
-  window.pfAdd=function(){
-    var coin=document.getElementById('pf-coin').value;
-    var qty=parseFloat(document.getElementById('pf-qty').value);
-    if(!qty||qty<=0)return;
-    var list=pfLoad();
-    var existing=list.find(function(h){return h.coin===coin;});
-    if(existing){existing.qty+=qty;}else{list.push({coin:coin,qty:qty});}
-    pfSave(list);
-    document.getElementById('pf-qty').value='';
-    pfRender();
-  };
-  window.pfRemove=function(coin){
-    var list=pfLoad().filter(function(h){return h.coin!==coin;});
-    pfSave(list);
-    pfRender();
-  };
-  window.pfReset=function(){
-    pfSave([]);
-    pfRender();
-  };
-  function pfRender(){
-    var list=pfLoad();
-    var listEl=document.getElementById('portfolio-list');
-    var totalEl=document.getElementById('portfolio-total');
-    var resetBtn=document.getElementById('pf-reset-btn');
-    if(!listEl)return;
-    if(!list.length){
-      listEl.innerHTML='<p style="font-size:12px;color:#999;margin:0">No holdings added yet.</p>';
-      totalEl.style.display='none';
-      resetBtn.style.display='none';
-      return;
-    }
-    var total=0;
-    var html='';
-    list.forEach(function(h){
-      var cp=cryptoPrices[h.coin];
-      var price=cp?cp.price:0;
-      var val=price*h.qty;
-      total+=val;
-      html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #f5f5f5;font-size:12px">'
-        +'<span>'+h.qty+' <strong>'+h.coin+'</strong></span>'
-        +'<span style="display:flex;align-items:center;gap:6px">'+(price?'$'+val.toLocaleString('en-US',{maximumFractionDigits:2}):'—')
-        +'<span onclick="pfRemove(''+h.coin+'')" style="cursor:pointer;color:#ccc;font-size:14px" title="Remove">&times;</span></span>'
-        +'</div>';
-    });
-    listEl.innerHTML=html;
-    totalEl.style.display='flex';
-    resetBtn.style.display='block';
-    document.getElementById('pf-total-val').textContent='$'+total.toLocaleString('en-US',{maximumFractionDigits:2});
-  }
-
   /* ── TIMESTAMP & INIT ── */
   function updateTime(){
     var e=document.getElementById('mkp-time');
@@ -861,7 +699,6 @@
     updateTime();
   }
 
-  if(typeof pfRender==='function')pfRender();
   fetchAll();
   setInterval(fetchAll,30000);
 })();
