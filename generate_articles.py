@@ -2327,31 +2327,18 @@ def build_sitemap(posts):
     (OUTPUT_DIR / "post-sitemap.xml").write_text("\n".join(post_lines))
 
     # 2. CATEGORY + PAGES SITEMAP — homepage, coins, categories, static pages
+    # 2. CATEGORY SITEMAP — only the 13 content categories
     cat_lines = [
         '<?xml version="1.0" encoding="UTF-8"?>',
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-        # Homepage — priority 1.0
-        f'  <url><loc>{SITE_URL}/</loc><lastmod>{today}</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>',
-        # Markets page
-        f'  <url><loc>{SITE_URL}/markets.html</loc><lastmod>{today}</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>',
     ]
-    # Coin pages — high priority
-    for coin_slug in coin_slugs:
-        cat_lines.append(f'  <url><loc>{SITE_URL}/{coin_slug}.html</loc><lastmod>{today}</lastmod><changefreq>hourly</changefreq><priority>0.9</priority></url>')
-    # Category pages
     for cat in CATEGORIES:
         cat_slug = cat.lower().replace(" ", "-")
         cat_lines.append(f'  <url><loc>{SITE_URL}/{cat_slug}.html</loc><lastmod>{today}</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>')
-    # Static pages
-    cat_lines += [
-        f'  <url><loc>{SITE_URL}/about.html</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>',
-        f'  <url><loc>{SITE_URL}/contact.html</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>',
-        f'  <url><loc>{SITE_URL}/privacy-policy.html</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>0.3</priority></url>',
-        "</urlset>"
-    ]
+    cat_lines.append("</urlset>")
     (OUTPUT_DIR / "category-sitemap.xml").write_text("\n".join(cat_lines))
 
-    # 3. PAGES SITEMAP — coin pages + categories + static
+    # 3. PAGES SITEMAP — homepage + markets + 10 coin pages + static pages (NOT categories, those are in category-sitemap)
     pages_lines = [
         '<?xml version="1.0" encoding="UTF-8"?>',
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
@@ -2360,9 +2347,6 @@ def build_sitemap(posts):
     ]
     for coin_slug in coin_slugs:
         pages_lines.append(f'  <url><loc>{SITE_URL}/{coin_slug}.html</loc><lastmod>{today}</lastmod><changefreq>hourly</changefreq><priority>0.9</priority></url>')
-    for cat in CATEGORIES:
-        cat_slug = cat.lower().replace(" ", "-")
-        pages_lines.append(f'  <url><loc>{SITE_URL}/{cat_slug}.html</loc><lastmod>{today}</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>')
     pages_lines += [
         f'  <url><loc>{SITE_URL}/about.html</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>',
         f'  <url><loc>{SITE_URL}/contact.html</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>',
@@ -2386,8 +2370,9 @@ def build_sitemap(posts):
     index_lines = [
         '<?xml version="1.0" encoding="UTF-8"?>',
         '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-        f'  <sitemap><loc>{SITE_URL}/post-sitemap.xml</loc><lastmod>{today}</lastmod></sitemap>',
         f'  <sitemap><loc>{SITE_URL}/pages-sitemap.xml</loc><lastmod>{today}</lastmod></sitemap>',
+        f'  <sitemap><loc>{SITE_URL}/category-sitemap.xml</loc><lastmod>{today}</lastmod></sitemap>',
+        f'  <sitemap><loc>{SITE_URL}/post-sitemap.xml</loc><lastmod>{today}</lastmod></sitemap>',
         f'  <sitemap><loc>{SITE_URL}/authors-sitemap.xml</loc><lastmod>{today}</lastmod></sitemap>',
         '</sitemapindex>',
     ]
