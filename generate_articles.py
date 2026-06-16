@@ -1470,7 +1470,7 @@ def build_markets_ticker():
 
 # ── BUILD MARKETS PAGE (CNBC-style full data) ─────────────────────────
 def build_markets_page():
-    # ── Generate daily market commentary ──
+    # ── Daily AI Market Commentary ──
     from datetime import datetime, timezone
     _today = datetime.now(timezone.utc).strftime("%B %d, %Y")
     _commentary = ""
@@ -1726,13 +1726,11 @@ def build_markets_page():
 
   </div>
 
-    <!-- Daily AI Commentary -->
-    <div style="background:#fff;border:1px solid #eee;border-radius:10px;padding:20px 24px;margin:0 0 24px">
-      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:#888;margin-bottom:8px">🤖 Today's Market Commentary</div>
-      <p style="font-size:15px;line-height:1.8;color:#333;margin:0">{_commentary}</p>
-      <p style="font-size:11px;color:#bbb;margin:8px 0 0;font-style:italic">AI-generated. Not financial advice.</p>
-    </div>
-
+  <!-- Daily AI Commentary -->
+  <div style="grid-column:1/-1;background:#fff;border:1px solid #eee;border-radius:10px;padding:18px 22px;margin-bottom:4px">
+    <div style="font-size:10px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:#888;border-bottom:2px solid #0d0d0d;padding-bottom:8px;margin-bottom:10px">🤖 Today's Market Commentary</div>
+    <p style="font-size:14px;line-height:1.8;color:#333;margin:0">{_commentary}</p>
+    <p style="font-size:11px;color:#bbb;margin:8px 0 0;font-style:italic">AI-generated. Not financial advice.</p>
   </div>
 
   <!-- SIDEBAR -->
