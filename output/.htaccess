@@ -11,12 +11,10 @@ Options -Indexes
 
 # Sitemap — force text response
 <Files "sitemap.xml">
-    ForceType application/xml
     Header set Content-Type "application/xml; charset=UTF-8"
 </Files>
 
 <Files "feed.xml">
-    ForceType application/xml
     Header set Content-Type "application/rss+xml; charset=UTF-8"
 </Files>
 
