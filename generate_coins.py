@@ -561,7 +561,7 @@ def build_coin_page(coin, coin_data, articles):
     parts.append('.coin-article-info h3 a{color:var(--dark);text-decoration:none}.coin-article-info h3 a:hover{color:var(--red)}')
     parts.append('.coin-article-info p{font-size:13px;color:#666;line-height:1.6;margin-bottom:12px}')
     parts.append('.coin-article-read{font-size:12px;font-weight:600;color:var(--red);text-decoration:none}')
-    parts.append('@media(max-width:600px){.coin-price{font-size:30px}.coin-name{font-size:22px}.coin-stats-grid{grid-template-columns:repeat(2,1fr)}}')
+    parts.append('@media(max-width:600px){.coin-price{font-size:30px}.coin-name{font-size:22px}.coin-stats-grid{grid-template-columns:repeat(2,1fr)}.coin-sv-grid{grid-template-columns:1fr!important;padding:0 14px!important}}')
     parts.append('</style>')
     parts.append('</head>')
     parts.append('<body>')
@@ -590,7 +590,7 @@ def build_coin_page(coin, coin_data, articles):
     parts.append('</div></div>')
 
     # Sentiment + Verdict row
-    parts.append('<div style="max-width:1200px;margin:24px auto 0;padding:0 20px;display:grid;grid-template-columns:1fr 1fr;gap:16px">')
+    parts.append('<div class="coin-sv-grid" style="max-width:1200px;margin:24px auto 0;padding:0 20px;display:grid;grid-template-columns:1fr 1fr;gap:16px">')
     # Sentiment
     parts.append('<div style="background:#fff;border:1px solid #eee;border-radius:12px;padding:20px 24px">')
     parts.append('<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:#888;margin-bottom:12px">'+name+' Sentiment Index</div>')
