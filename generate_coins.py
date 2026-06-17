@@ -714,6 +714,42 @@ def build_coin_page(coin, coin_data, articles):
     parts.append('<script>new TradingView.widget({"width":"100%","height":400,"symbol":"BINANCE:'+sym+'USDT","interval":"D","timezone":"Etc/UTC","theme":"light","style":"1","locale":"en","toolbar_bg":"#f1f3f6","enable_publishing":false,"container_id":"tv_'+sym.lower()+'"});</script>')
     parts.append('</div></div>')
 
+    # ── AI CHART READER — plain-English explanation of the chart ──────
+    reader_prompt = (
+        "Explain this price chart in very simple, plain English for someone who has never read a trading chart before. "
+        "Avoid jargon. Use short sentences. Write 3 short paragraphs (2-3 sentences each):\n"
+        "Paragraph 1: what the overall price trend looks like recently.\n"
+        "Paragraph 2: what today's 24h move and 7d move mean in everyday terms.\n"
+        "Paragraph 3: one simple, friendly takeaway for a beginner looking at this chart.\n\n"
+        "Data: " + name + " (" + sym + ") is at " + price_s + ", 24h change " + chg24_s + ", 7d change " + chg7_s + ", "
+        "24h range " + low_s + " to " + high_s + ".\n"
+        "Do not give financial advice or price predictions. Plain text only, no markdown, no headers."
+    )
+    reader_text = groq_ask(reader_prompt, max_tokens=220, temp=0.5)
+    if not reader_text:
+        _trend_word = "climbing" if chg7 > 1 else "falling" if chg7 < -1 else "moving sideways"
+        reader_text = (
+            "Over the past week, " + name + "'s price has been " + _trend_word + ", currently sitting at " + price_s + ". "
+            "The chart's green and red bars show daily price movement — green means the price went up that day, red means it went down.\n\n"
+            "Today " + name + " is " + chg24_s + " compared to yesterday, and " + chg7_s + " compared to a week ago. "
+            "In simple terms, this tells you whether buyers or sellers have been more active recently.\n\n"
+            "A simple takeaway: charts show what already happened, not what will happen next. Use them to understand recent activity, not to predict the future."
+        )
+    reader_paras = "".join(
+        '<p style="font-size:14px;line-height:1.8;color:#333;margin:0 0 12px">' + p.strip() + '</p>'
+        for p in reader_text.replace("\\n", "\n").split("\n") if p.strip()
+    )
+    chart_reader_box = (
+        '<div style="max-width:1200px;margin:0 auto 28px;padding:0 20px">'
+        '<div style="background:#fff;border:1px solid #eee;border-radius:10px;padding:22px 26px">'
+        '<h2 style="font-size:18px;font-weight:700;color:var(--dark);margin:0 0 14px;border-left:4px solid ' + color + ';padding-left:12px">'
+        '🤓 What This Chart Means — In Plain English</h2>'
+        + reader_paras +
+        '<p style="font-size:11px;color:#bbb;margin:8px 0 0;font-style:italic">AI-generated explanation for beginners. Not financial advice.</p>'
+        '</div></div>'
+    )
+    parts.append(chart_reader_box)
+
     # About
     parts.append('<div class="coin-about"><h2>About '+name+'</h2>')
     parts.append('<p>'+desc+' '+name+' ('+sym+') is one of the most actively traded cryptocurrencies, with a 24-hour trading volume of '+vol_s+' and a market cap of '+mcap_s+'. Follow the latest '+name+' news and expert analysis below.</p>')
