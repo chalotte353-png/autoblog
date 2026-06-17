@@ -1884,10 +1884,22 @@ def build_markets_page():
       if(eth){{set('ov-eth-p',fmt(eth.price));set('ov-eth-c',badge(eth.chg));}}
 
       // Global stats
-      var totalMcap=coins_data.reduce(function(s,c){{return s+(c.mcap||0);}},0)*1.3;
       var totalVol=coins_data.reduce(function(s,c){{return s+(c.vol||0);}},0);
-      var btcMcap=btc?btc.price*19800000:0;
-      var btcDom=totalMcap?(btcMcap/totalMcap*100).toFixed(1)+'%':'—';
+      var totalMcap=0,btcDom='—';
+      try{{
+        var rg=await fetch('https://api.coingecko.com/api/v3/global');
+        var gd=(await rg.json()).data;
+        if(gd){{
+          totalMcap=gd.total_market_cap.usd;
+          btcDom=gd.market_cap_percentage.btc.toFixed(1)+'%';
+        }}
+      }}catch(eg){{
+        // Fallback to rough estimate if CoinGecko global endpoint fails
+        totalMcap=coins_data.reduce(function(s,c){{return s+(c.mcap||0);}},0)*1.3;
+        var btc3=cryptoPrices['BTC'];
+        var btcMcap3=btc3?btc3.price*19800000:0;
+        btcDom=totalMcap?(btcMcap3/totalMcap*100).toFixed(1)+'%':'—';
+      }}
       set('ov-mcap',fmt(totalMcap));set('ov-mcap2',fmt(totalMcap));
       set('ov-vol',fmt(totalVol));set('ov-vol2',fmt(totalVol));
       set('ov-btc-dom2',btcDom);set('ov-btc-dom3',btcDom);
@@ -1953,9 +1965,19 @@ def build_markets_page():
         updatePickedCoin();
 
         var totalVol2=coins_data2.reduce(function(s,c){{return s+(c.vol||0);}},0);
-        var btcMcap2=btc2?btc2.price*19800000:0;
+        var totalMcap2=0,btcDom2='—';
+        try{{
+          var rg=await fetch('https://api.coingecko.com/api/v3/global');
+          var gd=(await rg.json()).data;
+          if(gd){{
+            totalMcap2=gd.total_market_cap.usd;
+            btcDom2=gd.market_cap_percentage.btc.toFixed(1)+'%';
+          }}
+        }}catch(eg){{}}
         set('ov-vol',fmt(totalVol2));set('ov-vol2',fmt(totalVol2));
-        set('ov-mcap',fmt(btcMcap2*4));set('ov-mcap2',fmt(btcMcap2*4));
+        set('ov-mcap',fmt(totalMcap2));set('ov-mcap2',fmt(totalMcap2));
+        set('ov-btc-dom2',btcDom2);set('ov-btc-dom3',btcDom2);
+        set('idx-total-mcap',fmt(totalMcap2));set('idx-btc-dom',btcDom2);set('idx-volume',fmt(totalVol2));
         setText('idx-active','20,000+');
 
         // Gainers & Losers (Binance fallback path)
