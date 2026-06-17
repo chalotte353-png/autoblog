@@ -178,8 +178,10 @@
       var d=(await r.json()).RAW;
       if(!d)throw new Error();
       var map={BTC:'tk-btc',ETH:'tk-eth',SOL:'tk-sol',XRP:'tk-xrp'};
+      var gotAny=false;
       for(var sym in map){
         if(!d[sym]||!d[sym].USD)continue;
+        gotAny=true;
         var price=d[sym].USD.PRICE;
         var chg=d[sym].USD.CHANGEPCT24HOUR;
         var u=chg>=0;
@@ -187,7 +189,23 @@
         var s=document.getElementById(map[sym]);if(s){var sp=s.querySelector('span');if(sp)sp.innerHTML=html;}
         var s2=document.getElementById(map[sym]+'2');if(s2)s2.innerHTML=html;
       }
-    }catch(e){}
+      if(!gotAny)throw new Error('no data');
+    }catch(e){
+      try{
+        var rb=await fetch('https://api.binance.com/api/v3/ticker/24hr?symbols=["BTCUSDT","ETHUSDT","SOLUSDT","XRPUSDT"]');
+        var db=await rb.json();
+        var bmap={'BTCUSDT':'tk-btc','ETHUSDT':'tk-eth','SOLUSDT':'tk-sol','XRPUSDT':'tk-xrp'};
+        db.forEach(function(t){
+          var id=bmap[t.symbol];if(!id)return;
+          var price=parseFloat(t.lastPrice);
+          var chg=parseFloat(t.priceChangePercent);
+          var u=chg>=0;
+          var html='$'+price.toLocaleString('en-US',{maximumFractionDigits:price<1?4:2})+'<em class="'+(u?'up':'dn')+'">'+(u?'▲':'▼')+Math.abs(chg).toFixed(2)+'%</em>';
+          var s=document.getElementById(id);if(s){var sp=s.querySelector('span');if(sp)sp.innerHTML=html;}
+          var s2=document.getElementById(id+'2');if(s2)s2.innerHTML=html;
+        });
+      }catch(e2){}
+    }
 
     try{
       var r=await fetch('https://open.er-api.com/v6/latest/USD');
