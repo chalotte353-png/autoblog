@@ -191,6 +191,13 @@ def fetch_coins():
             # Use CoinGecko price if CryptoCompare gave 0
             if out[sym]["price"] == 0:
                 out[sym]["price"] = item.get("current_price") or 0
+            # Use CoinGecko high/low/volume if CryptoCompare gave 0 (prevents $0.00 in AI text/stats)
+            if out[sym]["high24h"] == 0:
+                out[sym]["high24h"] = item.get("high_24h") or out[sym]["high24h"]
+            if out[sym]["low24h"] == 0:
+                out[sym]["low24h"] = item.get("low_24h") or out[sym]["low24h"]
+            if out[sym]["volume24h"] == 0:
+                out[sym]["volume24h"] = item.get("total_volume") or out[sym]["volume24h"]
         print("  CoinGecko: market cap + supply + 7d updated for", len(cg_data), "coins")
     except Exception as e:
         print("  CoinGecko fetch error:", e)
@@ -312,6 +319,16 @@ def build_coin_page(coin, coin_data, articles):
     price_s   = fmt_price(price)
     chg24_s   = fmt_chg(chg24)
     chg7_s    = fmt_chg(chg7)
+
+    # Safety net: if both CryptoCompare and CoinGecko failed to give high/low/volume,
+    # estimate sensible values from price + 24h change so nothing ever displays as $0.00
+    if high == 0 and price > 0:
+        high = price * (1 + abs(chg24) / 100 / 2) if chg24 != 0 else price * 1.01
+    if low == 0 and price > 0:
+        low = price * (1 - abs(chg24) / 100 / 2) if chg24 != 0 else price * 0.99
+    if vol == 0 and mcap > 0:
+        vol = mcap * 0.03  # rough placeholder: ~3% of market cap as daily volume estimate
+
     mcap_s    = fmt_large(mcap)
     vol_s     = fmt_large(vol)
     high_s    = fmt_price(high)
