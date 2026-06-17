@@ -191,6 +191,10 @@ def fetch_coins():
             # Use CoinGecko price if CryptoCompare gave 0
             if out[sym]["price"] == 0:
                 out[sym]["price"] = item.get("current_price") or 0
+            # Use CoinGecko 24h change if CryptoCompare gave exactly 0 (likely a failed/empty fetch, not real flat price)
+            cg24 = item.get("price_change_percentage_24h") or 0
+            if out[sym]["change24h"] == 0 and cg24:
+                out[sym]["change24h"] = cg24
             # Use CoinGecko high/low/volume if CryptoCompare gave 0 (prevents $0.00 in AI text/stats)
             if out[sym]["high24h"] == 0:
                 out[sym]["high24h"] = item.get("high_24h") or out[sym]["high24h"]
