@@ -389,6 +389,9 @@ def build_coin_page(coin, coin_data, articles):
         ]
     })
 
+    # Precompute volume/mcap ratio early — needed by FAQ schema below
+    _vol_to_mcap = round((vol / mcap) * 100, 2) if mcap > 0 else 0
+
     faq_schema = json.dumps({
         "@context":"https://schema.org","@type":"FAQPage",
         "mainEntity":[
@@ -397,15 +400,46 @@ def build_coin_page(coin, coin_data, articles):
             {"@type":"Question","name":"Should I buy "+name+" today?",
              "acceptedAnswer":{"@type":"Answer","text":"Our AI verdict for "+name+" is: "+v_act+" (Confidence: "+v_conf+", Risk: "+v_risk+"). "+v_why+" Not financial advice."}},
             {"@type":"Question","name":"What is the "+name+" market sentiment?",
-             "acceptedAnswer":{"@type":"Answer","text":name+" sentiment score is "+str(s_score)+"/100 — "+s_label+". "+s_reason}}
+             "acceptedAnswer":{"@type":"Answer","text":name+" sentiment score is "+str(s_score)+"/100 — "+s_label+". "+s_reason}},
+            {"@type":"Question","name":"What is "+name+"'s 24-hour trading range?",
+             "acceptedAnswer":{"@type":"Answer","text":name+" traded between "+low_s+" and "+high_s+" over the past 24 hours, on volume of "+vol_s+"."}},
+            {"@type":"Question","name":"How does "+name+"'s volume compare to its market cap?",
+             "acceptedAnswer":{"@type":"Answer","text":name+"'s 24h volume of "+vol_s+" is approximately "+f"{_vol_to_mcap:.2f}"+"% of its "+mcap_s+" market cap, which gives a rough sense of trading conviction relative to its size."}}
         ]
     })
+
+    faq_items_visible = [
+        ("What is the " + name + " price today?",
+         name+" ("+sym+") is trading at "+price_s+" today, "+chg24_s+" in the last 24 hours. Market cap is "+mcap_s+"."),
+        ("Should I buy " + name + " today?",
+         "Our AI verdict for "+name+" is: "+v_act+" (Confidence: "+v_conf+", Risk: "+v_risk+"). "+v_why+" Not financial advice."),
+        ("What is the " + name + " market sentiment?",
+         name+" sentiment score is "+str(s_score)+"/100 — "+s_label+". "+s_reason),
+        ("What is " + name + "'s 24-hour trading range?",
+         name+" traded between "+low_s+" and "+high_s+" over the past 24 hours, on volume of "+vol_s+"."),
+        ("How does " + name + "'s volume compare to its market cap?",
+         name+"'s 24h volume of "+vol_s+" is approximately "+f"{_vol_to_mcap:.2f}"+"% of its "+mcap_s+" market cap, which gives a rough sense of trading conviction relative to its size."),
+    ]
+    faq_html_items = "".join(
+        '<details style="border-bottom:1px solid #f0f0f0;padding:14px 0">'
+        '<summary style="font-size:15px;font-weight:600;color:var(--dark);cursor:pointer;list-style:none">' + q + '</summary>'
+        '<p style="font-size:14px;color:#555;line-height:1.7;margin:10px 0 0">' + a + '</p>'
+        '</details>'
+        for q, a in faq_items_visible
+    )
+    faq_box = (
+        '<div style="max-width:1200px;margin:0 auto 28px;padding:0 20px">'
+        '<div style="background:#fff;border:1px solid #eee;border-radius:10px;padding:22px 26px">'
+        '<h2 style="font-size:18px;font-weight:700;color:var(--dark);margin:0 0 8px;border-left:4px solid ' + color + ';padding-left:12px">'
+        '❓ ' + name + ' FAQ</h2>'
+        '<div>' + faq_html_items + '</div>'
+        '</div></div>'
+    )
 
     # ── WHY IS [COIN] UP/DOWN TODAY — SEO feature ────────────────────
     # Compute precise range position so AI has concrete numbers to reason about
     _range = max(high - low, 0.0001)
     _pos_pct = round(((price - low) / _range) * 100, 1)
-    _vol_to_mcap = round((vol / mcap) * 100, 2) if mcap > 0 else 0
 
     why_prompt = (
         "You are a crypto market analyst. Write exactly 3 bullet points (max 14 words each) "
@@ -451,6 +485,56 @@ def build_coin_page(coin, coin_data, articles):
         '📰 Why Is ' + name + ' ' + direction + ' Today?</h2>'
         '<ul style="list-style:none;margin:0;padding:0">' + why_items + '</ul>'
         '<p style="font-size:11px;color:#bbb;margin:12px 0 0;font-style:italic">AI-generated summary. Not financial advice.</p>'
+        '</div></div>'
+    )
+
+    # ── KEY LEVELS TO WATCH — support/resistance visual ───────────────
+    _support = low * 0.98
+    _resistance = high * 1.02
+    _kl_pos = max(2, min(98, round(((price - _support) / max(_resistance - _support, 0.0001)) * 100, 1)))
+    key_levels_box = (
+        '<div style="max-width:1200px;margin:0 auto 28px;padding:0 20px">'
+        '<div style="background:#fff;border:1px solid #eee;border-radius:10px;padding:22px 26px">'
+        '<h2 style="font-size:18px;font-weight:700;color:var(--dark);margin:0 0 18px;border-left:4px solid ' + color + ';padding-left:12px">'
+        '📍 Key Levels to Watch</h2>'
+        '<div style="position:relative;height:8px;background:linear-gradient(90deg,#ef4444,#eab308,#22c55e);border-radius:4px;margin:30px 10px 14px">'
+        '<div style="position:absolute;left:' + str(_kl_pos) + '%;top:-22px;transform:translateX(-50%);font-size:11px;font-weight:700;color:var(--dark);white-space:nowrap">▼ ' + price_s + '</div>'
+        '<div style="position:absolute;left:' + str(_kl_pos) + '%;top:0;width:2px;height:8px;background:var(--dark);transform:translateX(-1px)"></div>'
+        '</div>'
+        '<div style="display:flex;justify-content:space-between;font-size:13px;color:#666">'
+        '<span><strong style="color:#ef4444">Support</strong> ~$' + f"{_support:,.2f}" + '</span>'
+        '<span><strong style="color:#22c55e">Resistance</strong> ~$' + f"{_resistance:,.2f}" + '</span>'
+        '</div>'
+        '<p style="font-size:11px;color:#bbb;margin:14px 0 0">Approximate levels based on the 24h trading range. Not financial advice.</p>'
+        '</div></div>'
+    )
+
+    # ── COMPARE WITH WIDGET — side-by-side 24h comparison ──────────────
+    other_coins = [c for c in COINS if c["sym"] != sym]
+    compare_options = "".join(
+        '<option value="' + c["sym"] + '"' + (' selected' if c["sym"] == other_coins[0]["sym"] else '') + '>' + c["name"] + ' (' + c["sym"] + ')</option>'
+        for c in other_coins
+    )
+    compare_box = (
+        '<div style="max-width:1200px;margin:0 auto 28px;padding:0 20px">'
+        '<div style="background:#fff;border:1px solid #eee;border-radius:10px;padding:22px 26px">'
+        '<h2 style="font-size:18px;font-weight:700;color:var(--dark);margin:0 0 16px;border-left:4px solid ' + color + ';padding-left:12px">'
+        '⚖️ Compare ' + name + ' With</h2>'
+        '<select id="cmp-select" onchange="window.cmpLoad()" style="padding:8px 12px;border:1px solid #ddd;border-radius:6px;font-size:13px;margin-bottom:16px;background:#fff;cursor:pointer">'
+        + compare_options +
+        '</select>'
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px" id="cmp-grid">'
+        '<div style="text-align:center;padding:16px;background:#fafafa;border-radius:8px">'
+        '<div style="font-size:12px;color:#888;margin-bottom:6px">' + name + '</div>'
+        '<div style="font-size:20px;font-weight:700">' + price_s + '</div>'
+        '<div style="font-size:13px;margin-top:4px" class="' + chg24_cls + '">' + chg24_s + '</div>'
+        '</div>'
+        '<div style="text-align:center;padding:16px;background:#fafafa;border-radius:8px" id="cmp-other">'
+        '<div style="font-size:12px;color:#888;margin-bottom:6px" id="cmp-other-name">Loading...</div>'
+        '<div style="font-size:20px;font-weight:700" id="cmp-other-price">—</div>'
+        '<div style="font-size:13px;margin-top:4px" id="cmp-other-chg">—</div>'
+        '</div>'
+        '</div>'
         '</div></div>'
     )
 
@@ -562,6 +646,7 @@ def build_coin_page(coin, coin_data, articles):
     parts.append('.coin-article-info p{font-size:13px;color:#666;line-height:1.6;margin-bottom:12px}')
     parts.append('.coin-article-read{font-size:12px;font-weight:600;color:var(--red);text-decoration:none}')
     parts.append('@media(max-width:600px){.coin-price{font-size:30px}.coin-name{font-size:22px}.coin-stats-grid{grid-template-columns:repeat(2,1fr)}.coin-sv-grid{grid-template-columns:1fr!important;padding:0 14px!important}}')
+    parts.append('summary::-webkit-details-marker{display:none}summary{position:relative;padding-right:20px}summary::after{content:"+";position:absolute;right:0;top:0;font-size:18px;color:#999}details[open] summary::after{content:"−"}')
     parts.append('</style>')
     parts.append('</head>')
     parts.append('<body>')
@@ -641,6 +726,15 @@ def build_coin_page(coin, coin_data, articles):
     # Why Is Coin Up/Down Today
     parts.append(why_box)
 
+    # Key Levels to Watch
+    parts.append(key_levels_box)
+
+    # Compare With widget
+    parts.append(compare_box)
+
+    # FAQ section (visible)
+    parts.append(faq_box)
+
     # Articles
     parts.append(art_html)
 
@@ -690,6 +784,31 @@ def build_coin_page(coin, coin_data, articles):
         '  }',
         '}',
         'refreshPrice();setInterval(refreshPrice,30000);',
+        'window.cmpLoad=async function(){',
+        '  var s=document.getElementById("cmp-select").value;',
+        '  document.getElementById("cmp-other-name").textContent=s;',
+        '  try{',
+        '    var r=await fetch("https://min-api.cryptocompare.com/data/pricemultifull?fsyms="+s+"&tsyms=USD");',
+        '    var d=(await r.json()).RAW;',
+        '    if(!d||!d[s]||!d[s].USD)throw new Error("no data");',
+        '    var p=d[s].USD.PRICE;var c=d[s].USD.CHANGEPCT24HOUR||0;',
+        '    var f=p>=1000?"$"+p.toLocaleString("en",{minimumFractionDigits:2,maximumFractionDigits:2}):"$"+p.toFixed(p>=1?4:6);',
+        '    document.getElementById("cmp-other-price").textContent=f;',
+        '    var ec=document.getElementById("cmp-other-chg");',
+        '    ec.textContent=(c>=0?"+":"")+c.toFixed(2)+"%";ec.className=c>=0?"coin-up":"coin-dn";',
+        '  }catch(e){',
+        '    try{',
+        '      var rb=await fetch("https://api.binance.com/api/v3/ticker/24hr?symbol="+s+"USDT");',
+        '      var db=await rb.json();if(!db.lastPrice)return;',
+        '      var p2=parseFloat(db.lastPrice);var c2=parseFloat(db.priceChangePercent)||0;',
+        '      var f2=p2>=1000?"$"+p2.toLocaleString("en",{minimumFractionDigits:2,maximumFractionDigits:2}):"$"+p2.toFixed(p2>=1?4:6);',
+        '      document.getElementById("cmp-other-price").textContent=f2;',
+        '      var ec2=document.getElementById("cmp-other-chg");',
+        '      ec2.textContent=(c2>=0?"+":"")+c2.toFixed(2)+"%";ec2.className=c2>=0?"coin-up":"coin-dn";',
+        '    }catch(e2){}',
+        '  }',
+        '};',
+        'window.cmpLoad();',
         '</script>',
     ]
     parts.extend(js)
