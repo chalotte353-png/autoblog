@@ -2339,6 +2339,31 @@ def build_authors(posts):
 </body></html>"""
         (AUTHORS_DIR / f"{aid}.html").write_text(html)
 
+    # ── AUTHORS INDEX PAGE — this was referenced in the sitemap and About page but never generated (404 bug) ──
+    author_cards = "".join(
+        f"""<a href="authors/{a["id"]}.html" style="display:flex;gap:16px;align-items:center;background:#fff;border:1px solid #eee;border-radius:10px;padding:18px 20px;text-decoration:none;transition:box-shadow 0.2s" onmouseover="this.style.boxShadow='0 4px 16px rgba(0,0,0,0.06)'" onmouseout="this.style.boxShadow='none'">
+  <img src="{a["avatar"]}" alt="{esc(a["name"])}" style="width:56px;height:56px;border-radius:50%;flex-shrink:0">
+  <div>
+    <div style="font-size:16px;font-weight:700;color:var(--dark)">{esc(a["name"])}</div>
+    <div style="font-size:13px;color:#888">{esc(a["title"])}</div>
+  </div>
+</a>""" for a in all_authors.values()
+    )
+    authors_index_html = f"""{head_html("Our Editorial Team | " + SITE_NAME,
+        "Meet the editors and reporters behind " + SITE_NAME + "'s crypto, AI, stocks and finance coverage.",
+        SITE_URL + "/authors.html", "", "", "website", robots="noindex,follow")}
+{nav_html("/")}
+<div class="container" style="padding:40px 20px;max-width:1000px;margin:0 auto">
+  <h1 style="font-size:32px;font-weight:800;color:var(--dark);margin-bottom:8px">Our Editorial Team</h1>
+  <p style="color:#666;margin-bottom:32px">Meet the writers and analysts covering crypto, AI, stocks and finance for {SITE_NAME}.</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px">
+    {author_cards}
+  </div>
+</div>
+{foot_html()}
+</body></html>"""
+    (OUTPUT_DIR / "authors.html").write_text(authors_index_html)
+
 # ── BUILD SITEMAP ─────────────────────────────────────────────────────
 def build_sitemap(posts):
     seen_slugs = set()
