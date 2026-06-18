@@ -714,41 +714,32 @@ def build_coin_page(coin, coin_data, articles):
     parts.append('<script>new TradingView.widget({"width":"100%","height":400,"symbol":"BINANCE:'+sym+'USDT","interval":"D","timezone":"Etc/UTC","theme":"light","style":"1","locale":"en","toolbar_bg":"#f1f3f6","enable_publishing":false,"container_id":"tv_'+sym.lower()+'"});</script>')
     parts.append('</div></div>')
 
-    # ── AI CHART READER — plain-English explanation of the chart ──────
-    reader_prompt = (
-        "Explain this price chart in very simple, plain English for someone who has never read a trading chart before. "
-        "Avoid jargon. Use short sentences. Write 3 short paragraphs (2-3 sentences each):\n"
-        "Paragraph 1: what the overall price trend looks like recently.\n"
-        "Paragraph 2: what today's 24h move and 7d move mean in everyday terms.\n"
-        "Paragraph 3: one simple, friendly takeaway for a beginner looking at this chart.\n\n"
-        "Data: " + name + " (" + sym + ") is at " + price_s + ", 24h change " + chg24_s + ", 7d change " + chg7_s + ", "
-        "24h range " + low_s + " to " + high_s + ".\n"
-        "Do not give financial advice or price predictions. Plain text only, no markdown, no headers."
-    )
-    reader_text = groq_ask(reader_prompt, max_tokens=220, temp=0.5)
-    if not reader_text:
-        _trend_word = "climbing" if chg7 > 1 else "falling" if chg7 < -1 else "moving sideways"
-        reader_text = (
-            "Over the past week, " + name + "'s price has been " + _trend_word + ", currently sitting at " + price_s + ". "
-            "The chart's green and red bars show daily price movement — green means the price went up that day, red means it went down.\n\n"
-            "Today " + name + " is " + chg24_s + " compared to yesterday, and " + chg7_s + " compared to a week ago. "
-            "In simple terms, this tells you whether buyers or sellers have been more active recently.\n\n"
-            "A simple takeaway: charts show what already happened, not what will happen next. Use them to understand recent activity, not to predict the future."
-        )
-    reader_paras = "".join(
-        '<p style="font-size:14px;line-height:1.8;color:#333;margin:0 0 12px">' + p.strip() + '</p>'
-        for p in reader_text.replace("\\n", "\n").split("\n") if p.strip()
-    )
-    chart_reader_box = (
+    # ── TIME MACHINE — drag a slider to any date in the last year, see what-if returns ──
+    time_machine_box = (
         '<div style="max-width:1200px;margin:0 auto 28px;padding:0 20px">'
         '<div style="background:#fff;border:1px solid #eee;border-radius:10px;padding:22px 26px">'
-        '<h2 style="font-size:18px;font-weight:700;color:var(--dark);margin:0 0 14px;border-left:4px solid ' + color + ';padding-left:12px">'
-        '🤓 What This Chart Means — In Plain English</h2>'
-        + reader_paras +
-        '<p style="font-size:11px;color:#bbb;margin:8px 0 0;font-style:italic">AI-generated explanation for beginners. Not financial advice.</p>'
+        '<h2 style="font-size:18px;font-weight:700;color:var(--dark);margin:0 0 6px;border-left:4px solid ' + color + ';padding-left:12px">'
+        '🕰️ Time Machine — What If You Bought ' + name + ' Earlier?</h2>'
+        '<p style="font-size:13px;color:#888;margin:0 0 18px">Drag the slider to pick a date in the last year and see what would have happened.</p>'
+        '<input type="range" id="tm-slider" min="1" max="365" value="30" style="width:100%;margin-bottom:8px">'
+        '<div style="display:flex;justify-content:space-between;font-size:11px;color:#999;margin-bottom:18px">'
+        '<span>1 year ago</span><span id="tm-date-label" style="font-weight:600;color:var(--dark)">30 days ago</span><span>Today</span>'
+        '</div>'
+        '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;text-align:center" id="tm-result">'
+        '<div style="padding:14px;background:#fafafa;border-radius:8px">'
+        '<div style="font-size:11px;color:#888;margin-bottom:6px">Price on that day</div>'
+        '<div style="font-size:17px;font-weight:700" id="tm-old-price">—</div></div>'
+        '<div style="padding:14px;background:#fafafa;border-radius:8px">'
+        '<div style="font-size:11px;color:#888;margin-bottom:6px">Price today</div>'
+        '<div style="font-size:17px;font-weight:700">' + price_s + '</div></div>'
+        '<div style="padding:14px;background:#fafafa;border-radius:8px">'
+        '<div style="font-size:11px;color:#888;margin-bottom:6px">If you put in $100</div>'
+        '<div style="font-size:17px;font-weight:700" id="tm-result-val">—</div></div>'
+        '</div>'
+        '<p style="font-size:11px;color:#bbb;margin:14px 0 0;font-style:italic">Based on historical daily closing prices. Past performance does not predict future results. Not financial advice.</p>'
         '</div></div>'
     )
-    parts.append(chart_reader_box)
+    parts.append(time_machine_box)
 
     # About
     parts.append('<div class="coin-about"><h2>About '+name+'</h2>')
@@ -845,6 +836,45 @@ def build_coin_page(coin, coin_data, articles):
         '  }',
         '};',
         'window.cmpLoad();',
+        '(async function(){',
+        '  var histData=null;',
+        '  try{',
+        '    var rh=await fetch("https://min-api.cryptocompare.com/data/v2/histoday?fsym='+sym+'&tsym=USD&limit=365");',
+        '    var jh=await rh.json();',
+        '    if(jh.Response==="Success"&&jh.Data&&jh.Data.Data)histData=jh.Data.Data;',
+        '  }catch(eh){}',
+        '  var slider=document.getElementById("tm-slider");',
+        '  if(!slider)return;',
+        '  function tmUpdate(){',
+        '    var daysAgo=parseInt(slider.value);',
+        '    var label=document.getElementById("tm-date-label");',
+        '    label.textContent=daysAgo===1?"Yesterday":daysAgo+" days ago";',
+        '    if(!histData||!histData.length){',
+        '      document.getElementById("tm-old-price").textContent="No data";',
+        '      document.getElementById("tm-result-val").textContent="—";',
+        '      return;',
+        '    }',
+        '    var idx=Math.max(0,histData.length-1-daysAgo);',
+        '    var day=histData[idx];',
+        '    if(!day||!day.close){',
+        '      document.getElementById("tm-old-price").textContent="No data";',
+        '      document.getElementById("tm-result-val").textContent="—";',
+        '      return;',
+        '    }',
+        '    var oldPrice=day.close;',
+        '    var oldStr=oldPrice>=1000?"$"+oldPrice.toLocaleString("en",{minimumFractionDigits:2,maximumFractionDigits:2}):"$"+oldPrice.toFixed(oldPrice>=1?4:6);',
+        '    document.getElementById("tm-old-price").textContent=oldStr;',
+        '    var currentPrice='+str(price)+';',
+        '    var coins=100/oldPrice;',
+        '    var nowVal=coins*currentPrice;',
+        '    var pct=((nowVal-100)/100*100);',
+        '    var sign=pct>=0?"+":"";',
+        '    var col=pct>=0?"#16a34a":"#dc2626";',
+        '    document.getElementById("tm-result-val").innerHTML="$"+nowVal.toFixed(2)+"<div style=\\"font-size:11px;color:"+col+";margin-top:2px\\">"+sign+pct.toFixed(1)+"%</div>";',
+        '  }',
+        '  slider.addEventListener("input",tmUpdate);',
+        '  tmUpdate();',
+        '})();',
         '</script>',
     ]
     parts.extend(js)
