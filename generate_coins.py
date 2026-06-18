@@ -478,36 +478,6 @@ def build_coin_page(coin, coin_data, articles):
         for l in why_lines
     )
     direction = "Up" if chg24 >= 0 else "Down"
-    why_box = (
-        '<div style="max-width:1200px;margin:0 auto 28px;padding:0 20px">'
-        '<div style="background:#fff;border:1px solid #eee;border-radius:10px;padding:22px 26px">'
-        '<h2 style="font-size:18px;font-weight:700;color:var(--dark);margin:0 0 14px;border-left:4px solid ' + color + ';padding-left:12px">'
-        '📰 Why Is ' + name + ' ' + direction + ' Today?</h2>'
-        '<ul style="list-style:none;margin:0;padding:0">' + why_items + '</ul>'
-        '<p style="font-size:11px;color:#bbb;margin:12px 0 0;font-style:italic">AI-generated summary. Not financial advice.</p>'
-        '</div></div>'
-    )
-
-    # ── KEY LEVELS TO WATCH — support/resistance visual ───────────────
-    _support = low * 0.98
-    _resistance = high * 1.02
-    _kl_pos = max(2, min(98, round(((price - _support) / max(_resistance - _support, 0.0001)) * 100, 1)))
-    key_levels_box = (
-        '<div style="max-width:1200px;margin:0 auto 28px;padding:0 20px">'
-        '<div style="background:#fff;border:1px solid #eee;border-radius:10px;padding:22px 26px">'
-        '<h2 style="font-size:18px;font-weight:700;color:var(--dark);margin:0 0 18px;border-left:4px solid ' + color + ';padding-left:12px">'
-        '📍 Key Levels to Watch</h2>'
-        '<div style="position:relative;height:8px;background:linear-gradient(90deg,#ef4444,#eab308,#22c55e);border-radius:4px;margin:30px 10px 14px">'
-        '<div style="position:absolute;left:' + str(_kl_pos) + '%;top:-22px;transform:translateX(-50%);font-size:11px;font-weight:700;color:var(--dark);white-space:nowrap">▼ ' + price_s + '</div>'
-        '<div style="position:absolute;left:' + str(_kl_pos) + '%;top:0;width:2px;height:8px;background:var(--dark);transform:translateX(-1px)"></div>'
-        '</div>'
-        '<div style="display:flex;justify-content:space-between;font-size:13px;color:#666">'
-        '<span><strong style="color:#ef4444">Support</strong> ~$' + f"{_support:,.2f}" + '</span>'
-        '<span><strong style="color:#22c55e">Resistance</strong> ~$' + f"{_resistance:,.2f}" + '</span>'
-        '</div>'
-        '<p style="font-size:11px;color:#bbb;margin:14px 0 0">Approximate levels based on the 24h trading range. Not financial advice.</p>'
-        '</div></div>'
-    )
 
     # ── COMPARE WITH WIDGET — side-by-side 24h comparison ──────────────
     other_coins = [c for c in COINS if c["sym"] != sym]
@@ -567,37 +537,29 @@ def build_coin_page(coin, coin_data, articles):
             '</div></section>'
         )
 
-    # ── AI ANALYSIS BOX ──────────────────────────────────────────────
-    if analysis:
-        ai_box = (
-            '<div style="max-width:1200px;margin:0 auto 32px;padding:0 20px">'
-            '<div style="background:linear-gradient(135deg,#fff8f8,#fff);border:1px solid #f0d0d0;border-left:5px solid '+color+';border-radius:10px;padding:24px 28px">'
-            '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">'
-            '<span style="font-size:20px">🤖</span>'
-            '<div><div style="font-size:13px;font-weight:700;color:'+color+';text-transform:uppercase;letter-spacing:0.5px">AI Market Analysis</div>'
-            '<div style="font-size:11px;color:#aaa">Updated '+now_s+' &middot; Markets News Today AI</div></div></div>'
-            '<p style="font-size:15px;line-height:1.8;color:#333;margin:0">'+analysis+'</p>'
-            '<p style="font-size:11px;color:#bbb;margin:12px 0 0;font-style:italic">AI-generated for informational purposes only. Not financial advice.</p>'
-            '</div></div>'
-        )
-    else:
+    # ── TODAY'S ANALYSIS — merges narrative analysis + why-moved bullets into one card ──
+    if not analysis:
         analysis = (
             name + " (" + sym + ") is currently trading at " + price_s + ", " + chg24_s + " in the last 24 hours. "
             "The 24-hour trading range spans from " + low_s + " to " + high_s + ", "
             "with a market capitalization of " + mcap_s + ". 24-hour volume is " + vol_s + ". "
             "Monitor key support and resistance levels and broader market sentiment before making any decisions."
         )
-        ai_box = (
-            '<div style="max-width:1200px;margin:0 auto 32px;padding:0 20px">'
-            '<div style="background:linear-gradient(135deg,#fff8f8,#fff);border:1px solid #f0d0d0;border-left:5px solid '+color+';border-radius:10px;padding:24px 28px">'
-            '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">'
-            '<span style="font-size:20px">🤖</span>'
-            '<div><div style="font-size:13px;font-weight:700;color:'+color+';text-transform:uppercase;letter-spacing:0.5px">AI Market Analysis</div>'
-            '<div style="font-size:11px;color:#aaa">Updated '+now_s+' &middot; Markets News Today AI</div></div></div>'
-            '<p style="font-size:15px;line-height:1.8;color:#333;margin:0">'+analysis+'</p>'
-            '<p style="font-size:11px;color:#bbb;margin:12px 0 0;font-style:italic">AI-generated for informational purposes only. Not financial advice.</p>'
-            '</div></div>'
-        )
+    today_analysis_box = (
+        '<div style="max-width:1200px;margin:0 auto 28px;padding:0 20px">'
+        '<div style="background:linear-gradient(135deg,#fff8f8,#fff);border:1px solid #f0d0d0;border-left:5px solid '+color+';border-radius:10px;padding:24px 28px">'
+        '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">'
+        '<span style="font-size:20px">🤖</span>'
+        '<div><div style="font-size:13px;font-weight:700;color:'+color+';text-transform:uppercase;letter-spacing:0.5px">Today\'s '+name+' Analysis</div>'
+        '<div style="font-size:11px;color:#aaa">Updated '+now_s+' &middot; Markets News Today AI</div></div></div>'
+        '<p style="font-size:15px;line-height:1.8;color:#333;margin:0 0 16px">'+analysis+'</p>'
+        '<div style="background:#fff;border-radius:8px;padding:16px 18px;border:1px solid #f0e0e0">'
+        '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#888;margin-bottom:10px">Why Is '+name+' '+direction+' Today?</div>'
+        '<ul style="list-style:none;margin:0;padding:0">'+why_items+'</ul>'
+        '</div>'
+        '<p style="font-size:11px;color:#bbb;margin:12px 0 0;font-style:italic">AI-generated for informational purposes only. Not financial advice.</p>'
+        '</div></div>'
+    )
 
     # ── ASSEMBLE PAGE ────────────────────────────────────────────────
     parts = []
@@ -674,37 +636,39 @@ def build_coin_page(coin, coin_data, articles):
     parts.append('</div>')
     parts.append('</div></div>')
 
-    # Sentiment + Verdict row
-    parts.append('<div class="coin-sv-grid" style="max-width:1200px;margin:24px auto 0;padding:0 20px;display:grid;grid-template-columns:1fr 1fr;gap:16px">')
-    # Sentiment
-    parts.append('<div style="background:#fff;border:1px solid #eee;border-radius:12px;padding:20px 24px">')
-    parts.append('<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:#888;margin-bottom:12px">'+name+' Sentiment Index</div>')
+    # ── UNIFIED INSIGHT CARD — sentiment + verdict + key levels in one cohesive story ──
+    _support = low * 0.98
+    _resistance = high * 1.02
+    _kl_pos = max(2, min(98, round(((price - _support) / max(_resistance - _support, 0.0001)) * 100, 1)))
+
+    parts.append('<div style="max-width:1200px;margin:24px auto 0;padding:0 20px">')
+    parts.append('<div style="background:#fff;border:2px solid '+v_color+';border-radius:14px;padding:26px 28px">')
+    parts.append('<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid #f0f0f0">')
     parts.append('<div style="display:flex;align-items:center;gap:16px">')
-    parts.append('<div style="width:64px;height:64px;border-radius:50%;background:'+s_color+'20;border:3px solid '+s_color+';display:flex;align-items:center;justify-content:center;flex-shrink:0">')
-    parts.append('<span style="font-size:20px;font-weight:800;color:'+s_color+'">'+str(s_score)+'</span></div>')
-    parts.append('<div><div style="font-size:18px;font-weight:700;color:'+s_color+'">'+s_label+'</div>')
-    parts.append('<div style="font-size:13px;color:#666;margin-top:3px">'+s_reason+'</div></div>')
+    parts.append('<div style="width:60px;height:60px;border-radius:50%;background:'+s_color+'20;border:3px solid '+s_color+';display:flex;align-items:center;justify-content:center;flex-shrink:0">')
+    parts.append('<span style="font-size:19px;font-weight:800;color:'+s_color+'">'+str(s_score)+'</span></div>')
+    parts.append('<div><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:#888">'+name+' Sentiment</div>')
+    parts.append('<div style="font-size:17px;font-weight:700;color:'+s_color+'">'+s_label+'</div></div>')
     parts.append('</div>')
-    parts.append('<div style="margin-top:12px;height:6px;background:#f0f0f0;border-radius:3px;overflow:hidden">')
-    parts.append('<div style="width:'+str(s_score)+'%;height:100%;background:'+s_color+';border-radius:3px"></div></div>')
-    parts.append('<div style="display:flex;justify-content:space-between;font-size:10px;color:#bbb;margin-top:4px"><span>Extreme Fear</span><span>Neutral</span><span>Extreme Greed</span></div>')
+    parts.append('<div style="background:'+v_color+';color:#fff;font-size:20px;font-weight:800;padding:10px 24px;border-radius:8px;letter-spacing:1px">'+v_act+'</div>')
     parts.append('</div>')
-    # Verdict
-    parts.append('<div style="background:#fff;border:2px solid '+v_color+';border-radius:12px;padding:20px 24px">')
-    parts.append('<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:#888;margin-bottom:12px">Should I Buy '+name+' Today?</div>')
-    parts.append('<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">')
-    parts.append('<div style="background:'+v_color+';color:#fff;font-size:22px;font-weight:800;padding:8px 20px;border-radius:8px;letter-spacing:1px">'+v_act+'</div>')
-    parts.append('<div><div style="font-size:13px;color:#333">Confidence: <strong>'+v_conf+'</strong></div>')
-    parts.append('<div style="font-size:13px;color:#333">Risk: <strong style="color:'+v_color+'">'+v_risk+'</strong></div></div>')
-    parts.append('</div>')
-    parts.append('<p style="font-size:13px;color:#555;line-height:1.6;margin:0 0 10px">'+v_why+'</p>')
-    parts.append('<div style="display:flex;gap:16px;font-size:12px">')
+    parts.append('<p style="font-size:15px;color:#333;line-height:1.7;margin:0 0 16px">'+v_why+' Based on this, our confidence is <strong>'+v_conf+'</strong> with <strong style="color:'+v_color+'">'+v_risk+'</strong> risk — and overall market sentiment for '+name+' is leaning <strong style="color:'+s_color+'">'+s_label.lower()+'</strong> ('+s_reason.lower()+').</p>')
+    parts.append('<div style="display:flex;gap:20px;font-size:13px;margin-bottom:20px;flex-wrap:wrap">')
     parts.append('<span style="color:#16a34a">🎯 Target: <strong>'+v_tgt+'</strong></span>')
     parts.append('<span style="color:#dc2626">🛡 Stop: <strong>'+v_stp+'</strong></span>')
     parts.append('</div>')
-    parts.append('<p style="font-size:10px;color:#bbb;margin:10px 0 0;font-style:italic">Not financial advice. For informational purposes only.</p>')
+    parts.append('<div style="background:#fafafa;border-radius:10px;padding:18px 20px">')
+    parts.append('<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:#888;margin-bottom:14px">📍 Where Is the Price Right Now?</div>')
+    parts.append('<div style="position:relative;height:8px;background:linear-gradient(90deg,#ef4444,#eab308,#22c55e);border-radius:4px;margin:26px 6px 12px">')
+    parts.append('<div style="position:absolute;left:'+str(_kl_pos)+'%;top:-20px;transform:translateX(-50%);font-size:11px;font-weight:700;color:var(--dark);white-space:nowrap">▼ '+price_s+'</div>')
+    parts.append('<div style="position:absolute;left:'+str(_kl_pos)+'%;top:0;width:2px;height:8px;background:var(--dark);transform:translateX(-1px)"></div>')
     parts.append('</div>')
-    parts.append('</div>')
+    parts.append('<div style="display:flex;justify-content:space-between;font-size:12px;color:#666">')
+    parts.append('<span><strong style="color:#ef4444">Support</strong> ~$'+f"{_support:,.2f}"+'</span>')
+    parts.append('<span><strong style="color:#22c55e">Resistance</strong> ~$'+f"{_resistance:,.2f}"+'</span>')
+    parts.append('</div></div>')
+    parts.append('<p style="font-size:10px;color:#bbb;margin:14px 0 0;font-style:italic">Not financial advice. For informational purposes only. Levels are approximate, based on the 24h trading range.</p>')
+    parts.append('</div></div>')
 
     # TradingView Chart
     parts.append('<div style="max-width:1200px;margin:32px auto;padding:0 20px">')
@@ -746,15 +710,8 @@ def build_coin_page(coin, coin_data, articles):
     parts.append('<p>'+desc+' '+name+' ('+sym+') is one of the most actively traded cryptocurrencies, with a 24-hour trading volume of '+vol_s+' and a market cap of '+mcap_s+'. Follow the latest '+name+' news and expert analysis below.</p>')
     parts.append('</div>')
 
-    # AI Analysis
-    if ai_box:
-        parts.append(ai_box)
-
-    # Why Is Coin Up/Down Today
-    parts.append(why_box)
-
-    # Key Levels to Watch
-    parts.append(key_levels_box)
+    # Today's Analysis (merged AI analysis + why moved bullets)
+    parts.append(today_analysis_box)
 
     # Compare With widget
     parts.append(compare_box)
